@@ -73,5 +73,69 @@ void CustomQuickchat::cmd_test(std::vector<std::string> args)
 
 void CustomQuickchat::cmd_test2(std::vector<std::string> args)
 {
-	// ...
+	if (args.size() < 2) return;
+
+	UGFxData_Chat_TA* chat = Instances.GetInstanceOf<UGFxData_Chat_TA>();
+	if (!chat)
+	{
+		LOG("UGFxData_Chat_TA* is null!");
+		return;
+	}
+
+	auto shell = chat->Shell;
+	if (!shell) {
+		LOG("chat->Shell is null");
+		return;
+	}
+
+	UGFxDataStore_X* dataStore = shell->DataStore;
+	if (!dataStore) {
+		LOG("shell->DataStore is null");
+		return;
+	}
+
+	std::string test_label = "tester"
+
+	dataStore->SetStringValue(L"ChatPresetMessages", std::stoi(args[1]), L"Label", Instances.FString(test_label));	// works
+
+	LOG("set preset message label to '{}'", test_label);
+
+	return;
+
+	auto tables = dataStore->Tables;
+
+	for (auto& table : tables)
+	{
+		if (table.Name.ToString() == "ChatPresetMessages")
+		{
+			for (auto& row : table.Rows)
+			{
+				auto vals = row.Values;
+			}
+		}
+	}
+
+
+	return;
+
+	auto& preset_messages = chat->PresetMessages;
+	LOG("PresetMessages size: {}", preset_messages.size());
+
+	for (FChatPresetMessage& message : preset_messages)
+	{
+		LOG("--------------------------------------");
+		LOG("Label: {}", message.Label.ToString());
+		LOG("--------------------------------------");
+		LOG("GroupIndex: {}", message.GroupIndex);
+		LOG("Id: {}", message.Id.ToString());
+		LOG("bTeam: {}", static_cast<bool>(message.bTeam));
+	
+		if (message.GroupIndex == 3)
+		{
+			message.Label = Instances.FString(test_label);
+		}
+	}
+
+	chat->OnShellSet();
+	chat->eventOnShellSet();
 }
