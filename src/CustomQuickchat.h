@@ -10,7 +10,7 @@
 #include "Keys.h"
 #include "TextEffects.h"
 
-#include "version.h"
+#include "resources/version.h"
 
 #include "Macros.hpp"
 #include "Events.hpp"
