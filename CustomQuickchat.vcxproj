@@ -84,7 +84,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\lib;$(ProjectDir)\lib\json\include;$(USERPROFILE)\AppData\Local\Programs\Python\Python312\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\lib;$(ProjectDir)\src;$(ProjectDir)\lib\json\include;$(USERPROFILE)\AppData\Local\Programs\Python\Python312\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,7 +95,7 @@
     </Link>
     <!--
     <PreBuildEvent>
-	    <Command>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File update_version.ps1 "./src/version.h"</Command>
+	    <Command>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File ./resources/update_version.ps1 "./resources/version.h"</Command>
     </PreBuildEvent>
     -->
   </ItemDefinitionGroup>
@@ -107,7 +107,7 @@
     <ClCompile Include="src\CvarChangeCallbacks.cpp" />
     <ClCompile Include="src\Events.cpp" />
     <ClCompile Include="src\Functions.cpp" />
-    <ClCompile Include="src\GuiTools.cpp" />
+    <ClCompile Include="src\gui\Tools.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imguivariouscontrols.cpp" />
     <ClCompile Include="lib\imgui\imgui_additions.cpp" />
@@ -125,7 +125,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\CustomQuickchat.cpp" />
-    <ClCompile Include="src\GuiBase.cpp" />
+    <ClCompile Include="src\gui\Bas.cpp" />
     <ClCompile Include="src\RegisterCvars.cpp" />
     <ClCompile Include="lib\SDK\GameDefines.cpp" />
     <ClCompile Include="lib\SDK\SDK_HEADERS\AkAudio_classes.cpp" />
@@ -149,7 +149,7 @@
     <ClInclude Include="src\Components\Includes.hpp" />
     <ClInclude Include="src\Cvars.hpp" />
     <ClInclude Include="src\Events.hpp" />
-    <ClInclude Include="src\GuiTools.hpp" />
+    <ClInclude Include="src\gui\Tools.hpp" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imguivariouscontrols.h" />
@@ -168,7 +168,7 @@
     <ClInclude Include="src\logging.h" />
     <ClInclude Include="src\Macros.hpp" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\GuiBase.h" />
+    <ClInclude Include="src\gui\Bas.h" />
     <ClInclude Include="src\CustomQuickchat.h" />
     <ClInclude Include="lib\SDK\GameDefines.hpp" />
     <ClInclude Include="lib\SDK\SdkHeaders.hpp" />
@@ -204,7 +204,7 @@
     <ClInclude Include="lib\SDK\SDK_HEADERS\XAudio2_structs.hpp" />
     <ClInclude Include="src\Structs.hpp" />
     <ClInclude Include="src\TextEffects.h" />
-    <ClInclude Include="src\version.h" />
+    <ClInclude Include="resources\version.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CustomQuickchat.rc" />
