@@ -9,11 +9,11 @@
 #include <functional>
 #include <memory>
 
-#include "lib/imgui/imgui.h"
-#include "lib/imgui/imgui_internal.h"
-#include "lib/imgui/misc/cpp/imgui_stdlib.h"
-#include "src/gui/SearchableCombo.h"
-#include "src/gui/RangeSlider.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
+#include "imgui/misc/cpp/imgui_stdlib.h"
+#include "gui/SearchableCombo.h"
+#include "gui/RangeSlider.h"
 
 #include <limits.h>
 #include <Windows.h>
@@ -21,6 +21,10 @@
 #include <iostream>
 #include <fstream>
 #include <shellapi.h>
+
+#include "Instances.h"
+#include "Utils.h"
+#include "WebsocketManager.h"
 
 #include "json/include/nlohmann/json.hpp"
 #include "SDK/SdkHeaders.hpp"
