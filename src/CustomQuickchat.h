@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pch.h"
-#include "GuiBase.h"
+#include "gui/Base.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
@@ -15,7 +15,7 @@
 #include "Macros.hpp"
 #include "Events.hpp"
 #include "Cvars.hpp"
-#include "GuiTools.hpp"
+#include "gui/Tools.hpp"
 #include "Components/Includes.hpp"
 
 

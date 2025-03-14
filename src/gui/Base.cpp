@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "GuiBase.h"
+#include "gui/Base.h"
 
 std::string SettingsWindowBase::GetPluginName()
 {
