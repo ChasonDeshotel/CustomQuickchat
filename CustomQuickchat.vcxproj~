@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{3d992e0d-117a-4050-aa7c-c05f2c6e06d0}</ProjectGuid>
+    <RootNamespace>CustomQuickchat</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="src/BakkesMod.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="src/BakkesMod.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)plugins\</OutDir>
+    <IntDir>$(SolutionDir)build\.intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)plugins\</OutDir>
+    <IntDir>$(SolutionDir)build\.intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(USERPROFILE)\AppData\Local\Programs\Python\Python312\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(USERPROFILE)\AppData\Local\Programs\Python\Python312\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <!--
+    <PreBuildEvent>
+	    <Command>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File update_version.ps1 "./src/version.h"</Command>
+    </PreBuildEvent>
+    -->
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Commands.cpp" />
+    <ClCompile Include="Components\Components\Instances.cpp" />
+    <ClCompile Include="Components\Components\Utils.cpp" />
+    <ClCompile Include="Components\Components\WebsocketManager.cpp" />
+    <ClCompile Include="src\CvarChangeCallbacks.cpp" />
+    <ClCompile Include="src\Events.cpp" />
+    <ClCompile Include="src\Functions.cpp" />
+    <ClCompile Include="src\GuiTools.cpp" />
+    <ClCompile Include="lib\imgui\imgui.cpp" />
+    <ClCompile Include="lib\imgui\imguivariouscontrols.cpp" />
+    <ClCompile Include="lib\imgui\imgui_additions.cpp" />
+    <ClCompile Include="lib\imgui\imgui_demo.cpp" />
+    <ClCompile Include="lib\imgui\imgui_draw.cpp" />
+    <ClCompile Include="lib\imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="lib\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\gui\RangeSlider.cpp" />
+    <ClCompile Include="src\gui\SearchableCombo.cpp" />
+    <ClCompile Include="lib\imgui\imgui_stdlib.cpp" />
+    <ClCompile Include="lib\imgui\imgui_timeline.cpp" />
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\CustomQuickchat.cpp" />
+    <ClCompile Include="src\GuiBase.cpp" />
+    <ClCompile Include="src\RegisterCvars.cpp" />
+    <ClCompile Include="lib\SDK\GameDefines.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\AkAudio_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\Core_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\Engine_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\GFxUI_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\IpDrv_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\OnlineSubsystemEOS_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\ProjectX_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\TAGame_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\WinDrv_classes.cpp" />
+    <ClCompile Include="lib\SDK\SDK_HEADERS\XAudio2_classes.cpp" />
+    <ClCompile Include="src\Settings.cpp" />
+    <ClCompile Include="src\SpeechToText.cpp" />
+    <ClCompile Include="src\TextEffects.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Components\Components\Instances.hpp" />
+    <ClInclude Include="src\Components\Components\Utils.hpp" />
+    <ClInclude Include="src\Components\Components\WebsocketManager.hpp" />
+    <ClInclude Include="src\Components\Includes.hpp" />
+    <ClInclude Include="src\Cvars.hpp" />
+    <ClInclude Include="src\Events.hpp" />
+    <ClInclude Include="src\GuiTools.hpp" />
+    <ClInclude Include="lib\imgui\imconfig.h" />
+    <ClInclude Include="lib\imgui\imgui.h" />
+    <ClInclude Include="lib\imgui\imguivariouscontrols.h" />
+    <ClInclude Include="lib\imgui\imgui_additions.h" />
+    <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="lib\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="lib\imgui\imgui_internal.h" />
+    <ClInclude Include="src\gui\RangeSlider.h" />
+    <ClInclude Include="src\gui\SearchableCombo.h" />
+    <ClInclude Include="lib\imgui\imgui_stdlib.h" />
+    <ClInclude Include="lib\imgui\imgui_timeline.h" />
+    <ClInclude Include="lib\imgui\imstb_rectpack.h" />
+    <ClInclude Include="lib\imgui\imstb_textedit.h" />
+    <ClInclude Include="lib\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\Keys.h" />
+    <ClInclude Include="src\logging.h" />
+    <ClInclude Include="src\Macros.hpp" />
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\GuiBase.h" />
+    <ClInclude Include="src\CustomQuickchat.h" />
+    <ClInclude Include="lib\SDK\GameDefines.hpp" />
+    <ClInclude Include="lib\SDK\SdkHeaders.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\AkAudio_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\AkAudio_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\AkAudio_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\Core_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\Core_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\Core_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\Engine_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\Engine_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\Engine_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\GFxUI_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\GFxUI_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\GFxUI_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\IpDrv_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\IpDrv_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\IpDrv_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\OnlineSubsystemEOS_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\OnlineSubsystemEOS_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\OnlineSubsystemEOS_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\ProjectX_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\ProjectX_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\ProjectX_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\TAGame_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\TAGame_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\TAGame_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\WinDrv_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\WinDrv_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\WinDrv_structs.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\XAudio2_classes.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\XAudio2_parameters.hpp" />
+    <ClInclude Include="lib\SDK\SDK_HEADERS\XAudio2_structs.hpp" />
+    <ClInclude Include="src\Structs.hpp" />
+    <ClInclude Include="src\TextEffects.h" />
+    <ClInclude Include="src\version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CustomQuickchat.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
