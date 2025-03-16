@@ -1,3 +1,4 @@
+#include <cstring>
 #include "main.h"
 #include "imgui_bm/imgui.h"
 #include "imgui_bm/imgui_searchablecombo.h"
@@ -613,7 +614,7 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 				ImGui::PushID(j);
 
 				// only render option if there's text in search box & it matches the key name
-				if (searchBuffer == '\0')
+				if (strcmp(searchBuffer, "") != 0)
 				{
 					if (keyNameStrLower.find(searchQuery) != std::string::npos)
 					{
