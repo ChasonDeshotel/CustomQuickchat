@@ -148,3 +148,11 @@ target_link_libraries(CustomQuickchat PRIVATE
 set_target_properties(CustomQuickchat PROPERTIES
     WINDOWS_EXPORT_ALL_SYMBOLS OFF
 )
+
+add_custom_command(
+    TARGET CustomQuickchat
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    $<TARGET_FILE:CustomQuickchat>
+	"$ENV{APPDATA}/bakkesmod/bakkesmod/plugins/CustomQuickchat-dev.dll"
+)
