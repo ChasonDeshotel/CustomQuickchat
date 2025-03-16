@@ -1,8 +1,5 @@
-#include "pch.h"
 #include "Utils.h"
 
-
-// Various helper functions...
 namespace Format
 {
 	// ------------------------------------ custom --------------------------------------
@@ -129,6 +126,7 @@ namespace Format
 	std::string GenRandomString(int length)
 	{
 		// Define character set
+		// TODO: add the fancy new wide chars
 		const std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 		// Initialize random number generator
@@ -523,6 +521,7 @@ namespace Process
 			&pi                                   // Pointer to PROCESS_INFORMATION
 		))
 		{
+			// TODO: store a reference to PROCESS_INFORMATION instead?
 			// Duplicate process handle so it remains valid even after original PROCESS_INFORMATION goes out of scope
 			HANDLE duplicatedProcessHandle = NULL;
 			HANDLE duplicatedThreadHandle = NULL;
