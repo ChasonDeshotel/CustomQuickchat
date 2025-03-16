@@ -133,7 +133,7 @@ void CustomQuickchat::onUnload()
 	WriteBindingsToJson();		// just to make sure any unsaved changes are saved before exiting
 
 #ifdef USE_SPEECH_TO_TEXT
-
+	// BUG: crashes on unload. Probably related
 	Websocket->StopClient();
 	stop_websocket_server();
 
