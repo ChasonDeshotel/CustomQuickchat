@@ -1,5 +1,7 @@
 #include "pch.h"
-#include "gui/GuiTools.hpp"
+#include "Tools.h"
+
+#include "imgui_bm/imgui.h"
 
 
 namespace GUI
@@ -29,14 +31,14 @@ namespace GUI
 	{
 		const wchar_t* w_url = Format::ToWcharString(url);
 
-		ShellExecute(NULL, L"open", w_url, NULL, NULL, SW_SHOWNORMAL);
+		ShellExecuteW(NULL, L"open", w_url, NULL, NULL, SW_SHOWNORMAL);
 
 		delete[] w_url;
 	}
 
 	void open_link(const wchar_t* url)
 	{
-		ShellExecute(NULL, L"open", url, NULL, NULL, SW_SHOWNORMAL);
+		ShellExecuteW(NULL, L"open", url, NULL, NULL, SW_SHOWNORMAL);
 	}
 
 

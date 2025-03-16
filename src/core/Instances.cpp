@@ -1,5 +1,6 @@
 #include "pch.h"
-#include "Instances.hpp"
+#include "Instances.h"
+#include "GameDefines.hpp"
 
 
 InstancesComponent::InstancesComponent() { OnCreate(); }
@@ -68,7 +69,7 @@ uintptr_t InstancesComponent::GetGNamesAddress()
 	unsigned char GNamesPattern[] = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x35\x25\x02\x00";
 	char GNamesMask[] = "??????xx??xxxxxx";
 
-	uintptr_t GNamesAddress = FindPattern(GetModuleHandle(L"RocketLeague.exe"), GNamesPattern, GNamesMask);
+	uintptr_t GNamesAddress = FindPattern(GetModuleHandleW(L"RocketLeague.exe"), GNamesPattern, GNamesMask);
 
 	return GNamesAddress;
 }

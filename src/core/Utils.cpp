@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Utils.hpp"
+#include "Utils.h"
 
 
 // Various helper functions...
@@ -317,7 +317,7 @@ namespace Files
 	{
 		if (fs::exists(folderPath))
 		{
-			ShellExecute(NULL, L"open", folderPath.c_str(), NULL, NULL, SW_SHOWNORMAL);
+			ShellExecuteW(NULL, L"open", folderPath.c_str(), NULL, NULL, SW_SHOWNORMAL);
 		}
 		else {
 			LOG("Folder path does not exist: {}", folderPath.string());
@@ -496,7 +496,7 @@ namespace Process
 	CreateProcessResult create_process_from_command(const std::string& command)
 	{
 		// CreateProcess variables
-		STARTUPINFO si;
+		STARTUPINFOW si;
 		PROCESS_INFORMATION pi;
 
 		// Initialize STARTUPINFO & PROCESS_INFORMATION
@@ -510,7 +510,7 @@ namespace Process
 		CreateProcessResult result;
 
 		// Create the process to start python script
-		if (CreateProcess(
+		if (CreateProcessW(
 			NULL,                                 // Application name (set NULL to use command)
 			wide_command,                         // Command
 			NULL,                                 // Process security attributes
