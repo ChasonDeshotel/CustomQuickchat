@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "main.h"
 
 #if !defined(USE_SPEECH_TO_TEXT)
@@ -11,10 +10,8 @@ void CustomQuickchat::no_speech_to_text_warning()
 
 #else
 
-
 void CustomQuickchat::StartSpeechToText(const Binding& binding)
 {
-
 	if (attemptingSTT)
 	{
 		STTLog("Speech-to-text is already active!");
@@ -36,7 +33,6 @@ void CustomQuickchat::StartSpeechToText(const Binding& binding)
 
 	attemptingSTT = true;
 }
-
 
 void CustomQuickchat::start_websocket_stuff(bool onLoad)
 {
@@ -103,7 +99,6 @@ void CustomQuickchat::start_websocket_stuff(bool onLoad)
 	}
 }
 
-
 bool CustomQuickchat::start_websocket_server()
 {
 	auto websocket_port_cvar = GetCvar(Cvars::websocket_port);
@@ -132,13 +127,11 @@ bool CustomQuickchat::start_websocket_server()
 	}
 }
 
-
 void CustomQuickchat::stop_websocket_server()
 {
 	Process::terminate_created_process(stt_python_server_process);
 	LOG("Stopped websocket server using TerminateProcess...");
 }
-
 
 json CustomQuickchat::generate_data_for_STT_attempt()
 {
@@ -168,7 +161,6 @@ json CustomQuickchat::generate_data_for_STT_attempt()
 	return data;
 }
 
-
 json CustomQuickchat::generate_data_for_mic_calibration_attempt()
 {
 	json data;
@@ -178,14 +170,12 @@ json CustomQuickchat::generate_data_for_mic_calibration_attempt()
 	return data;
 }
 
-
 std::string CustomQuickchat::generate_STT_attempt_id()
 {
 	std::string id = Format::GenRandomString(10);
 	LOG("Generated ID for current speech-to-text attempt: {}", id);
 	return id;
 }
-
 
 void CustomQuickchat::process_ws_response(const json& response)
 {
@@ -289,7 +279,6 @@ void CustomQuickchat::process_ws_response(const json& response)
 	}
 }
 
-
 void CustomQuickchat::process_STT_result(const json& response_data)
 {
 	if (!response_data.contains("attemptId"))
@@ -346,7 +335,6 @@ void CustomQuickchat::process_STT_result(const json& response_data)
 	attemptingSTT = false;
 }
 
-
 void CustomQuickchat::process_mic_calibration_result(const json& response_data)
 {
 	if (!response_data.contains("attemptId"))
@@ -401,7 +389,6 @@ void CustomQuickchat::process_mic_calibration_result(const json& response_data)
 	calibratingMicLevel = false;
 }
 
-
 // ======================================== MIC CALIBRATION ========================================
 
 void CustomQuickchat::CalibrateMicrophone()
@@ -435,7 +422,6 @@ void CustomQuickchat::CalibrateMicrophone()
 	);
 }
 
-
 // ========================================= SPEECH-TO-TEXT ========================================
 
 std::string CustomQuickchat::CreateCommandString(const fs::path& executablePath, const std::vector<std::string>& args)
@@ -460,7 +446,6 @@ void CustomQuickchat::ClearSttErrorLog()
 	LOG("Cleared '{}'", speechToTextErrorLogPath.string());
 }
 
-
 void CustomQuickchat::STTLog(const std::string& message)
 {
 	auto enableSTTNotifications_cvar =	GetCvar(Cvars::enableSTTNotifications);
@@ -474,4 +459,3 @@ void CustomQuickchat::STTLog(const std::string& message)
 }
 
 #endif // USE_SPEECH_TO_TEXT
-

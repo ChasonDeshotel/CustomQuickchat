@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "main.h"
 
 void CustomQuickchat::cmd_toggleEnabled(std::vector<std::string> args)
@@ -9,7 +8,6 @@ void CustomQuickchat::cmd_toggleEnabled(std::vector<std::string> args)
 	bool enabled = enabledCvar.getBoolValue();
 	enabledCvar.setValue(!enabled);
 }
-
 
 void CustomQuickchat::cmd_listBindings(std::vector<std::string> args)
 {
@@ -35,7 +33,6 @@ void CustomQuickchat::cmd_listBindings(std::vector<std::string> args)
 		LOG("{}: {}", binding.Action.ToString(), binding.Key.ToString());
 	}
 }
-
 
 void CustomQuickchat::cmd_list_custom_chat_labels(std::vector<std::string> args)
 {
@@ -67,7 +64,6 @@ void CustomQuickchat::cmd_list_custom_chat_labels(std::vector<std::string> args)
 	}
 }
 
-
 void CustomQuickchat::cmd_exitToMainMenu(std::vector<std::string> args)
 {
 	auto shell = Instances.GetInstanceOf<UGFxShell_X>();
@@ -78,7 +74,6 @@ void CustomQuickchat::cmd_exitToMainMenu(std::vector<std::string> args)
 	LOG("exited to main menu");
 }
 
-
 void CustomQuickchat::cmd_forfeit(std::vector<std::string> args)
 {
 	auto shell = Instances.GetInstanceOf<UGFxShell_TA>();
@@ -88,8 +83,6 @@ void CustomQuickchat::cmd_forfeit(std::vector<std::string> args)
 
 	LOG("voted to forfeit...");
 }
-
-
 
 // ============================ testing ============================
 
@@ -103,7 +96,6 @@ void CustomQuickchat::cmd_test(std::vector<std::string> args)
 	
 	LOG("did the test");
 }
-
 
 void CustomQuickchat::cmd_test2(std::vector<std::string> args)
 {

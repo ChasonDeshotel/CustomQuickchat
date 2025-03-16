@@ -1,7 +1,4 @@
-#include "pch.h"
 #include "main.h"
-
-
 
 void CustomQuickchat::Event_KeyPressed(ActorWrapper caller, void* params, std::string eventName)
 {
@@ -61,7 +58,6 @@ void CustomQuickchat::Event_KeyPressed(ActorWrapper caller, void* params, std::s
 		keyStates[keyName] = false;		// update key state (for CheckCombination() to analyze a "snapshot" of all pressed buttons)
 }
 
-
 void CustomQuickchat::Event_GFxHUD_TA_ChatPreset(ActorWrapper caller, void* params, std::string eventName)
 {
 	AGFxHUD_TA_execChatPreset_Params* Params = reinterpret_cast<AGFxHUD_TA_execChatPreset_Params*>(params);
@@ -93,7 +89,6 @@ void CustomQuickchat::Event_GFxHUD_TA_ChatPreset(ActorWrapper caller, void* para
 	}
 }
 
-
 // happens after joining a match and after a binding has been changed in RL settings
 void CustomQuickchat::Event_InitUIBindings(ActorWrapper Caller, void* Params, std::string eventName)
 {
@@ -106,7 +101,6 @@ void CustomQuickchat::Event_InitUIBindings(ActorWrapper Caller, void* Params, st
 		determine_quickchat_labels(caller);
 	, caller);
 }
-
 
 // NOTE: Running this on every chat preset pressed (aka every time the quickchat ui shows up) ensures the correct group of custom
 // quickchat labels (pc vs gamepad) will be displayed. It may seem more efficient to apply chat labels to ui less often, but that wouldn't
@@ -130,7 +124,6 @@ void CustomQuickchat::Event_OnPressChatPreset(ActorWrapper Caller, void* Params,
 	apply_custom_qc_labels_to_ui(caller, params);
 }
 
-
 void CustomQuickchat::Event_ApplyChatSpamFilter(ActorWrapper caller, void* params, std::string eventName)
 {
 	APlayerController_TA* pc = reinterpret_cast<APlayerController_TA*>(caller.memory_address);
@@ -146,7 +139,6 @@ void CustomQuickchat::Event_ApplyChatSpamFilter(ActorWrapper caller, void* param
 	pc->ChatSpam.RiseAmount = disableChatTimeout ? 1 : 1.2;		// default 1.2
 }
 
-
 void CustomQuickchat::Event_NotifyChatDisabled(ActorWrapper caller, void* params, std::string eventName)
 {
 	gamePaused = false;
@@ -156,7 +148,6 @@ void CustomQuickchat::Event_NotifyChatDisabled(ActorWrapper caller, void* params
 
 	Instances.SetChatTimeoutMsg(chatTimeoutMsg, hud);
 }
-
 
 // remove chat timestamps
 void CustomQuickchat::Event_OnChatMessage(ActorWrapper caller, void* params, std::string eventName)
@@ -172,7 +163,6 @@ void CustomQuickchat::Event_OnChatMessage(ActorWrapper caller, void* params, std
 	//Params->TimeStamp = L"";							// <--- but... this causes crash upon entering a match for some reason... i think
 }
 
-
 void CustomQuickchat::Event_PushMenu(ActorWrapper caller, void* params, std::string eventName)
 {
 	UGFxData_MenuStack_TA_execPushMenu_Params* Params = reinterpret_cast<UGFxData_MenuStack_TA_execPushMenu_Params*>(params);
@@ -182,7 +172,6 @@ void CustomQuickchat::Event_PushMenu(ActorWrapper caller, void* params, std::str
 		gamePaused = true;
 }
 
-
 void CustomQuickchat::Event_PopMenu(ActorWrapper caller, void* params, std::string eventName)
 {
 	UGFxData_MenuStack_TA_execPopMenu_Params* Params = reinterpret_cast<UGFxData_MenuStack_TA_execPopMenu_Params*>(params);
@@ -191,7 +180,6 @@ void CustomQuickchat::Event_PopMenu(ActorWrapper caller, void* params, std::stri
 	if (Params->MenuName.ToString() == "MidGameMenuMovie")
 		gamePaused = false;
 }
-
 
 void CustomQuickchat::Event_LoadingScreenStart(std::string eventName)
 {
