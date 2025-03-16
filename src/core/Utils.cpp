@@ -8,7 +8,7 @@ namespace Format
 {
 	// ------------------------------------ custom --------------------------------------
 
-	auto ToFString(const std::string& str)
+	FString ToFString(const std::string& str)
 	{
 		wchar_t* p = new wchar_t[str.size() + 1];
 		for (std::string::size_type i = 0; i < str.size(); ++i)
@@ -59,7 +59,7 @@ namespace Format
 	}
 
 
-	auto ToFName(const std::string& str)
+	FName ToFName(const std::string& str)
 	{
 		wchar_t* wStr = ToWcharString(str);
 
