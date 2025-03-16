@@ -1,7 +1,13 @@
 #pragma once
-#include "pch.h"
 #include <random>
+#include <filesystem>
+#include <nlohmann/json.hpp>
+#include "logging.h"
+#include "SDK/GameDefines.hpp"
 
+using json = nlohmann::json;
+
+namespace fs = std::filesystem;
 
 namespace Format
 {
@@ -62,7 +68,6 @@ namespace Files
 	std::string CleanPathStr(const std::string& path);
 }
 
-
 namespace Process
 {
 	struct ProcessHandles
@@ -76,7 +81,6 @@ namespace Process
 		DWORD status_code = ERROR_SUCCESS;
 		ProcessHandles handles;
 	};
-
 
 	void close_handle(HANDLE h);
 	void terminate(HANDLE h);
