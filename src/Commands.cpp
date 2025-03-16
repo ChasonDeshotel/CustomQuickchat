@@ -1,7 +1,5 @@
 #include "pch.h"
-#include "CustomQuickchat.h"
-
-
+#include "main.h"
 
 void CustomQuickchat::cmd_toggleEnabled(std::vector<std::string> args)
 {

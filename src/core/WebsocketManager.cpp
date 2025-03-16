@@ -1,5 +1,4 @@
-#include "pch.h"
-#include "WebsocketManager.hpp"
+#include "WebsocketManager.h"
 
 
 WebsocketClientManager::WebsocketClientManager(std::function<void(json serverResponse)> response_callback, std::shared_ptr<bool> connecting_to_ws_server):

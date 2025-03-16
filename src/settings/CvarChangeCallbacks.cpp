@@ -1,7 +1,5 @@
 #include "pch.h"
-#include "CustomQuickchat.h"
-
-
+#include "main.h"
 
 void CustomQuickchat::changed_enabled(std::string cvarName, CVarWrapper updatedCvar)
 {

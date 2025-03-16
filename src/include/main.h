@@ -6,17 +6,16 @@
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 
-#include "Structs.hpp"
+#include "Structs.h"
 #include "Keys.h"
 #include "TextEffects.h"
 
-#include "resources/version.h"
+#include "version.h"
 
-#include "Macros.hpp"
-#include "Events.hpp"
-#include "Cvars.hpp"
-#include "gui/Tools.hpp"
-#include "Components/Includes.hpp"
+#include "Macros.h"
+#include "Events.h"
+#include "Cvars.h"
+#include "gui/Tools.h"
 
 
 #define USE_SPEECH_TO_TEXT

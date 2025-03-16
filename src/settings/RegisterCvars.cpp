@@ -1,7 +1,5 @@
 #include "pch.h"
-#include "CustomQuickchat.h"
-
-
+#include "main.h"
 
 CVarWrapper CustomQuickchat::RegisterCvar_Bool(const Cvars::CvarData& cvar, bool startingValue)
 {

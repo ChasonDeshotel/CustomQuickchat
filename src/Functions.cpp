@@ -1,8 +1,6 @@
 #include "pch.h"
-#include "CustomQuickchat.h"
+#include "main.h"
 #include <regex>
-
-
 
 void CustomQuickchat::PerformBindingAction(const Binding& binding)
 {

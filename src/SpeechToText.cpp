@@ -1,7 +1,5 @@
 #include "pch.h"
-#include "CustomQuickchat.h"
-
-
+#include "main.h"
 
 #if !defined(USE_SPEECH_TO_TEXT)
 
