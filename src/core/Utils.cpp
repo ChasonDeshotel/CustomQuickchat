@@ -1,10 +1,14 @@
 #include "Utils.h"
+#include <iostream>
+#include <fstream>
+#include <windows.h>
+#include "SDK/GameDefines.hpp"
 
 namespace Format
 {
 	// ------------------------------------ custom --------------------------------------
 
-	FString ToFString(const std::string& str)
+	auto ToFString(const std::string& str)
 	{
 		wchar_t* p = new wchar_t[str.size() + 1];
 		for (std::string::size_type i = 0; i < str.size(); ++i)
@@ -55,7 +59,7 @@ namespace Format
 	}
 
 
-	FName ToFName(const std::string& str)
+	auto ToFName(const std::string& str)
 	{
 		wchar_t* wStr = ToWcharString(str);
 
