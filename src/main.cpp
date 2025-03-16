@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "CustomQuickchat.h"
-
+#include "main.h"
 
 BAKKESMOD_PLUGIN(CustomQuickchat, "Custom Quickchat", plugin_version, PLUGINTYPE_FREEPLAY)
 
