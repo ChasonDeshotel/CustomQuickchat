@@ -1,6 +1,4 @@
-#ifndef MACROS_H
-#define MACROS_H
-
+#pragma once
 
 // convenient macros to avoid repetive typing  (should only be used within main plugin class)
 // ... 'args' param comes last to support multiple variables in capture list
@@ -65,5 +63,3 @@
 	} while (0)
 
 
-
-#endif
