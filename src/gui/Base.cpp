@@ -1,5 +1,8 @@
-﻿#include "pch.h"
-#include "gui/Base.h"
+﻿#include "Base.h"
+#include "imgui_bm/imgui.h"
+#include "bakkesmod/wrappers/cvarmanagerwrapper.h"
+
+extern std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
 std::string SettingsWindowBase::GetPluginName()
 {
