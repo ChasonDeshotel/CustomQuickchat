@@ -1,0 +1,147 @@
+cmake_minimum_required(VERSION 4.0)
+
+project(CustomQuickchat VERSION 1.0)
+
+message(STATUS "CMake is running the configuration script.")
+
+add_definitions(-DBOOST_EXCEPTION_DISABLE)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=2")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /D_ITERATOR_DEBUG_LEVEL=0")
+
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+file(GLOB_RECURSE SDK_SOURCES "${CMAKE_SOURCE_DIR}/lib/SDK/**/*.cpp")
+# Add warning disable flags for MSVC compiler specifically for these files
+if(MSVC)
+    # These disable specific template instantiation warnings
+    add_compile_options(/wd4244)  # Conversion from 'type1' to 'type2', possible loss of data
+    add_compile_options(/wd4267)  # Conversion from 'size_t' to 'type', possible loss of data
+    add_compile_options(/wd4018)  # Signed/unsigned mismatch
+    add_compile_options(/wd4389)  # Signed/unsigned mismatch
+    add_compile_options(/external:W0)  # Disable warnings from external headers
+    add_compile_options(/external:I "${CMAKE_SOURCE_DIR}/lib/SDK")  # Mark SDK as external
+
+endif()
+
+file(WRITE "${CMAKE_BINARY_DIR}/boost_exception_impl.cpp" 
+"#include <boost/throw_exception.hpp>
+#include <stdexcept>
+
+namespace boost {
+    void throw_exception(const std::exception& e) {
+        throw e; // Simple implementation
+    }
+    
+    void throw_exception(const std::exception& e, const boost::source_location& loc) {
+        throw e; // Simple implementation with source location
+    }
+}")
+
+# Explicitly listing source files for better build performance and caching consistency.
+add_library(CustomQuickchat SHARED
+    lib/SDK/GameDefines.cpp
+    lib/imgui_bm/imgui.cpp
+    lib/imgui_bm/imgui_demo.cpp
+    lib/imgui_bm/imgui_draw.cpp
+    lib/imgui_bm/imgui_widgets.cpp
+    lib/imgui_bm/imgui_rangeslider.cpp
+    lib/imgui_bm/imgui_searchablecombo.cpp
+    src/main.cpp
+    src/Commands.cpp
+    src/Events.cpp
+    src/Functions.cpp
+    src/SpeechToText.cpp
+    src/TextEffects.cpp
+    src/core/Instances.cpp
+    src/core/Utils.cpp
+    src/core/WebsocketManager.cpp
+    src/gui/Base.cpp
+    src/gui/Tools.cpp
+    src/settings/CvarChangeCallbacks.cpp
+    src/settings/RegisterCvars.cpp
+    src/settings/Settings.cpp
+    ${SDK_SOURCES}
+    ${CMAKE_BINARY_DIR}/boost_exception_impl.cpp
+)
+
+target_compile_options(CustomQuickchat PRIVATE /EHsc)
+
+set(BOOST_ROOT "C:/local/boost_1_87_0")
+set(CMAKE_PREFIX_PATH 
+    "${BOOST_ROOT}/tools/cmake/config"
+    "${BOOST_ROOT}/lib64-msvc-14.3/cmake"
+)
+# Add both the main config and module-specific paths to CMAKE_MODULE_PATH
+list(APPEND CMAKE_MODULE_PATH 
+    "${BOOST_ROOT}/tools/cmake/config"
+    "${BOOST_ROOT}/lib64-msvc-14.3/cmake"
+)
+# Debug output to verify paths
+message(STATUS "Looking for Boost in:")
+message(STATUS "  BOOST_ROOT: ${BOOST_ROOT}")
+message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+
+# Add Boost configuration - using static linking since you use /MT
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_RUNTIME ON)  # Matches your /MT flags
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_NO_SYSTEM_PATHS ON)
+set(Boost_NO_BOOST_CMAKE OFF)  # Try using Boost's CMake files
+
+set(Boost_NO_BOOST_CMAKE ON) 
+
+find_package(Boost 1.87.0 REQUIRED COMPONENTS
+    system
+    thread
+    exception
+    random
+)
+
+if(NOT Boost_FOUND)
+    message(FATAL_ERROR "Boost not found. Please check your Boost installation.")
+else()
+    message(STATUS "Boost Found:")
+    message(STATUS "  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+    message(STATUS "  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
+    message(STATUS "  Boost_LIBRARIES: ${Boost_LIBRARIES}")
+endif()
+
+target_include_directories(CustomQuickchat PRIVATE
+    ${Boost_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/lib
+    ${CMAKE_SOURCE_DIR}/resources
+
+    ${CMAKE_SOURCE_DIR}/lib/SDK
+    ${CMAKE_SOURCE_DIR}/lib/SDK/SDK_HEADERS
+
+    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann
+    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann/detail
+    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann/thirdparty/hedley
+    ${WEBSOCKETPP_INCLUDE_DIRS}
+    ${BAKKESMOD_SDK_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/lib/imgui_bm
+    ${CMAKE_SOURCE_DIR}/src/include
+    ${CMAKE_SOURCE_DIR}/src/include/core
+    ${CMAKE_SOURCE_DIR}/src/include/gui
+
+    ${CMAKE_SOURCE_DIR}/lib/json/include
+    ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/include
+    ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/include/bakkesmod/wrappers
+
+    ${CMAKE_SOURCE_DIR}/lib/websocketpp
+)
+
+target_link_libraries(CustomQuickchat PRIVATE
+    ${Boost_LIBRARIES}
+    ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/lib/pluginsdk.lib
+)
+
+# Use more selective export handling instead of exporting all symbols
+# This reduces the multiple export warnings
+set_target_properties(CustomQuickchat PROPERTIES
+    WINDOWS_EXPORT_ALL_SYMBOLS OFF
+)
