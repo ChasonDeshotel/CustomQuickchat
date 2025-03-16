@@ -4,3 +4,10 @@
 [submodule "lib/imgui"]
 	path = lib/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "lib/websocketpp"]
+	path = lib/websocketpp
+	url = https://github.com/zaphoyd/websocketpp.git
+#	commit = a11fa6fe4937ca251753e90b1836a68bf57768a9
+[submodule "lib/BakkesModSDK"]
+	path = lib/BakkesModSDK
+	url = https://github.com/bakkesmodorg/BakkesModSDK.git
