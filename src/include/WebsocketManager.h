@@ -2,10 +2,10 @@
 
 #include <websocketpp/config/asio_no_tls_client.hpp>
 #include <websocketpp/client.hpp>
+#include <nlohmann/json.hpp>
 
-
+using json = nlohmann::json;
 using websocketpp::connection_hdl;
-
 
 class WebsocketClientManager
 {
@@ -13,6 +13,7 @@ class WebsocketClientManager
 
 public:
 	WebsocketClientManager(std::function<void(json serverResponse)> response_callback, std::shared_ptr<bool> connecting_to_ws_server);
+	~WebsocketClientManager() {};
 
 	bool StartClient(int port);				// Connect to the WebSocket server
 	bool StopClient();						// Disconnect from the WebSocket server
