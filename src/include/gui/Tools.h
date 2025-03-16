@@ -1,7 +1,6 @@
 #pragma once
-#include "pch.h"
-#include "Components/Components/Utils.hpp"
-
+#include "Utils.h"
+#include "imgui_bm/imgui.h"
 
 namespace GUI
 {
@@ -167,7 +166,8 @@ namespace GUI
 		{
 			if (!image || !image->IsLoadedForImGui()) return;
 
-			if (auto img_tex = image->GetImGuiTex())
+			ImTextureID img_tex = reinterpret_cast<ImTextureID>(image->GetImGuiTex());
+			if (img_tex)
 			{
 				if (size_is_zero())
 				{
