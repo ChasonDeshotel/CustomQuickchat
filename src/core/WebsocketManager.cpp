@@ -1,5 +1,5 @@
 #include "WebsocketManager.h"
-
+#include "logging.h"
 
 WebsocketClientManager::WebsocketClientManager(std::function<void(json serverResponse)> response_callback, std::shared_ptr<bool> connecting_to_ws_server):
 	handle_server_response(response_callback),
