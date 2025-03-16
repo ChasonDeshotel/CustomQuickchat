@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 4.0)
 
 project(CustomQuickchat VERSION 1.0)
 
-message(STATUS "CMake is running the configuration script.")
+set(CMAKE_GENERATOR_PLATFORM x64)
+add_definitions(-D_ARCHITECTURE_X64)
+set(CMAKE_SYSTEM_NAME Windows)
+set(CMAKE_SYSTEM_PROCESSOR x86_64) 
 
 add_definitions(-DBOOST_EXCEPTION_DISABLE)
 
