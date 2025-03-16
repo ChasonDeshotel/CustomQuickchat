@@ -1,6 +1,7 @@
 #include "pch.h"
-#include "imgui_rangeslider.h"
+#include "imgui.h"
 #include "imgui_internal.h"
+#include "RangeSlider.h"
 #include <string>
 // https://github.com/ocornut/imgui/issues/76
 // Inspired by: https://github.com/wasikuss/imgui/commit/a50515ace6d9a62ebcd69817f1da927d31c39bb1

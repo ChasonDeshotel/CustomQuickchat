@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "imgui_searchablecombo.h"
+#include "SearchableCombo.h"
 #include "imgui_internal.h"
 
 static float CalcMaxPopupHeightFromItemCount(int items_count)
