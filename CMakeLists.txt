@@ -2,24 +2,22 @@ cmake_minimum_required(VERSION 3.20)
 
 project(CustomQuickchat VERSION 1.0)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR x86_64) 
 
 add_definitions(-DBOOST_EXCEPTION_DISABLE)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=2")
-#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /D_ITERATOR_DEBUG_LEVEL=0")
-#
-
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")  # `/MD`
 add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
 
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")  # `/MD`
+
 file(GLOB_RECURSE SDK_SOURCES "${CMAKE_SOURCE_DIR}/lib/SDK/**/*.cpp")
-# Add warning disable flags for MSVC compiler specifically for these files
 if(MSVC)
-    # These disable specific template instantiation warnings
+    # fix fatal error C1128: number of sections exceeded object file format limit: compile with /bigobj
+    add_compile_options(/bigobj)
+
+    # These disable specific template instantiation warnings for SDK files
     add_compile_options(/wd4244)  # Conversion from 'type1' to 'type2', possible loss of data
     add_compile_options(/wd4267)  # Conversion from 'size_t' to 'type', possible loss of data
     add_compile_options(/wd4018)  # Signed/unsigned mismatch
@@ -28,20 +26,6 @@ if(MSVC)
     add_compile_options(/external:I "${CMAKE_SOURCE_DIR}/lib/SDK")  # Mark SDK as external
 
 endif()
-
-file(WRITE "${CMAKE_BINARY_DIR}/boost_exception_impl.cpp" 
-"#include <boost/throw_exception.hpp>
-#include <stdexcept>
-
-namespace boost {
-    void throw_exception(const std::exception& e) {
-        throw e; // Simple implementation
-    }
-    
-    void throw_exception(const std::exception& e, const boost::source_location& loc) {
-        throw e; // Simple implementation with source location
-    }
-}")
 
 # Explicitly listing source files for better build performance and caching consistency.
 add_library(CustomQuickchat SHARED
@@ -67,12 +51,7 @@ add_library(CustomQuickchat SHARED
     src/settings/RegisterCvars.cpp
     src/settings/Settings.cpp
     ${SDK_SOURCES}
-    ${CMAKE_BINARY_DIR}/boost_exception_impl.cpp
 )
-
-#target_compile_options(CustomQuickchat PRIVATE /EHsc)
-
-
 
 # Boost Config (Forces Dynamic Linking)
 set(Boost_USE_STATIC_LIBS OFF)  # Use shared libraries (.dll)
@@ -90,7 +69,6 @@ message(STATUS "Looking for Boost in:")
 message(STATUS "  BOOST_ROOT: ${BOOST_ROOT}")
 message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-
 
 find_package(Boost 1.87.0 REQUIRED COMPONENTS
     system
