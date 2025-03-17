@@ -53,16 +53,15 @@ void CustomQuickchat::RenderSettings()
 
 			GUI::Spacing(8);
 
-			// open bindings window button
-			if (ImGui::Button("Open Bindings Menu"))
+			if (ImGui::Button("Open Bindings Menu") && !isWindowOpen_)
 			{
 				GAME_THREAD_EXECUTE(
 					cvarManager->executeCommand("togglemenu " + GetMenuName());
 				);
 			}
 		}
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
 
 
 	// footer
@@ -433,24 +432,27 @@ void CustomQuickchat::SpeechToTextSettings()
 
 void CustomQuickchat::RenderWindow()
 {
-	ImGui::BeginTabBar("##Tabs");
+	if (ImGui::BeginTabBar("##Tabs")) {
 
-	if (ImGui::BeginTabItem("Bindings"))
-	{
-		RenderAllBindings();
-		ImGui::SameLine();
-		RenderBindingDetails();
-		
-		ImGui::EndTabItem();
-	}
+		if (ImGui::BeginTabItem("Bindings"))
+		{
+			RenderAllBindings();
+			ImGui::SameLine();
+			RenderBindingDetails();
+			
+			ImGui::EndTabItem();
+		}
 
-	if (ImGui::BeginTabItem("Word Variations"))
-	{
-		RenderAllVariationListNames();
-		ImGui::SameLine();
-		RenderVariationListDetails();
-		
-		ImGui::EndTabItem();
+		if (ImGui::BeginTabItem("Word Variations"))
+		{
+			RenderAllVariationListNames();
+			ImGui::SameLine();
+			RenderVariationListDetails();
+			
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
 	}
 }
 
@@ -479,8 +481,8 @@ void CustomQuickchat::RenderAllBindings()
 
 			selectedBindingIndex = Bindings.empty() ? 0 : Bindings.size() - 1;
 		}
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
 }
 
 
@@ -488,12 +490,10 @@ void CustomQuickchat::RenderBindingDetails()
 {
 	if (ImGui::BeginChild("##BindingsView", ImVec2(0, 0), true))
 	{
-		if (Bindings.empty())
+		if (Bindings.empty() || selectedBindingIndex < 0 || selectedBindingIndex >= Bindings.size())
 		{
 			GUI::Spacing(4);
-
 			ImGui::TextUnformatted("add a binding...");
-
 			ImGui::EndChild();
 			return;
 		}
@@ -504,28 +504,24 @@ void CustomQuickchat::RenderBindingDetails()
 		ImGui::TextUnformatted(selectedBinding.chat.c_str());
 		ImGui::Separator();
 
-		// --------------------- ImGui::BeginChild sizes ------------------------
-
 		ImVec2 parentSize = ImGui::GetContentRegionAvail();
 
 		ImVec2 chatDetailsSize =		ImVec2(0, parentSize.y * 0.25f - 2);	// 25% of parent height
 		ImVec2 triggerDetailsSize =		ImVec2(0, parentSize.y * 0.75f - 2);	// 75% of parent height	
 
-		// ----------------------------------------------------------------------
-
 		if (ImGui::BeginChild("##ChatDetails", chatDetailsSize, true))
 		{
 			RenderChatDetails(selectedBinding);
+			ImGui::EndChild();
 		}
-		ImGui::EndChild();
 
 		if (ImGui::BeginChild("##BindingTriggerDetails", triggerDetailsSize, true))
 		{
 			RenderBindingTriggerDetails(selectedBinding);
+			ImGui::EndChild();
 		}
 		ImGui::EndChild();
 	}
-	ImGui::EndChild();
 }
 
 
@@ -536,11 +532,10 @@ void CustomQuickchat::RenderChatDetails(Binding& selectedBinding)
 	GUI::Spacing(4);
 
 	// chat
-//	ImGui::InputTextWithHint("chat", "let me cook", &selectedBinding.chat);
+	ImGui::InputTextWithHint("chat", "let me cook", &selectedBinding.chat);
 
 	GUI::Spacing(2);
 
-	// -------------------------- chat mode dropdown ---------------------------
 	if (ImGui::BeginCombo("chat mode", possibleChatModes[static_cast<int>(selectedBinding.chatMode)].c_str()))
 	{
 		for (int i = 0; i < possibleChatModes.size(); i++)
@@ -567,7 +562,6 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 
 	GUI::Spacing(4);
 
-	// ------------------------- binding type dropdown -------------------------
 	if (ImGui::BeginCombo("binding type", possibleBindingTypes[static_cast<int>(selectedBinding.bindingType)].c_str()))
 	{
 		for (int i = 0; i < possibleBindingTypes.size(); i++)
@@ -595,7 +589,6 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 	// buttons
 	for (int i = 0; i < selectedBinding.buttons.size(); i++)
 	{
-		// ---------------------------- button dropdown ----------------------------
 		std::string buttonStr = selectedBinding.buttons[i];
 		std::string label = "Button " + std::to_string(i + 1);
 
@@ -603,7 +596,6 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 
 		if (ImGui::BeginSearchableCombo(label.c_str(), buttonStr.c_str(), searchBuffer, sizeof(searchBuffer), "search..."))
 		{
-			// convert search text to lower
 			std::string searchQuery = Format::ToLower(searchBuffer);
 
 			for (int j = 0; j < possibleKeyNames.size(); j++)
@@ -634,12 +626,10 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 
 			ImGui::EndCombo();
 		}
-		// -------------------------------------------------------------------------
 
 
 		ImGui::SameLine();
 
-		// remove button
 		std::string removeLine = "Remove##" + std::to_string(i + 1);
 		if (ImGui::Button(removeLine.c_str()))
 			selectedBinding.buttons.erase(selectedBinding.buttons.begin() + i);
@@ -649,7 +639,6 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 
 	if (!(selectedBinding.bindingType == EBindingType::Sequence && selectedBinding.buttons.size() >= 2))
 	{
-		// add new button
 		if (ImGui::Button("Add New Button"))
 			selectedBinding.buttons.push_back("");
 	}
@@ -720,8 +709,8 @@ void CustomQuickchat::RenderAllVariationListNames()
 
 			selectedVariationIndex = Variations.empty() ? 0 : Variations.size() - 1;
 		}
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
 }
 
 
@@ -797,6 +786,6 @@ void CustomQuickchat::RenderVariationListDetails()
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
 		}
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
 }
