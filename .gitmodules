@@ -11,3 +11,6 @@
 [submodule "lib/BakkesModSDK"]
 	path = lib/BakkesModSDK
 	url = https://github.com/bakkesmodorg/BakkesModSDK.git
+[submodule "lib/SDK"]
+	path = lib/SDK
+	url = https://github.com/ChasonDeshotel/RLSDK

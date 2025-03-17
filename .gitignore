@@ -1,9 +1,6 @@
 .vs
 .vscode
 build
-plugins
-vcpkg_installed
-lib/SDK
 
 ## vim
 # Swap
