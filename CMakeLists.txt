@@ -4,7 +4,6 @@ project(CustomQuickchat VERSION 1.0)
 
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR x86_64) 
-set(CMAKE_GENERATOR_PLATFORM x64)
 
 add_definitions(-DBOOST_EXCEPTION_DISABLE)
 
