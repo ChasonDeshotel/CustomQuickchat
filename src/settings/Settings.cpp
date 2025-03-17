@@ -47,7 +47,7 @@ void CustomQuickchat::RenderSettings()
 			if (ImGui::Button("Send a test chat"))
 			{
 				GAME_THREAD_EXECUTE(
-					Instances.SendChat("this is a test...", EChatChannel::EChatChannel_Match);
+					Instances.SendChat("this is a test...", EChatChannel::EChatChannel_Match)
 				);
 			}
 
@@ -56,7 +56,7 @@ void CustomQuickchat::RenderSettings()
 			if (ImGui::Button("Open Bindings Menu") && !isWindowOpen_)
 			{
 				GAME_THREAD_EXECUTE(
-					cvarManager->executeCommand("togglemenu " + GetMenuName());
+					cvarManager->executeCommand("togglemenu " + GetMenuName())
 				);
 			}
 		}
@@ -274,7 +274,7 @@ void CustomQuickchat::SpeechToTextSettings()
 			};
 
 			GAME_THREAD_EXECUTE_CAPTURE(
-				start_ws_connection();
+				start_ws_connection()
 			, start_ws_connection);
 		}
 	}
@@ -302,7 +302,7 @@ void CustomQuickchat::SpeechToTextSettings()
 			};
 
 			GAME_THREAD_EXECUTE_CAPTURE(
-				stop_ws_connection();
+				stop_ws_connection()
 			, stop_ws_connection);
 		}
 	}
@@ -345,7 +345,7 @@ void CustomQuickchat::SpeechToTextSettings()
 		if (ImGui::Button("Calibrate Microphone"))
 		{
 			GAME_THREAD_EXECUTE(
-				CalibrateMicrophone();
+				CalibrateMicrophone()
 			);
 		}
 		if (ImGui::IsItemHovered())
@@ -392,7 +392,7 @@ void CustomQuickchat::SpeechToTextSettings()
 		if (ImGui::Button("Test"))
 		{
 			GAME_THREAD_EXECUTE_CAPTURE(
-				Instances.SpawnNotification("Terry A Davis", "You can see 'em if you're driving. You just run them over. That's what you do.", notificationDuration);
+				Instances.SpawnNotification("Terry A Davis", "You can see 'em if you're driving. You just run them over. That's what you do.", notificationDuration)
 			, notificationDuration);
 		}
 	}
@@ -660,7 +660,7 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 				apply_all_custom_qc_labels_to_ui(chat);
 			}
 
-			Instances.SpawnNotification("custom quickchat", "Bindings saved!", 3);
+			Instances.SpawnNotification("custom quickchat", "Bindings saved!", 3)
 		);
 	}
 
@@ -765,7 +765,7 @@ void CustomQuickchat::RenderVariationListDetails()
 			WriteVariationsToJson();
 			
 			GAME_THREAD_EXECUTE(
-				Instances.SpawnNotification("custom quickchat", "Variations saved!", 3);
+				Instances.SpawnNotification("custom quickchat", "Variations saved!", 3)
 			);
 		}
 
