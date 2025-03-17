@@ -718,17 +718,15 @@ void CustomQuickchat::RenderVariationListDetails()
 {
 	if (ImGui::BeginChild("##VariationView", ImVec2(0, 0), true))
 	{
-		if (Variations.empty())
+		if (Variations.empty() || selectedVariationIndex < 0 || selectedVariationIndex >= Variations.size())
 		{
 			GUI::Spacing(4);
-
 			ImGui::TextUnformatted("add a word variation list...");
-
 			ImGui::EndChild();
 			return;
 		}
 
-		VariationList selectedVariation = Variations[selectedVariationIndex];
+		VariationList& selectedVariation = Variations[selectedVariationIndex];
 
 		// binding display section title
 		ImGui::TextUnformatted(selectedVariation.listName.c_str());
@@ -740,22 +738,24 @@ void CustomQuickchat::RenderVariationListDetails()
 		char variationListName[256] = {};
 
 		std::strncpy(variationListName, selectedVariation.listName.c_str(), sizeof(variationListName) - 1);
+		variationListName[sizeof(variationListName) - 1] = '\0';  // Ensure null termination
 
 		if (ImGui::InputTextWithHint("list name", "compliment", variationListName, sizeof(variationListName))) {
 			// If user modifies the input, update the actual string
-			Variations[selectedVariationIndex].listName = variationListName;
+			selectedVariation.listName = variationListName;
 		}
 
 		GUI::Spacing(2);
 
 		// variations (raw text)
-		std::string variationRawListStr = selectedVariation.unparsedString;
-
 		char inputBuffer[256] = {};
-		std::strncpy(inputBuffer, variationRawListStr.c_str(), sizeof(inputBuffer) - 1);
+		std::strncpy(inputBuffer, selectedVariation.unparsedString.c_str(), sizeof(inputBuffer) - 1);
+		inputBuffer[sizeof(inputBuffer) - 1] = '\0';  // Ensure null termination
 
-		ImGui::InputTextMultiline("variations", inputBuffer, sizeof(inputBuffer), ImVec2(0,350));
-		Variations[selectedVariationIndex].unparsedString = variationRawListStr;
+		if (ImGui::InputTextMultiline("variations", inputBuffer, sizeof(inputBuffer), ImVec2(0,350))) {
+			// Update the string with user's input
+			selectedVariation.unparsedString = inputBuffer;
+		}
 
 		GUI::Spacing(4);
 
