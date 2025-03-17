@@ -1,8 +1,8 @@
 #pragma once
-#include "Instances.hpp"
-#include "Events.hpp"
-#include "Cvars.hpp"
-#include "Structs.hpp"
+#include "Instances.h"
+#include "Events.h"
+#include "Cvars.h"
+#include "Structs.h"
 
 
 class LobbyInfoComponent
@@ -50,7 +50,5 @@ public:
 	void clear_stored_ranks();
 	static inline float get_skill_rating(float mu);
 };
-
-
 
 extern class LobbyInfoComponent LobbyInfo;

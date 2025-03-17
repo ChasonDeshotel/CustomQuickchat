@@ -25,14 +25,17 @@ namespace GUI
 	}
 
 
-	void open_link(const wchar_t* url)
+	void open_link(const char* url)
 	{
-		ShellExecuteW(NULL, L"open", Format::ToWideString(url).c_str(), NULL, NULL, SW_SHOWNORMAL);
+		// FIXME
+		//const wchar_t* w_url = Format::ToWideString(url);
+		//ShellExecuteW(NULL, L"open", w_url, NULL, NULL, SW_SHOWNORMAL);
+		//delete[] w_url;
 	}
 
 	void open_link(const wchar_t* url)
 	{
-		ShellExecuteW(NULL, L"open", url, NULL, NULL, SW_SHOWNORMAL);
+		//ShellExecuteW(NULL, L"open", url, NULL, NULL, SW_SHOWNORMAL);
 	}
 
 	// old bummy shit

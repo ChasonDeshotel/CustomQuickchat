@@ -1,5 +1,7 @@
-#include "main.h"
 #include <regex>
+#include "main.h"
+#include "Structs.h"
+#include "LobbyInfo.h"
 
 void CustomQuickchat::PerformBindingAction(const Binding& binding)
 {
@@ -545,9 +547,11 @@ void CustomQuickchat::GetFilePaths()
     bindingsFilePath      = customQuickchatFolder / "Bindings.json";
     variationsFilePath    = customQuickchatFolder / "Variations.json";
 
+    #if defined(USE_SPEECH_TO_TEXT)
     speechToTextJsonPath     = customQuickchatFolder / "SpeechToText.json";
     speechToTextExePath      = customQuickchatFolder / "SpeechToText" / "SpeechToText.exe";
     speechToTextErrorLogPath = customQuickchatFolder / "SpeechToText" / "ErrorLog.txt";
+    #endif
     
     lobbyInfoFolder        = bmDataFolderFilePath / "Lobby Info";
     lobbyInfoChatsFilePath = lobbyInfoFolder      / "Chats.json";
@@ -564,17 +568,16 @@ void CustomQuickchat::InitStuffOnLoad()
     ReadDataFromJson();
     gui_footer_init();
 
-#ifdef USE_SPEECH_TO_TEXT
+    #ifdef USE_SPEECH_TO_TEXT
     ClearSttErrorLog();
     start_websocket_stuff(true);
-#endif
+    #endif
 
     InitKeyStates();
     PreventGameFreeze();
 
     inGameEvent = gameWrapper->IsInFreeplay() || gameWrapper->IsInGame() || gameWrapper->IsInOnlineGame();
 }
-
 
 void CustomQuickchat::determine_quickchat_labels(UGFxData_Controls_TA* controls, bool log)
 {

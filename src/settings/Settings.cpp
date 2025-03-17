@@ -1,6 +1,7 @@
 #include "main.h"
 #include "imgui_bm/imgui.h"
 #include "imgui_bm/imgui_searchablecombo.h"
+#include "LobbyInfo.h"
 
 void CustomQuickchat::RenderSettings()
 {
@@ -178,8 +179,11 @@ void CustomQuickchat::ChatTimeoutSettings()
 		GUI::Spacing(2);
 
 		std::string customChatTimeoutMsg = customChatTimeoutMsg_cvar.getStringValue();
-		if (ImGui::InputText("Chat timeout message", &customChatTimeoutMsg))
-		{
+		char inputBuffer[256] = {};
+		std::strncpy(inputBuffer, customChatTimeoutMsg.c_str(), sizeof(inputBuffer) - 1);
+
+		if (ImGui::InputText("Chat timeout message", inputBuffer, sizeof(inputBuffer))) {
+			//customChatTimeoutMsg = inputBuffer;
 			customChatTimeoutMsg_cvar.setValue(customChatTimeoutMsg);
 		}
 		if (ImGui::IsItemHovered())
@@ -602,7 +606,8 @@ void CustomQuickchat::RenderChatDetails(Binding& selectedBinding)
 	GUI::Spacing(4);
 
 	// chat
-	ImGui::InputTextWithHint("chat", "let me cook", &selectedBinding.chat);
+    // FIXME
+//	ImGui::InputTextWithHint("chat", "let me cook", &selectedBinding.chat);
 
 	GUI::Spacing(2);
 
@@ -665,7 +670,7 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 		std::string buttonStr = selectedBinding.buttons[i];
 		std::string label = "Button " + std::to_string(i + 1);
 
-		char searchBuffer[128] = "";  // text buffer for search input
+		char searchBuffer[128] = {};  // text buffer for search input
 
 		if (ImGui::BeginSearchableCombo(label.c_str(), buttonStr.c_str(), searchBuffer, sizeof(searchBuffer), "search..."))
 		{
@@ -680,7 +685,7 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 				ImGui::PushID(j);
 
 				// only render option if there's text in search box & it matches the key name
-				if (searchBuffer != "")
+				if (searchBuffer[0] == '\0')
 				{
 					if (keyNameStrLower.find(searchQuery) != std::string::npos)
 					{
@@ -813,16 +818,23 @@ void CustomQuickchat::RenderVariationListDetails()
 
 		GUI::Spacing(6);
 		
-		// variation list name
-		std::string variationListName = selectedVariation.listName;
-		ImGui::InputTextWithHint("list name", "compliment", &variationListName);
-		Variations[selectedVariationIndex].listName = variationListName;
+		char variationListName[256] = {};
+
+		std::strncpy(variationListName, selectedVariation.listName.c_str(), sizeof(variationListName) - 1);
+
+		if (ImGui::InputTextWithHint("list name", "compliment", variationListName, sizeof(variationListName))) {
+			// If user modifies the input, update the actual string
+			Variations[selectedVariationIndex].listName = variationListName;
+		}
 
 		GUI::Spacing(2);
 
 		// variations (raw text)
 		std::string variationRawListStr = selectedVariation.unparsedString;
-		ImGui::InputTextMultiline("variations", &variationRawListStr, ImVec2(0,350));
+		char inputBuffer[256] = {};
+		std::strncpy(inputBuffer, variationRawListStr.c_str(), sizeof(inputBuffer) - 1);
+
+		ImGui::InputTextMultiline("variations", inputBuffer, sizeof(inputBuffer), ImVec2(0,350));
 		Variations[selectedVariationIndex].unparsedString = variationRawListStr;
 
 		GUI::Spacing(4);

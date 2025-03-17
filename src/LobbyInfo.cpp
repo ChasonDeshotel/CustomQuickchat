@@ -1,10 +1,9 @@
 #include "pch.h"
-#include "LobbyInfo.hpp"
+#include "LobbyInfo.h"
 
-
+// fixme put in header
 LobbyInfoComponent::LobbyInfoComponent() { }
 LobbyInfoComponent::~LobbyInfoComponent() { }
-
 
 void LobbyInfoComponent::Initialize(std::shared_ptr<GameWrapper> gw)
 {

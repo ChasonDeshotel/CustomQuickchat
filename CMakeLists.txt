@@ -42,6 +42,7 @@ add_library(CustomQuickchat SHARED
     src/Functions.cpp
     src/SpeechToText.cpp
     src/TextEffects.cpp
+    src/LobbyInfo.cpp
     src/core/Instances.cpp
     src/core/Utils.cpp
     src/core/WebsocketManager.cpp

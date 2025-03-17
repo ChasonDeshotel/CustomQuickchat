@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include <regex>
-#include "Components/Components/Instances.hpp"
+#include "Instances.h"
 
 // ------------------------------ for imgui -----------------------------------
 
