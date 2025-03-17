@@ -2,16 +2,21 @@
 
 void CustomQuickchat::Event_KeyPressed(ActorWrapper caller, void* params, std::string eventName)
 {
-	if (gamePaused || !inGameEvent) return;
+	// TODO: check if any binding for that key and exit early
+
+	if (gamePaused || !inGameEvent)
+		return;
 
 	if (matchEnded)
 	{
 		auto disablePostMatchQuickchats_cvar = GetCvar(Cvars::disablePostMatchQuickchats);
-		if (!disablePostMatchQuickchats_cvar || disablePostMatchQuickchats_cvar.getBoolValue()) return;
+		if (!disablePostMatchQuickchats_cvar || disablePostMatchQuickchats_cvar.getBoolValue()) 
+			return;
 	}
 
 	UGameViewportClient_TA_execHandleKeyPress_Params* keyPressData = reinterpret_cast<UGameViewportClient_TA_execHandleKeyPress_Params*>(params);
-	if (!keyPressData) return;
+	if (!keyPressData)
+		return;
 
 	std::string keyName = keyPressData->Key.ToString();
 	EInputEvent keyEventType = static_cast<EInputEvent>(keyPressData->EventType);
@@ -28,21 +33,22 @@ void CustomQuickchat::Event_KeyPressed(ActorWrapper caller, void* params, std::s
 
 		// get min binding delay
 		auto minBindingDelay_cvar = GetCvar(Cvars::minBindingDelay);
-		if (!minBindingDelay_cvar) return;
+		if (!minBindingDelay_cvar)
+			return;
 		double minBindingDelay_raw = minBindingDelay_cvar.getFloatValue();
 		auto minBindingDelay = std::chrono::duration<double>(minBindingDelay_raw);
 
 		// get max sequence time window
 		auto sequenceTimeWindow_cvar = GetCvar(Cvars::sequenceTimeWindow);
-		if (!sequenceTimeWindow_cvar) return;
+		if (!sequenceTimeWindow_cvar)
+			return;
 		double sequenceTimeWindow_raw = sequenceTimeWindow_cvar.getFloatValue();
 		auto sequenceTimeWindow = std::chrono::duration<double>(sequenceTimeWindow_raw);
-
 
 		// check if any bindings triggered
 		for (Binding& binding : Bindings)
 		{
-			if (binding.ShouldBeTriggered(buttonPressEvent, keyStates, lastBindingActivated, epochTime, minBindingDelay, sequenceTimeWindow))
+			if (binding.enabled && binding.ShouldBeTriggered(buttonPressEvent, keyStates, lastBindingActivated, epochTime, minBindingDelay, sequenceTimeWindow))
 			{
 				// reset/update data for all bindings
 				lastBindingActivated = std::chrono::steady_clock::now();
@@ -61,15 +67,16 @@ void CustomQuickchat::Event_KeyPressed(ActorWrapper caller, void* params, std::s
 void CustomQuickchat::Event_GFxHUD_TA_ChatPreset(ActorWrapper caller, void* params, std::string eventName)
 {
 	AGFxHUD_TA_execChatPreset_Params* Params = reinterpret_cast<AGFxHUD_TA_execChatPreset_Params*>(params);
-	if (!Params) return;
+	if (!Params)
+		return;
 
 	// get cvars
 	auto enabled_cvar =						GetCvar(Cvars::enabled);
 	auto overrideDefaultQuickchats_cvar =	GetCvar(Cvars::overrideDefaultQuickchats);
 	auto blockDefaultQuickchats_cvar =		GetCvar(Cvars::blockDefaultQuickchats);
 
-	if (!enabled_cvar || !overrideDefaultQuickchats_cvar || !blockDefaultQuickchats_cvar) return;	// prolly unnecessary, idk
-	if (!enabled_cvar.getBoolValue()) return;
+	if (!enabled_cvar || !enabled_cvar.getBoolValue())
+		return;
 
 	// block default quickchat if necessary
 	if (overrideDefaultQuickchats_cvar.getBoolValue())
@@ -134,9 +141,9 @@ void CustomQuickchat::Event_ApplyChatSpamFilter(ActorWrapper caller, void* param
 	bool disableChatTimeout = disableChatTimeout_cvar.getBoolValue();
 
 	// effectively disables chat timeout (in freeplay)
-	pc->ChatSpam.MaxValue =	disableChatTimeout ? 420 : 4;		// default 4
-	pc->ChatSpam.DecayRate = disableChatTimeout ? 69 : 1;		// default 1
-	pc->ChatSpam.RiseAmount = disableChatTimeout ? 1 : 1.2;		// default 1.2
+	pc->ChatSpam.MaxValue   = disableChatTimeout ? 420 : 4;    // default 4
+	pc->ChatSpam.DecayRate  = disableChatTimeout ? 69  : 1;    // default 1
+	pc->ChatSpam.RiseAmount = disableChatTimeout ? 1   : 1.2;  // default 1.2
 }
 
 void CustomQuickchat::Event_NotifyChatDisabled(ActorWrapper caller, void* params, std::string eventName)
@@ -152,6 +159,9 @@ void CustomQuickchat::Event_NotifyChatDisabled(ActorWrapper caller, void* params
 // remove chat timestamps
 void CustomQuickchat::Event_OnChatMessage(ActorWrapper caller, void* params, std::string eventName)
 {
+    // TODO: replace cvar with variables
+    // this happens in the event loop = optimize for speed
+    // probably applies to other functions as well
 	auto removeTimestamps_cvar = GetCvar(Cvars::removeTimestamps);
 	if (!removeTimestamps_cvar || !removeTimestamps_cvar.getBoolValue()) return;
 

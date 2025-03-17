@@ -64,6 +64,24 @@ void CustomQuickchat::cmd_list_custom_chat_labels(std::vector<std::string> args)
 	}
 }
 
+void CustomQuickchat::cmd_list_playlist_info(std::vector<std::string> args)
+{
+	UOnlineGamePlaylists_X* playlists = Instances.GetInstanceOf<UOnlineGamePlaylists_X>();
+	if (!playlists) return;
+
+	LOG("DownloadedPlaylists size: {}", playlists->DownloadedPlaylists.size());
+
+	LOG("--------------------------------------");
+	LOG("ID --> Internal name --> Display name");
+	LOG("--------------------------------------");
+	for (const auto& p : playlists->DownloadedPlaylists)
+	{
+		if (!p) continue;
+
+		LOG("{} --> {} --> {}", p->PlaylistId, playlists->IdToName(p->PlaylistId).ToString(), p->GetLocalizedName().ToString());
+	}
+}
+
 void CustomQuickchat::cmd_exitToMainMenu(std::vector<std::string> args)
 {
 	auto shell = Instances.GetInstanceOf<UGFxShell_X>();

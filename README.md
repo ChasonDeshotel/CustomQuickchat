@@ -27,7 +27,7 @@ Find the latest version in [Releases](https://github.com/smallest-cock/CustomQui
 
 ## 📖 Usage
 
-Check out the [Settings guide](./docs/Settings.md) for info about troubleshooting & special features
+Check out the [Settings](./docs/Settings.md) page for info about special keywords, troubleshooting, and more
    
 ## 💻 Commands
 You can run these commands in the bakkesmod console window (F6), or bind them to a key
@@ -72,7 +72,7 @@ Brief steps:
 
 
 ### python script
-To compile `speech-to-text-server.pyw` into an executable, I use [auto-py-to-exe](https://pypi.org/project/auto-py-to-exe/) (which uses [py2exe](https://pypi.org/project/py2exe/) internally) with the "One Directory" option (`--onedir` in py2exe)
+To compile `speech-to-text-server.pyw` into an executable, I use [auto-py-to-exe](https://github.com/brentvollebregt/auto-py-to-exe) (which uses [pyinstaller](https://github.com/pyinstaller/pyinstaller) internally) with the "One Directory" option (`--onedir` in pyinstaller)
 
 For the plugin to recognize the python program, the executable needs to be named `SpeechToText.exe` and should be located in the `bakkesmod\CustomQuickchat\SpeechToText` folder. (You can create the folder if it doesn't already exist)
 

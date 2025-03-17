@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Tools.h"
-
 #include "imgui_bm/imgui.h"
-
 
 namespace GUI
 {
@@ -27,20 +25,15 @@ namespace GUI
 	}
 
 
-	void open_link(const char* url)
+	void open_link(const wchar_t* url)
 	{
-		const wchar_t* w_url = Format::ToWcharString(url);
-
-		ShellExecuteW(NULL, L"open", w_url, NULL, NULL, SW_SHOWNORMAL);
-
-		delete[] w_url;
+		ShellExecuteW(NULL, L"open", Format::ToWideString(url).c_str(), NULL, NULL, SW_SHOWNORMAL);
 	}
 
 	void open_link(const wchar_t* url)
 	{
 		ShellExecuteW(NULL, L"open", url, NULL, NULL, SW_SHOWNORMAL);
 	}
-
 
 	// old bummy shit
 	void ClickableLink(const char* label, const char* url, const ImVec4& textColor, ImVec2 size)
@@ -57,15 +50,15 @@ namespace GUI
 		{
 			open_link(url);
 		}
+		
+		ImGui::PopStyleColor();
+
 		if (ImGui::IsItemHovered())
 		{
 			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 			ImGui::SetTooltip(url);
 		}
-
-		ImGui::PopStyleColor();
 	}
-
 
 	void Spacing(int amount)
 	{
@@ -86,7 +79,6 @@ namespace GUI
 		ImGui::SetCursorPosX(horizontalSpacingPx);
 	}
 
-
 	void SettingsHeader(const char* id, const char* pluginVersion, const ImVec2& size, bool showBorder)
 	{
 		if (ImGui::BeginChild(id, size, showBorder))
@@ -99,8 +91,9 @@ namespace GUI
 
 			ImGui::Text(pluginVersion);
 			ImGui::Separator();
+            
+            ImGui::EndChild();
 		}
-		ImGui::EndChild();
 	}
 
 	void SettingsFooter(const char* id, const ImVec2& size, std::shared_ptr<FooterLinks> footer_links, bool showBorder)
@@ -108,8 +101,8 @@ namespace GUI
 		if (ImGui::BeginChild(id, size, showBorder))
 		{
 			footer_links->display();
+		    ImGui::EndChild();
 		}
-		ImGui::EndChild();
 	}
 
 	void OldSettingsFooter(const char* id, const ImVec2& size, bool showBorder)
@@ -128,7 +121,34 @@ namespace GUI
 			ImGui::SetWindowFontScale(1.3);
 
 			ClickableLink(linkText, "https://discord.gg/tHZFsMsvDU", Colors::Yellow, text_size);
+		    ImGui::EndChild();
 		}
-		ImGui::EndChild();
+	}
+
+	void alt_settings_header(const char* text, const char* plugin_version, const ImVec4& text_color)
+	{
+		Spacing(4);
+
+		ImGui::TextColored(text_color, text);
+
+		Spacing(3);
+
+		ImGui::Text(plugin_version);
+		ImGui::Separator();
+	}
+
+	void alt_settings_footer(const char* text, const char* url, const ImVec4& text_color)
+	{
+		ImGui::SetWindowFontScale(1.3);	// make link a lil more visible
+
+		// center the the cursor position horizontally
+		ImVec2 text_size = ImGui::CalcTextSize(text);
+		float horizontal_offset = (ImGui::GetContentRegionAvail().x - text_size.x) / 2;
+		horizontal_offset -= 50;	// seems slightly shifted to the right, so subtract 50 to compensate
+		ImGui::SetCursorPosX(horizontal_offset);
+
+		ClickableLink(text, url, text_color, text_size);
+
+		ImGui::SetWindowFontScale(1);	// undo font scale modification, so it doesnt affect the rest of the UI
 	}
 }
