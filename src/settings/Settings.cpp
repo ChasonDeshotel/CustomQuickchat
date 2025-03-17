@@ -652,7 +652,7 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 		WriteBindingsToJson();
 
 		GAME_THREAD_EXECUTE(
-			determine_quickchat_labels();
+			determine_quickchat_labels()
 			
 			auto chat = Instances.GetInstanceOf<UGFxData_Chat_TA>();
 			if (chat)
