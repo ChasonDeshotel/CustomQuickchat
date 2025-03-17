@@ -190,8 +190,7 @@ void CustomQuickchat::ChatTimeoutSettings()
 		std::strncpy(inputBuffer, customChatTimeoutMsg.c_str(), sizeof(inputBuffer) - 1);
 
 		if (ImGui::InputText("Chat timeout message", inputBuffer, sizeof(inputBuffer))) {
-			//customChatTimeoutMsg = inputBuffer;
-			customChatTimeoutMsg_cvar.setValue(customChatTimeoutMsg);
+			customChatTimeoutMsg_cvar.setValue(inputBuffer);
 		}
 		if (ImGui::IsItemHovered())
 		{
