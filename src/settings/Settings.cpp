@@ -46,18 +46,18 @@ void CustomQuickchat::RenderSettings()
 
 			if (ImGui::Button("Send a test chat"))
 			{
-				GAME_THREAD_EXECUTE(
-					Instances.SendChat("this is a test...", EChatChannel::EChatChannel_Match)
-				);
+				GAME_THREAD_EXECUTE({
+					Instances.SendChat("this is a test...", EChatChannel::EChatChannel_Match);
+				});
 			}
 
 			GUI::Spacing(8);
 
 			if (ImGui::Button("Open Bindings Menu") && !isWindowOpen_)
 			{
-				GAME_THREAD_EXECUTE(
-					cvarManager->executeCommand("togglemenu " + GetMenuName())
-				);
+				GAME_THREAD_EXECUTE({
+					cvarManager->executeCommand("togglemenu " + GetMenuName());
+				});
 			}
 		}
 		ImGui::EndChild();
@@ -272,9 +272,9 @@ void CustomQuickchat::SpeechToTextSettings()
 				start_websocket_stuff();
 			};
 
-			GAME_THREAD_EXECUTE_CAPTURE(
-				start_ws_connection()
-			, start_ws_connection);
+			GAME_THREAD_EXECUTE_CAPTURE({
+				start_ws_connection();
+			}, start_ws_connection);
 		}
 	}
 	else
@@ -300,9 +300,9 @@ void CustomQuickchat::SpeechToTextSettings()
 				Websocket->set_connected_status(false);
 			};
 
-			GAME_THREAD_EXECUTE_CAPTURE(
-				stop_ws_connection()
-			, stop_ws_connection);
+			GAME_THREAD_EXECUTE_CAPTURE({
+				stop_ws_connection();
+			}, stop_ws_connection);
 		}
 	}
 
@@ -343,9 +343,9 @@ void CustomQuickchat::SpeechToTextSettings()
 		// calibrate mic button
 		if (ImGui::Button("Calibrate Microphone"))
 		{
-			GAME_THREAD_EXECUTE(
-				CalibrateMicrophone()
-			);
+			GAME_THREAD_EXECUTE({
+				CalibrateMicrophone();
+			});
 		}
 		if (ImGui::IsItemHovered())
 		{
@@ -390,9 +390,9 @@ void CustomQuickchat::SpeechToTextSettings()
 		// test popup notifications
 		if (ImGui::Button("Test"))
 		{
-			GAME_THREAD_EXECUTE_CAPTURE(
-				Instances.SpawnNotification("Terry A Davis", "You can see 'em if you're driving. You just run them over. That's what you do.", notificationDuration)
-			, notificationDuration);
+			GAME_THREAD_EXECUTE_CAPTURE({
+				Instances.SpawnNotification("Terry A Davis", "You can see 'em if you're driving. You just run them over. That's what you do.", notificationDuration);
+			}, notificationDuration);
 		}
 	}
 
@@ -531,7 +531,13 @@ void CustomQuickchat::RenderChatDetails(Binding& selectedBinding)
 	GUI::Spacing(4);
 
 	// chat
-	ImGui::InputTextWithHint("chat", "let me cook", &selectedBinding.chat);
+	char chatBuffer[256] = {};
+	std::strncpy(chatBuffer, selectedBinding.chat.c_str(), sizeof(chatBuffer) - 1);
+	chatBuffer[sizeof(chatBuffer) - 1] = '\0';  // Ensure null termination
+	
+	if (ImGui::InputTextWithHint("chat", "let me cook", chatBuffer, sizeof(chatBuffer))) {
+		selectedBinding.chat = chatBuffer;
+	}
 
 	GUI::Spacing(2);
 
@@ -650,8 +656,8 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 		UpdateBindingsData();
 		WriteBindingsToJson();
 
-		GAME_THREAD_EXECUTE(
-			determine_quickchat_labels()
+		GAME_THREAD_EXECUTE({
+			determine_quickchat_labels();
 			
 			auto chat = Instances.GetInstanceOf<UGFxData_Chat_TA>();
 			if (chat)
@@ -659,8 +665,8 @@ void CustomQuickchat::RenderBindingTriggerDetails(Binding& selectedBinding)
 				apply_all_custom_qc_labels_to_ui(chat);
 			}
 
-			Instances.SpawnNotification("custom quickchat", "Bindings saved!", 3)
-		);
+			Instances.SpawnNotification("custom quickchat", "Bindings saved!", 3);
+		});
 	}
 
 	GUI::Spacing(6);
@@ -763,9 +769,9 @@ void CustomQuickchat::RenderVariationListDetails()
 			UpdateDataFromVariationStr();
 			WriteVariationsToJson();
 			
-			GAME_THREAD_EXECUTE(
-				Instances.SpawnNotification("custom quickchat", "Variations saved!", 3)
-			);
+			GAME_THREAD_EXECUTE({
+				Instances.SpawnNotification("custom quickchat", "Variations saved!", 3);
+			});
 		}
 
 		GUI::Spacing(6);
