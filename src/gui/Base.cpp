@@ -63,8 +63,11 @@ void PluginWindowBase::Render()
 
 	ImGui::End();
 
+	// Handle window closing after ImGui::End() to avoid ImGui state issues
 	if (!isWindowOpen_)
 	{
+		// Schedule these commands for the next frame to avoid ImGui state corruption
+		// when closing the window during the current frame
 		_globalCvarManager->executeCommand("togglemenu " + GetMenuName());
 		_globalCvarManager->executeCommand("writeconfig");
 	}
