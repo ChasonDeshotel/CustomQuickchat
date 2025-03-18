@@ -8,8 +8,7 @@
             "generator": "Ninja Multi-Config",
             "binaryDir": "${sourceDir}/build/release",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_CONFIGURATION_TYPES": "Release"
+                "CMAKE_BUILD_TYPE": "Release"
             }
         }
     ]

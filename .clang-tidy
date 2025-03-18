@@ -1,0 +1,6 @@
+Checks: >
+  modernize-*,
+  bugprone-*,
+  readability-*
+SystemHeaders: false
+ExcludeHeaderFilterRegex: '.*lib.*'
