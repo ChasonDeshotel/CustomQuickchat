@@ -7,35 +7,30 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR x86_64) 
 
+set(CMAKE_BUILD_TYPE Release)
+
 add_definitions(-DBOOST_EXCEPTION_DISABLE)
-add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
+#add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")  # `/MD`
 
+set(compile_options
+    /bigobj
+    #    /wd4244 # Conversion from 'type1' to 'type2', possible loss of data
+    #/wd4267 # Conversion from 'size_t' to 'type', possible loss of data
+    #/wd4018 # Signed/unsigned mismatch
+    #/wd4389 # Signed/unsigned mismatch
+    #/external:W0 # Disable warnings from external headers
+    #/external:I "${CMAKE_SOURCE_DIR}/lib" # mark lib/ as external
+)
+
+add_compile_options(${compile_options})
+
 file(GLOB_RECURSE SDK_SOURCES "${CMAKE_SOURCE_DIR}/lib/SDK/**/*.cpp")
-if(MSVC)
-    # fix fatal error C1128: number of sections exceeded object file format limit: compile with /bigobj
-    add_compile_options(/bigobj)
 
-    # These disable specific template instantiation warnings for SDK files
-    add_compile_options(/wd4244)  # Conversion from 'type1' to 'type2', possible loss of data
-    add_compile_options(/wd4267)  # Conversion from 'size_t' to 'type', possible loss of data
-    add_compile_options(/wd4018)  # Signed/unsigned mismatch
-    add_compile_options(/wd4389)  # Signed/unsigned mismatch
-    add_compile_options(/external:W0)  # Disable warnings from external headers
-    add_compile_options(/external:I "${CMAKE_SOURCE_DIR}/lib/SDK")  # Mark SDK as external
-
-endif()
-
-# Explicitly listing source files for better build performance and caching consistency.
-add_library(CustomQuickchat SHARED
-    lib/SDK/GameDefines.cpp
-    lib/imgui_bm/imgui.cpp
-    lib/imgui_bm/imgui_demo.cpp
-    lib/imgui_bm/imgui_draw.cpp
-    lib/imgui_bm/imgui_widgets.cpp
-    lib/imgui_bm/imgui_rangeslider.cpp
-    lib/imgui_bm/imgui_searchablecombo.cpp
+set(SRC_SOURCES
     src/main.cpp
     src/Commands.cpp
     src/Events.cpp
@@ -51,6 +46,22 @@ add_library(CustomQuickchat SHARED
     src/settings/CvarChangeCallbacks.cpp
     src/settings/RegisterCvars.cpp
     src/settings/Settings.cpp
+)
+
+set(LIB_SOURCES
+    lib/SDK/GameDefines.cpp
+    lib/imgui_bm/imgui.cpp
+    lib/imgui_bm/imgui_demo.cpp
+    lib/imgui_bm/imgui_draw.cpp
+    lib/imgui_bm/imgui_widgets.cpp
+    lib/imgui_bm/imgui_rangeslider.cpp
+    lib/imgui_bm/imgui_searchablecombo.cpp
+)
+
+# Explicitly listing source files for better build performance and caching consistency.
+add_library(CustomQuickchat SHARED
+    ${SRC_SOURCES}
+    ${LIB_SOURCES}
     ${SDK_SOURCES}
 )
 
@@ -65,12 +76,6 @@ set(BOOST_LIBRARYDIR "${BOOST_ROOT}/stage/lib")
 set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/stage/lib/cmake/Boost-1.87.0")
 list(APPEND CMAKE_MODULE_PATH "${BOOST_ROOT}/stage/lib/cmake/Boost-1.87.0")
 
-# Debug output to verify paths
-message(STATUS "Looking for Boost in:")
-message(STATUS "  BOOST_ROOT: ${BOOST_ROOT}")
-message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-
 find_package(Boost 1.87.0 REQUIRED COMPONENTS
     system
     thread
@@ -80,13 +85,23 @@ find_package(Boost 1.87.0 REQUIRED COMPONENTS
 
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Boost not found. Please check your Boost installation.")
+    message(STATUS "Boost paths configured as:")
+    message(STATUS "  BOOST_ROOT: ${BOOST_ROOT}")
+    message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+    message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 else()
     message(STATUS "Boost Found:")
     message(STATUS "  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
     message(STATUS "  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
 endif()
 
-target_include_directories(CustomQuickchat PRIVATE
+set(SRC_INCLUDES
+    ${CMAKE_SOURCE_DIR}/src/include
+    ${CMAKE_SOURCE_DIR}/src/include/core
+    ${CMAKE_SOURCE_DIR}/src/include/gui
+)
+
+set(EXTERNAL_INCLUDES
     ${Boost_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/lib
     ${CMAKE_SOURCE_DIR}/resources
@@ -100,15 +115,18 @@ target_include_directories(CustomQuickchat PRIVATE
     ${WEBSOCKETPP_INCLUDE_DIRS}
     ${BAKKESMOD_SDK_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/lib/imgui_bm
-    ${CMAKE_SOURCE_DIR}/src/include
-    ${CMAKE_SOURCE_DIR}/src/include/core
-    ${CMAKE_SOURCE_DIR}/src/include/gui
 
     ${CMAKE_SOURCE_DIR}/lib/json/include
     ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/include
     ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/include/bakkesmod/wrappers
 
     ${CMAKE_SOURCE_DIR}/lib/websocketpp
+)
+    
+
+target_include_directories(CustomQuickchat PRIVATE
+    ${SRC_INCLUDES}
+    ${EXTERNAL_INCLUDES}
 )
 
 target_link_libraries(CustomQuickchat PRIVATE
@@ -121,6 +139,46 @@ target_link_libraries(CustomQuickchat PRIVATE
 set_target_properties(CustomQuickchat PROPERTIES
     WINDOWS_EXPORT_ALL_SYMBOLS OFF
 )
+
+find_program(
+    CLANG_TIDY_EXE
+    NAMES
+        clang-tidy
+    NO_CACHE
+)
+if(CLANG_TIDY_EXE)
+    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+    message(STATUS "CLANG TIDY: ${CLANG_TIDY_EXE}")
+    #    set_target_properties(CustomQuickchat PROPERTIES CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}")
+    # Create a separate static library for your code
+        add_library(project_sources STATIC ${SRC_SOURCES})
+        
+        # Add the same include directories and compile definitions
+        target_include_directories(project_sources PRIVATE 
+            ${SRC_INCLUDES}
+            ${EXTERNAL_INCLUDES}
+        )
+        
+        # Copy compile definitions
+        target_compile_definitions(project_sources PRIVATE
+            BOOST_ALL_DYN_LINK
+            CustomQuickchat_EXPORTS
+        )
+    
+        # Apply clang-tidy ONLY to this static library with specific header filter
+        set_target_properties(project_sources PROPERTIES
+            #"--extra-arg-before=--driver-mode=cl"
+            CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--quiet;--system-headers=0;--exclude-header-filter=.*lib.*;--header-filter=.*src.*$;--system-headers=0;--extra-arg=-isystem${CMAKE_SOURCE_DIR}/libC:/Users/Billy Maizere/source/repos/CustomQuickchat/lib"
+        )
+    
+        # Remove source files from main target
+        set_target_properties(CustomQuickchat PROPERTIES 
+            SOURCES "${LIB_SOURCES};${SDK_SOURCES}"
+        )
+    
+    # Link the static library to your main target
+    target_link_libraries(CustomQuickchat PRIVATE project_sources)
+endif()
 
 add_custom_command(
     TARGET CustomQuickchat
