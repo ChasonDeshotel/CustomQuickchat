@@ -1,4 +1,3 @@
-Checks: >
-  modernize-use-trailing-return-type,
+Checks: 'checks-*,cppcoreguidelines-*,modernize-*,bugprone-*,readability-*'
 SystemHeaders: false
 ExcludeHeaderFilterRegex: '^.*lib.*$'

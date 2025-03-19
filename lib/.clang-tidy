@@ -1,0 +1,4 @@
+# disable all checks
+Checks: '-*'
+HeaderFilterRegex: '.*'
+SystemHeaders: false
