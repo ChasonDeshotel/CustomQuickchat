@@ -86,7 +86,7 @@ add_library(CustomQuickchat SHARED
 set_property(GLOBAL PROPERTY JOB_POOLS main_pool=2)  # Limit to 2 parallel jobs
 set_property(TARGET CustomQuickchat PROPERTY JOB_POOL main_pool)
 
-set(BOOST_ROOT "C:/local/boost_1_87_0")
+set(BOOST_ROOT "C:/local/boost-1.87.0")
 set(BOOST_LIBRARYDIR "${BOOST_ROOT}/stage/lib")
 
 set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/stage/lib/cmake/Boost-1.87.0")
