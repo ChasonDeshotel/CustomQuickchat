@@ -1,15 +1,21 @@
 {
-    "version": 3,
-    "cmakeMinimumRequired": { "major": 3, "minor": 20, "patch": 0 },
-    "configurePresets": [
-        {
-            "name": "release",
-            "description": "Release build using Ninja",
-            "generator": "Ninja Multi-Config",
-            "binaryDir": "${sourceDir}/build/release",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
-        }
-    ]
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "release",
+      "description": "Release build using Ninja",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/bin/Hostx64/x64/cl.exe",
+        "CMAKE_CXX_CLANG_TIDY": ""
+      }
+    }
+  ]
 }
