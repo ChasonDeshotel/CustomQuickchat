@@ -17,7 +17,7 @@ WebsocketClientManager::WebsocketClientManager(std::function<void(json serverRes
 }
 
 
-bool WebsocketClientManager::StartClient(int port)
+auto WebsocketClientManager::StartClient(int port) -> bool
 {
 	std::lock_guard<std::mutex> lock(connection_mutex);
 
@@ -90,7 +90,7 @@ bool WebsocketClientManager::StartClient(int port)
 }
 
 
-bool WebsocketClientManager::StopClient()
+auto WebsocketClientManager::StopClient() -> bool
 {
 	std::lock_guard<std::mutex> lock(connection_mutex);
 
@@ -192,7 +192,7 @@ void WebsocketClientManager::set_connected_status(bool connected)
 	is_connected = connected;
 }
 
-std::string WebsocketClientManager::get_port_str() const
+auto WebsocketClientManager::get_port_str() const -> std::string
 {
 	return port_num_str;
 }

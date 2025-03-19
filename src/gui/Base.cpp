@@ -1,10 +1,10 @@
 ﻿#include "Base.h"
 #include "imgui_bm/imgui.h"
-#include "bakkesmod/wrappers/cvarmanagerwrapper.h"
+#include "bakkesmod/wrappers/CVarManagerWrapper.h"
 
 extern std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
-std::string SettingsWindowBase::GetPluginName()
+auto SettingsWindowBase::GetPluginName() -> std::string
 {
 	return "Custom Quickchat";
 }
@@ -14,12 +14,12 @@ void SettingsWindowBase::SetImGuiContext(uintptr_t ctx)
 	ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(ctx));
 }
 
-std::string PluginWindowBase::GetMenuName()
+auto PluginWindowBase::GetMenuName() -> std::string
 {
 	return "CustomQuickchat";
 }
 
-std::string PluginWindowBase::GetMenuTitle()
+auto PluginWindowBase::GetMenuTitle() -> std::string
 {
 	return menuTitle_;
 }
@@ -29,12 +29,12 @@ void PluginWindowBase::SetImGuiContext(uintptr_t ctx)
 	ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(ctx));
 }
 
-bool PluginWindowBase::ShouldBlockInput()
+auto PluginWindowBase::ShouldBlockInput() -> bool
 {
 	return ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard;
 }
 
-bool PluginWindowBase::IsActiveOverlay()
+auto PluginWindowBase::IsActiveOverlay() -> bool
 {
 	return true;
 }
