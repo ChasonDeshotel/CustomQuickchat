@@ -31,6 +31,7 @@ splitIntoWords(const std::string& input) -> std::vector<std::string> {
 
 // ==================================================== text effects ====================================================
 
+// remove, save in a git branch
 //// sarcasm effect
 // std::string to_sarcasm(const std::string& ogText)
 //{

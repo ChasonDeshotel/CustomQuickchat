@@ -13,15 +13,17 @@ CustomQuickchat::PerformBindingAction(const Binding& binding) {
         case EKeyword::SpeechToText:
         case EKeyword::SpeechToTextSarcasm:
         case EKeyword::SpeechToTextUwu:
-#if defined(USE_SPEECH_TO_TEXT)
+            // clang-format off
+        #if defined(USE_SPEECH_TO_TEXT)
             if (!attemptingSTT)
                 StartSpeechToText(binding);
             else
                 STTLog("Speech-to-text is already active!");
-#else
+        #else
             no_speech_to_text_warning();
-#endif
+        #endif
             return;
+            // clang-format on
 
         case EKeyword::BlastAll:
         case EKeyword::BlastCasual:
