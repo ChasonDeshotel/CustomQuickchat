@@ -122,13 +122,11 @@ LobbyInfoComponent::log_chat_data(const ChatData& chat) {
 auto
 LobbyInfoComponent::get_last_chat_data() -> ChatData {
     /*
-            NOTE:
-                    It would've been easier to just read from the game's built-in chat history data, but:
-                            - Apparently the max capacity for UGFxData_Chat_TA::Messages is 10 (aka only 10 most recent chats are
-       stored at a time)
-                            - And the max capacity for StoredChatData_TA::Messsages is 50... which is better, but still not ideal :(
-
-                    So ig we need to manually store chat data on every chat...
+    NOTE:
+        It would've been easier to just read from the game's built-in chat history data, but:
+        - Apparently the max capacity for UGFxData_Chat_TA::Messages is 10 (aka only 10 most recent chats are stored at a time)
+        - And the max capacity for StoredChatData_TA::Messsages is 50... which is better, but still not ideal :(
+        So ig we need to manually store chat data on every chat...
     */
 
     if (match_chats.empty()) {
@@ -195,8 +193,8 @@ LobbyInfoComponent::get_last_chatter_ranks() -> ChatterRanks {
 }
 
 // NOTE: This formula is what's used for RL leaderboards and is what people refer to as "MMR"
-// ... but it's not what's used internally to determine matchmaking. Apparently that would be the Microsoft TrueSkill formula: Mu - (3
-// * Sigma)
+// ... but it's not what's used internally to determine matchmaking.
+// Apparently that would be the Microsoft TrueSkill formula: Mu - (3 * Sigma)
 auto
 LobbyInfoComponent::get_skill_rating(float mu) -> float {
     return (mu * 20) + 100;
