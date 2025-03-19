@@ -1,6 +1,4 @@
 Checks: >
-  modernize-*,
-  bugprone-*,
-  readability-*
+  modernize-use-trailing-return-type,
 SystemHeaders: false
-ExcludeHeaderFilterRegex: '.*lib.*'
+ExcludeHeaderFilterRegex: '^.*lib.*$'

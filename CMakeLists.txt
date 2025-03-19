@@ -9,21 +9,29 @@ set(CMAKE_SYSTEM_PROCESSOR x86_64)
 
 set(CMAKE_BUILD_TYPE Release)
 
-add_definitions(-DBOOST_EXCEPTION_DISABLE)
-#add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
+set(CMAKE_GENERATOR_TOOLSET "v143" CACHE STRING "Toolset version")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")  # `/MD`
+#add_definitions(-DBOOST_EXCEPTION_DISABLE)
+#add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
+# Boost Config (Forces Dynamic Linking)
+#set(Boost_USE_STATIC_LIBS OFF)  # Use shared libraries (.dll)
+#set(Boost_USE_STATIC_RUNTIME OFF)  # Use dynamic runtime (/MD)
+add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/DBOOST_ALL_DYN_LINK>)
 
 set(compile_options
-    /bigobj
+        /bigobj
     #    /wd4244 # Conversion from 'type1' to 'type2', possible loss of data
     #/wd4267 # Conversion from 'size_t' to 'type', possible loss of data
     #/wd4018 # Signed/unsigned mismatch
     #/wd4389 # Signed/unsigned mismatch
     #/external:W0 # Disable warnings from external headers
     #/external:I "${CMAKE_SOURCE_DIR}/lib" # mark lib/ as external
+        /std:c++20
+        /EHsc
+        /MP
 )
 
 add_compile_options(${compile_options})
@@ -64,11 +72,6 @@ add_library(CustomQuickchat SHARED
     ${LIB_SOURCES}
     ${SDK_SOURCES}
 )
-
-# Boost Config (Forces Dynamic Linking)
-set(Boost_USE_STATIC_LIBS OFF)  # Use shared libraries (.dll)
-set(Boost_USE_STATIC_RUNTIME OFF)  # Use dynamic runtime (/MD)
-add_definitions(-DBOOST_ALL_DYN_LINK)
 
 set(BOOST_ROOT "C:/local/boost_1_87_0")
 set(BOOST_LIBRARYDIR "${BOOST_ROOT}/stage/lib")
@@ -149,35 +152,10 @@ find_program(
 if(CLANG_TIDY_EXE)
     set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
     message(STATUS "CLANG TIDY: ${CLANG_TIDY_EXE}")
-    #    set_target_properties(CustomQuickchat PROPERTIES CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}")
-    # Create a separate static library for your code
-        add_library(project_sources STATIC ${SRC_SOURCES})
-        
-        # Add the same include directories and compile definitions
-        target_include_directories(project_sources PRIVATE 
-            ${SRC_INCLUDES}
-            ${EXTERNAL_INCLUDES}
-        )
-        
-        # Copy compile definitions
-        target_compile_definitions(project_sources PRIVATE
-            BOOST_ALL_DYN_LINK
-            CustomQuickchat_EXPORTS
-        )
-    
-        # Apply clang-tidy ONLY to this static library with specific header filter
-        set_target_properties(project_sources PROPERTIES
-            #"--extra-arg-before=--driver-mode=cl"
-            CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--quiet;--system-headers=0;--exclude-header-filter=.*lib.*;--header-filter=.*src.*$;--system-headers=0;--extra-arg=-isystem${CMAKE_SOURCE_DIR}/libC:/Users/Billy Maizere/source/repos/CustomQuickchat/lib"
-        )
-    
-        # Remove source files from main target
-        set_target_properties(CustomQuickchat PROPERTIES 
-            SOURCES "${LIB_SOURCES};${SDK_SOURCES}"
-        )
-    
-    # Link the static library to your main target
-    target_link_libraries(CustomQuickchat PRIVATE project_sources)
+    set_target_properties(CustomQuickchat PROPERTIES
+            CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--extra-arg-before=/EHsc"
+    )
+
 endif()
 
 add_custom_command(
