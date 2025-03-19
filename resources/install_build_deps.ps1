@@ -156,6 +156,19 @@ function Install-LLVM {
     }
 }
 
+# Install Git pre-commit hook
+$gitHooksDir = Join-Path $PSScriptRoot "../.git/hooks"
+$preCommitHook = Join-Path $PSScriptRoot "../.githooks/pre-commit"
+
+if (-Not (Test-Path "$gitHooksDir/pre-commit")) {
+    Write-Host "Installing pre-commit hook..."
+    Copy-Item -Path $preCommitHook -Destination "$gitHooksDir/pre-commit" -Force
+    icacls "$gitHooksDir/pre-commit" /grant Everyone:RX > $null  # Ensure it's executable
+    Write-Host "$(Get-UnicodeChar 0x2705) Installed pre-commit hook"
+} else {
+    Write-Host "$(Get-UnicodeChar 0x2705) Pre-commit hook already installed. Skipping..."
+}
+
 $CMakeInstalledVersion = Get-CMakeVersion
 $CMakeLatestVersion = Get-LatestCMakeVersion
 $needs_cmake_install = ([version]$CMakeInstalledVersion -lt [version]$CMakeLatestVersion)

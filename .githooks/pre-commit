@@ -1,0 +1,6 @@
+#!/bin/sh
+clang-format -i $(git diff --cached --name-only --diff-filter=d | grep -E '\.(cpp|c|h|hpp)$')
+git add $(git diff --cached --name-only --diff-filter=d | grep -E '\.(cpp|c|h|hpp)$')
+echo "Pre-commit hook: clang-format applied to staged files."
+
+exit 0
