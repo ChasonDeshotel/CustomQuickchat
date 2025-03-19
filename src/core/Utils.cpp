@@ -264,7 +264,7 @@ namespace Files
     {
         if (fs::exists(folderPath))
         {
-            ShellExecuteW(NULL, L"open", folderPath.c_str(), NULL, NULL, SW_SHOWNORMAL);
+            ShellExecuteW(nullptr, L"open", folderPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
         }
         else {
             LOG("Folder path does not exist: {}", folderPath.string());
@@ -405,7 +405,7 @@ namespace Process
 {
     void close_handle(HANDLE h)
     {
-        if (h != NULL && h != INVALID_HANDLE_VALUE)
+        if (h != nullptr && h != INVALID_HANDLE_VALUE)
         {
             if (!CloseHandle(h))
             {
@@ -420,7 +420,7 @@ namespace Process
 
     void terminate(HANDLE h)
     {
-        if (h != NULL && h != INVALID_HANDLE_VALUE)
+        if (h != nullptr && h != INVALID_HANDLE_VALUE)
         {
             if (!TerminateProcess(h, 1))
             {
@@ -458,22 +458,22 @@ namespace Process
 
         // Create the process to start python script
         if (CreateProcessW(
-            NULL,                                // Application name (set NULL to use command)
+            nullptr,                                // Application name (set NULL to use command)
             wide_command.data(),                // Command
-            NULL,                                // Process security attributes
-            NULL,                                // Thread security attributes
+            nullptr,                                // Process security attributes
+            nullptr,                                // Thread security attributes
             FALSE,                                // Inherit handles from the calling process
             CREATE_NEW_CONSOLE,                    // Creation flags (use CREATE_NEW_CONSOLE for async execution)
-            NULL,                                // Use parent's environment block
-            NULL,                                // Use parent's starting directory
+            nullptr,                                // Use parent's environment block
+            nullptr,                                // Use parent's starting directory
             &si,                                // Pointer to STARTUPINFO
             &pi                                    // Pointer to PROCESS_INFORMATION
         ))
         {
             // TODO: store a reference to PROCESS_INFORMATION instead?
             // Duplicate process handle so it remains valid even after original PROCESS_INFORMATION goes out of scope
-            HANDLE duplicatedProcessHandle = NULL;
-            HANDLE duplicatedThreadHandle = NULL;
+            HANDLE duplicatedProcessHandle = nullptr;
+            HANDLE duplicatedThreadHandle = nullptr;
 
             if (DuplicateHandle(GetCurrentProcess(), pi.hProcess, GetCurrentProcess(), &duplicatedProcessHandle, 0, FALSE, DUPLICATE_SAME_ACCESS) &&
                 DuplicateHandle(GetCurrentProcess(), pi.hThread, GetCurrentProcess(), &duplicatedThreadHandle, 0, FALSE, DUPLICATE_SAME_ACCESS))
