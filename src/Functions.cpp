@@ -14,14 +14,14 @@ CustomQuickchat::PerformBindingAction(const Binding& binding) {
         case EKeyword::SpeechToTextSarcasm:
         case EKeyword::SpeechToTextUwu:
             // clang-format off
-        #if defined(USE_SPEECH_TO_TEXT)
+            #if defined(USE_SPEECH_TO_TEXT)
             if (!attemptingSTT)
                 StartSpeechToText(binding);
             else
                 STTLog("Speech-to-text is already active!");
-        #else
+            #else
             no_speech_to_text_warning();
-        #endif
+            #endif
             return;
             // clang-format on
 
