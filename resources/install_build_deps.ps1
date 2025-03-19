@@ -231,8 +231,6 @@ if (-Not (Test-Path "$gitHooksDir/pre-commit")) {
     Write-Host "$(Get-UnicodeChar 0x2705) Pre-commit hook already installed. Skipping..."
 }
 
-Install-Boost
-
 $CMakeInstalledVersion = Get-CMakeVersion
 $CMakeLatestVersion = Get-LatestCMakeVersion
 $needs_cmake_install = ([version]$CMakeInstalledVersion -lt [version]$CMakeLatestVersion)
