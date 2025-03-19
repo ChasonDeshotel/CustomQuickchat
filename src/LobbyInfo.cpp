@@ -117,7 +117,7 @@ void LobbyInfoComponent::log_chat_data(const ChatData& chat)
 }
 
 
-ChatData LobbyInfoComponent::get_last_chat_data()
+auto LobbyInfoComponent::get_last_chat_data() -> ChatData
 {
 /*
 	NOTE:
@@ -176,7 +176,7 @@ ChatData LobbyInfoComponent::get_last_chat_data()
 }
 
 
-ChatterRanks LobbyInfoComponent::get_last_chatter_ranks()
+auto LobbyInfoComponent::get_last_chatter_ranks() -> ChatterRanks
 {
 	// TODO: make this UOnlineGameSkill_X* a member and update current instance using hooks (like how we do with UGFxData_Chat_TA*)
 	auto skill = Instances.GetInstanceOf<UOnlineGameSkill_X>();
@@ -206,14 +206,14 @@ ChatterRanks LobbyInfoComponent::get_last_chatter_ranks()
 
 // NOTE: This formula is what's used for RL leaderboards and is what people refer to as "MMR"
 // ... but it's not what's used internally to determine matchmaking. Apparently that would be the Microsoft TrueSkill formula: Mu - (3 * Sigma) 
-float LobbyInfoComponent::get_skill_rating(float mu)
+auto LobbyInfoComponent::get_skill_rating(float mu) -> float
 {
 	return (mu * 20) + 100;
 }
 
 
 // Returns the id string in the following format: platform|accountId|splitScreenId
-std::string LobbyInfoComponent::uid_str_from_net_id(const FUniqueNetId& id)
+auto LobbyInfoComponent::uid_str_from_net_id(const FUniqueNetId& id) -> std::string
 {
 	std::string account_id = id.EpicAccountId.empty() ? std::to_string(id.Uid) : id.EpicAccountId.ToString();
 
@@ -221,7 +221,7 @@ std::string LobbyInfoComponent::uid_str_from_net_id(const FUniqueNetId& id)
 }
 
 
-std::string LobbyInfoComponent::get_platform_str(uint8_t platform)
+auto LobbyInfoComponent::get_platform_str(uint8_t platform) -> std::string
 {
 	switch (static_cast<EOnlinePlatform>(platform))
 	{
@@ -251,7 +251,7 @@ std::string LobbyInfoComponent::get_platform_str(uint8_t platform)
 
 // ======================================== ChatData ========================================
 
-bool ChatData::is_valid_last_chat(const LastChatPreferences& prefs, uint8_t user_team) const
+auto ChatData::is_valid_last_chat(const LastChatPreferences& prefs, uint8_t user_team) const -> bool
 {
 	// filter in order of precedence...
 	if (IsUser)

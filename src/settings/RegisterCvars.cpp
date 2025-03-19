@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "main.h"
 
-CVarWrapper CustomQuickchat::RegisterCvar_Bool(const CvarData& cvar, bool startingValue)
+auto CustomQuickchat::RegisterCvar_Bool(const CvarData& cvar, bool startingValue) -> CVarWrapper
 {
 	std::string value = startingValue ? "1" : "0";
 
@@ -9,13 +9,13 @@ CVarWrapper CustomQuickchat::RegisterCvar_Bool(const CvarData& cvar, bool starti
 }
 
 
-CVarWrapper CustomQuickchat::RegisterCvar_String(const CvarData& cvar, const std::string& startingValue)
+auto CustomQuickchat::RegisterCvar_String(const CvarData& cvar, const std::string& startingValue) -> CVarWrapper
 {
 	return cvarManager->registerCvar(cvar.name, startingValue, cvar.description);
 }
 
 
-CVarWrapper CustomQuickchat::RegisterCvar_Number(const CvarData& cvar, float startingValue, bool hasMinMax, float min, float max)
+auto CustomQuickchat::RegisterCvar_Number(const CvarData& cvar, float startingValue, bool hasMinMax, float min, float max) -> CVarWrapper
 {
 	std::string numberStr = std::to_string(startingValue);
 
@@ -30,13 +30,13 @@ CVarWrapper CustomQuickchat::RegisterCvar_Number(const CvarData& cvar, float sta
 }
 
 
-CVarWrapper CustomQuickchat::RegisterCvar_Color(const CvarData& cvar, const std::string& startingValue)
+auto CustomQuickchat::RegisterCvar_Color(const CvarData& cvar, const std::string& startingValue) -> CVarWrapper
 {
 	return cvarManager->registerCvar(cvar.name, startingValue, cvar.description);
 }
 
 
-CVarWrapper CustomQuickchat::GetCvar(const CvarData& cvar)
+auto CustomQuickchat::GetCvar(const CvarData& cvar) -> CVarWrapper
 {
 	return cvarManager->getCvar(cvar.name);
 }

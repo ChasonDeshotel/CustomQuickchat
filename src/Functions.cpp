@@ -53,7 +53,7 @@ void CustomQuickchat::PerformBindingAction(const Binding& binding)
     SendChat(processed_chat, binding.chatMode);
 }
 
-std::string CustomQuickchat::process_keywords_in_chat_str(const Binding& binding)
+auto CustomQuickchat::process_keywords_in_chat_str(const Binding& binding) -> std::string
 {
     std::string result = binding.chat;
 
@@ -187,7 +187,7 @@ void CustomQuickchat::DeleteVariationList(int idx)
     WriteVariationsToJson();
 }
 
-int CustomQuickchat::FindButtonIndex(const std::string& buttonName)
+auto CustomQuickchat::FindButtonIndex(const std::string& buttonName) -> int
 {
     auto it = std::find(possibleKeyNames.begin(), possibleKeyNames.end(), buttonName);
     if (it != possibleKeyNames.end())
@@ -299,7 +299,7 @@ void CustomQuickchat::ReadDataFromJson()
     }
 }
 
-std::string CustomQuickchat::Variation(const std::string& listName)
+auto CustomQuickchat::Variation(const std::string& listName) -> std::string
 {
     for (int i = 0; i < Variations.size(); i++)
     {
@@ -343,7 +343,7 @@ void CustomQuickchat::UpdateDataFromVariationStr()
     }
 }
 
-std::string CustomQuickchat::get_last_chat()
+auto CustomQuickchat::get_last_chat() -> std::string
 {
     ChatData chat = LobbyInfo.get_last_chat_data();
 
@@ -356,7 +356,7 @@ std::string CustomQuickchat::get_last_chat()
     return chat.Message;
 }
 
-std::string CustomQuickchat::get_last_chatter_rank_str(EKeyword keyword)
+auto CustomQuickchat::get_last_chatter_rank_str(EKeyword keyword) -> std::string
 {
     ChatterRanks chatter_ranks = LobbyInfo.get_last_chatter_ranks();
     if (chatter_ranks.playerName.empty())
@@ -382,7 +382,7 @@ std::string CustomQuickchat::get_last_chatter_rank_str(EKeyword keyword)
     }
 }
 
-std::vector<std::string> CustomQuickchat::ShuffleWordList(const std::vector<std::string>& ogList)
+auto CustomQuickchat::ShuffleWordList(const std::vector<std::string>& ogList) -> std::vector<std::string>
 {
     std::vector<std::string> shuffledList = ogList;
 
@@ -458,7 +458,7 @@ void CustomQuickchat::ReshuffleWordList(int idx)
      variationList.nextUsableIndex = 0;
  }
 
-std::string CustomQuickchat::ApplyTextEffect(const std::string& originalText, ETextEffect effect)
+auto CustomQuickchat::ApplyTextEffect(const std::string& originalText, ETextEffect effect) -> std::string
 {
     switch (effect)
     {

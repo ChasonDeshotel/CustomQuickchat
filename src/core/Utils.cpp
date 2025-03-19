@@ -6,19 +6,19 @@
 
 namespace Format
 {
-    std::string ToHexString(uintptr_t address)
+    auto ToHexString(uintptr_t address) -> std::string
     {
         // Adjust width based on the platform's pointer size
         constexpr int pointerWidth = sizeof(uintptr_t) * 2;
         return std::format("0x{:0{}}", address, pointerWidth);
     }
 
-    std::string ToHexString(int32_t decimal_val, int32_t min_hex_digits)
+    auto ToHexString(int32_t decimal_val, int32_t min_hex_digits) -> std::string
     {
         return std::format("0x{:0{}X}", decimal_val, min_hex_digits);
     }
 
-    std::string ToASCIIString(std::string str)
+    auto ToASCIIString(std::string str) -> std::string
     {
         // Remove non-ASCII characters
         str.erase(std::remove_if(str.begin(), str.end(),
@@ -28,7 +28,7 @@ namespace Format
         return str;
     }
 
-    std::vector<std::string> SplitStrByNewline(const std::string& input)
+    auto SplitStrByNewline(const std::string& input) -> std::vector<std::string>
     {
         std::vector<std::string> lines;
         std::istringstream iss(input);
@@ -42,7 +42,7 @@ namespace Format
         return lines;
     }
 
-    std::vector<std::string> SplitStr(const std::string& str, const std::string& delimiter)
+    auto SplitStr(const std::string& str, const std::string& delimiter) -> std::vector<std::string>
     {
         std::vector<std::string> tokens;
         size_t start = 0;
@@ -60,7 +60,7 @@ namespace Format
         return tokens;
     }
 
-    std::string EscapeBraces(const std::string& str)
+    auto EscapeBraces(const std::string& str) -> std::string
     {
         std::string escaped;
         for (char ch : str) {
@@ -72,7 +72,7 @@ namespace Format
         return escaped;
     }
 
-    std::string GenRandomString(int length)
+    auto GenRandomString(int length) -> std::string
     {
         // Define character set
         // TODO: add the fancy new wide chars
@@ -96,7 +96,7 @@ namespace Format
     // ----------------------------------------------------------------------------------
 
 
-    bool IsStringHexadecimal(std::string str)
+    auto IsStringHexadecimal(std::string str) -> bool
     {
         if (str.empty())
         {
@@ -131,7 +131,7 @@ namespace Format
     }
 
 
-    std::string ToLower(std::string str)
+    auto ToLower(std::string str) -> std::string
     {
         std::transform(str.begin(), str.end(), str.begin(), tolower);
         return str;
@@ -142,7 +142,7 @@ namespace Format
         std::transform(str.begin(), str.end(), str.begin(), tolower);
     }
 
-    std::string RemoveAllChars(std::string str, char character)
+    auto RemoveAllChars(std::string str, char character) -> std::string
     {
         str.erase(std::remove(str.begin(), str.end(), character), str.end());
         return str;
@@ -154,7 +154,7 @@ namespace Format
     }
 
 
-    std::string TrimBeginningAndEndWhitespace(const std::string& str)
+    auto TrimBeginningAndEndWhitespace(const std::string& str) -> std::string
     {
         if (str.empty()) return str;
 
@@ -174,12 +174,12 @@ namespace Format
     }
 
 
-    std::string ToHex(void* address, bool bNotation)
+    auto ToHex(void* address, bool bNotation) -> std::string
     {
         return ToHex(reinterpret_cast<uint64_t>(address), sizeof(uint64_t), bNotation);
     }
 
-    std::string ToHex(uint64_t decimal, size_t width, bool bNotation)
+    auto ToHex(uint64_t decimal, size_t width, bool bNotation) -> std::string
     {
         std::ostringstream stream;
         if (bNotation) { stream << "0x"; }
@@ -187,7 +187,7 @@ namespace Format
         return stream.str();
     }
 
-    uint64_t ToDecimal(const std::string& hexStr)
+    auto ToDecimal(const std::string& hexStr) -> uint64_t
     {
         uint64_t decimal = 0;
         std::stringstream stream;
@@ -196,7 +196,7 @@ namespace Format
         return decimal;
     }
 
-    std::string ToDecimal(uint64_t hex, size_t width)
+    auto ToDecimal(uint64_t hex, size_t width) -> std::string
     {
         std::ostringstream stream;
         stream << std::setfill('0') << std::setw(width) << std::right << std::uppercase << std::dec << hex;
@@ -204,7 +204,7 @@ namespace Format
     }
 
 
-    std::string ColorToHex(float colorArray[3], bool bNotation)
+    auto ColorToHex(float colorArray[3], bool bNotation) -> std::string
     {
         std::string hexStr = (bNotation ? "#" : "");
         hexStr += Format::ToHex(static_cast<uint64_t>(colorArray[0]), 2, false);
@@ -213,7 +213,7 @@ namespace Format
         return hexStr;
     }
 
-    uint64_t HexToDecimal(const std::string& hexStr)
+    auto HexToDecimal(const std::string& hexStr) -> uint64_t
     {
         uint64_t decimal = 0;
         std::stringstream stream;
@@ -222,7 +222,7 @@ namespace Format
         return decimal;
     }
 
-    uintptr_t HexToIntPointer(const std::string& hexStr)
+    auto HexToIntPointer(const std::string& hexStr) -> uintptr_t
     {
         uintptr_t decimal = 0;
         std::stringstream stream;
@@ -272,7 +272,7 @@ namespace Files
     }
 
 
-    std::string get_text_content(const fs::path& file_path)
+    auto get_text_content(const fs::path& file_path) -> std::string
     {
         if (!fs::exists(file_path))
         {
@@ -286,7 +286,7 @@ namespace Files
         return Buffer.str();
     }
 
-    json get_json(const fs::path& file_path)
+    auto get_json(const fs::path& file_path) -> json
     {
         json j;
 
@@ -309,7 +309,7 @@ namespace Files
         return j;
     }
 
-    bool write_json(const fs::path& file_path, const json& j)
+    auto write_json(const fs::path& file_path, const json& j) -> bool
     {
         try
         {
@@ -372,7 +372,7 @@ namespace Files
     }
 
 
-    std::string GetCommandOutput(const char* cmd)
+    auto GetCommandOutput(const char* cmd) -> std::string
     {
         std::array<char, 128> buffer;
         std::string result;
@@ -389,7 +389,7 @@ namespace Files
     }
 
     // Function to trim whitespace and invisible characters (such as newlines)
-    std::string CleanPathStr(const std::string& path)
+    auto CleanPathStr(const std::string& path) -> std::string
     {
         std::string cleanedPath = path;
 
@@ -440,7 +440,7 @@ namespace Process
         close_handle(pi.hThread);
     }
 
-    CreateProcessResult create_process_from_command(const std::string& command)
+    auto create_process_from_command(const std::string& command) -> CreateProcessResult
     {
         // CreateProcess variables
         STARTUPINFOW si;

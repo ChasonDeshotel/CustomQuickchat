@@ -3,7 +3,7 @@
 
 
 
-bool isVowel(char ch)
+auto isVowel(char ch) -> bool
 {
 	ch = std::tolower(ch);
 	return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u');
@@ -11,7 +11,7 @@ bool isVowel(char ch)
 
 
 // Function to split a string into words based on spaces
-std::vector<std::string> splitIntoWords(const std::string& input)
+auto splitIntoWords(const std::string& input) -> std::vector<std::string>
 {
 	std::vector<std::string> words;
 	std::string word;
@@ -102,7 +102,7 @@ std::vector<std::string> splitIntoWords(const std::string& input)
 
 
 // chat gpt "more randomized" version
-std::string to_sarcasm(const std::string& ogText)
+auto to_sarcasm(const std::string& ogText) -> std::string
 {
 	std::istringstream iss(ogText);
 	std::ostringstream oss;
@@ -153,7 +153,7 @@ std::string to_sarcasm(const std::string& ogText)
 
 
 // uwu effect
-std::string translateChar(char currentChar, char previousChar, char nextChar)
+auto translateChar(char currentChar, char previousChar, char nextChar) -> std::string
 {
 	static const std::unordered_map<char, std::string> translations = {
 		{'L', "W"},
@@ -178,7 +178,7 @@ std::string translateChar(char currentChar, char previousChar, char nextChar)
 	return std::string(1, currentChar);
 }
 
-std::string translateWord(const std::string& input)
+auto translateWord(const std::string& input) -> std::string
 {
 	std::string result;
 	char previousChar = '\0'; // Initialize to null character
@@ -227,7 +227,7 @@ std::string translateWord(const std::string& input)
 }
 
 
-std::string to_uwu(const std::string& ogText)
+auto to_uwu(const std::string& ogText) -> std::string
 {
 	std::vector<std::string> words = splitIntoWords(ogText);
 	std::string modifiedString;

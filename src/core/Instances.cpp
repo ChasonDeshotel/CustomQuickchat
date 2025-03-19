@@ -34,7 +34,7 @@ void InstancesComponent::OnDestroy()
 
 // ========================================= to initialize globals ===========================================
 
-uintptr_t InstancesComponent::FindPattern(HMODULE module, const unsigned char* pattern, const char* mask)
+auto InstancesComponent::FindPattern(HMODULE module, const unsigned char* pattern, const char* mask) -> uintptr_t
 {
 	MODULEINFO info = { };
 	GetModuleInformation(GetCurrentProcess(), module, &info, sizeof(MODULEINFO));
@@ -64,7 +64,7 @@ uintptr_t InstancesComponent::FindPattern(HMODULE module, const unsigned char* p
 	return NULL;
 }
 
-uintptr_t InstancesComponent::GetGNamesAddress() 
+auto InstancesComponent::GetGNamesAddress() -> uintptr_t 
 {
 	unsigned char GNamesPattern[] = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x35\x25\x02\x00";
 	char GNamesMask[] = "??????xx??xxxxxx";
@@ -74,7 +74,7 @@ uintptr_t InstancesComponent::GetGNamesAddress()
 	return GNamesAddress;
 }
 
-uintptr_t InstancesComponent::GetGObjectsAddress() 
+auto InstancesComponent::GetGObjectsAddress() -> uintptr_t 
 {
 	return GetGNamesAddress() + 0x48;
 }
@@ -86,7 +86,7 @@ void InstancesComponent::InitGlobals()
 	GNames = reinterpret_cast<TArray<FNameEntry*>*>(GetGNamesAddress());
 }
 
-bool InstancesComponent::AreGObjectsValid()
+auto InstancesComponent::AreGObjectsValid() -> bool
 {
 	if (UObject::GObjObjects()->size() > 0 && UObject::GObjObjects()->capacity() > UObject::GObjObjects()->size())
 	{
@@ -98,7 +98,7 @@ bool InstancesComponent::AreGObjectsValid()
 	return false;
 }
 
-bool InstancesComponent::AreGNamesValid()
+auto InstancesComponent::AreGNamesValid() -> bool
 {
 	if (FName::Names()->size() > 0 && FName::Names()->capacity() > FName::Names()->size())
 	{
@@ -110,7 +110,7 @@ bool InstancesComponent::AreGNamesValid()
 	return false;
 }
 
-bool InstancesComponent::CheckGlobals()
+auto InstancesComponent::CheckGlobals() -> bool
 {
 	if (!GObjects || !GNames || !AreGObjectsValid() || !AreGNamesValid()) {
 		LOG("(onLoad) Error: RLSDK classes are wrong... plugin needs an update :(");
@@ -125,7 +125,7 @@ bool InstancesComponent::CheckGlobals()
 // ===========================================================================================================
 
 
-class UClass* InstancesComponent::FindStaticClass(const std::string& className)
+auto InstancesComponent::FindStaticClass(const std::string& className) -> class UClass*
 {
 	if (m_staticClasses.empty())
 	{
@@ -151,7 +151,7 @@ class UClass* InstancesComponent::FindStaticClass(const std::string& className)
 	return nullptr;
 }
 
-class UFunction* InstancesComponent::FindStaticFunction(const std::string& className)
+auto InstancesComponent::FindStaticFunction(const std::string& className) -> class UFunction*
 {
 	if (m_staticFunctions.empty())
 	{
@@ -206,42 +206,42 @@ void InstancesComponent::MarkForDestroy(class UObject* object)
 	}
 }
 
-class UEngine* InstancesComponent::IUEngine()
+auto InstancesComponent::IUEngine() -> class UEngine*
 {
 	return UEngine::GetEngine();
 }
 
-class UAudioDevice* InstancesComponent::IUAudioDevice()
+auto InstancesComponent::IUAudioDevice() -> class UAudioDevice*
 {
 	return UEngine::GetAudioDevice();
 }
 
-class AWorldInfo* InstancesComponent::IAWorldInfo()
+auto InstancesComponent::IAWorldInfo() -> class AWorldInfo*
 {
 	return UEngine::GetCurrentWorldInfo();
 }
 
-class UCanvas* InstancesComponent::IUCanvas()
+auto InstancesComponent::IUCanvas() -> class UCanvas*
 {
 	return I_UCanvas;
 }
 
-class AHUD* InstancesComponent::IAHUD()
+auto InstancesComponent::IAHUD() -> class AHUD*
 {
 	return I_AHUD;
 }
 
-class UFileSystem* InstancesComponent::IUFileSystem()
+auto InstancesComponent::IUFileSystem() -> class UFileSystem*
 {
 	return (UFileSystem*)UFileSystem::StaticClass();
 }
 
-class UGameViewportClient* InstancesComponent::IUGameViewportClient()
+auto InstancesComponent::IUGameViewportClient() -> class UGameViewportClient*
 {
 	return I_UGameViewportClient;
 }
 
-class ULocalPlayer* InstancesComponent::IULocalPlayer()
+auto InstancesComponent::IULocalPlayer() -> class ULocalPlayer*
 {
 	UEngine* engine = IUEngine();
 
@@ -253,12 +253,12 @@ class ULocalPlayer* InstancesComponent::IULocalPlayer()
 	return nullptr;
 }
 
-class APlayerController* InstancesComponent::IAPlayerController()
+auto InstancesComponent::IAPlayerController() -> class APlayerController*
 {
 	return I_APlayerController;
 }
 
-struct FUniqueNetId InstancesComponent::GetUniqueID()
+auto InstancesComponent::GetUniqueID() -> struct FUniqueNetId
 {
 	ULocalPlayer* localPlayer = IULocalPlayer();
 
@@ -273,7 +273,7 @@ struct FUniqueNetId InstancesComponent::GetUniqueID()
 
 // ======================= get instance funcs =========================
 
-AGFxHUD_TA* InstancesComponent::GetHUD()
+auto InstancesComponent::GetHUD() -> AGFxHUD_TA*
 {
 	if (hud) {
 		return hud;
@@ -282,7 +282,7 @@ AGFxHUD_TA* InstancesComponent::GetHUD()
 	return GetInstanceOf<AGFxHUD_TA>();
 }
 
-UGFxDataStore_X* InstancesComponent::GetDataStore()
+auto InstancesComponent::GetDataStore() -> UGFxDataStore_X*
 {
 	if (dataStore) {
 		return dataStore;
@@ -291,7 +291,7 @@ UGFxDataStore_X* InstancesComponent::GetDataStore()
 	return GetInstanceOf<UGFxDataStore_X>();
 }
 
-UOnlinePlayer_X* InstancesComponent::GetOnlinePlayer()
+auto InstancesComponent::GetOnlinePlayer() -> UOnlinePlayer_X*
 {
 	if (onlinePlayer) {
 		return onlinePlayer;
@@ -301,20 +301,20 @@ UOnlinePlayer_X* InstancesComponent::GetOnlinePlayer()
 }
 
 
-FString InstancesComponent::NewFString(const std::string& str)
+auto InstancesComponent::NewFString(const std::string& str) -> FString
 {
 	// have the game create a new FString using UE, rather than using new wchar_t* directly which causes crashes
 	return UObject::RepeatString(Format::ToWideString(str).data(), 1);
 }
 
-FString InstancesComponent::NewFString(const FString& old)
+auto InstancesComponent::NewFString(const FString& old) -> FString
 {
 	// have the game create a new FString using UE, rather than using new wchar_t* directly which causes crashes
 	return UObject::RepeatString(old, 1);
 }
 
 
-FName InstancesComponent::FindFName(const std::string& str)
+auto InstancesComponent::FindFName(const std::string& str) -> FName
 {
 	return FName(Format::ToWideString(str).data());
 }
