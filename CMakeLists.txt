@@ -91,7 +91,8 @@ set(Boost_INCLUDE_DIR "${BOOST_ROOT}/include")
 
 # Force CMake to look in the correct paths
 set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
-list(APPEND CMAKE_MODULE_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
+#list(APPEND CMAKE_MODULE_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
+set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
 
 find_package(Boost 1.87.0 REQUIRED COMPONENTS system thread exception random)
 
@@ -101,13 +102,6 @@ if(Boost_FOUND)
 else()
     message(FATAL_ERROR "Boost NOT found!")
 endif()
-
-find_package(Boost 1.87.0 REQUIRED COMPONENTS
-    system
-    thread
-    exception
-    random
-)
 
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Boost not found. Please check your Boost installation.")
