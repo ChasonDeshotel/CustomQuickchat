@@ -87,10 +87,20 @@ set_property(GLOBAL PROPERTY JOB_POOLS main_pool=2)  # Limit to 2 parallel jobs
 set_property(TARGET CustomQuickchat PROPERTY JOB_POOL main_pool)
 
 set(BOOST_ROOT "C:/local/boost-1.87.0")
-set(BOOST_LIBRARYDIR "${BOOST_ROOT}/stage/lib")
+set(Boost_INCLUDE_DIR "${BOOST_ROOT}/include")
 
-set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/stage/lib/cmake/Boost-1.87.0")
-list(APPEND CMAKE_MODULE_PATH "${BOOST_ROOT}/stage/lib/cmake/Boost-1.87.0")
+# Force CMake to look in the correct paths
+set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
+list(APPEND CMAKE_MODULE_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
+
+find_package(Boost 1.87.0 REQUIRED COMPONENTS system thread exception random)
+
+if(Boost_FOUND)
+    message(STATUS "Boost found: ${Boost_INCLUDE_DIRS}")
+    include_directories(${Boost_INCLUDE_DIRS})
+else()
+    message(FATAL_ERROR "Boost NOT found!")
+endif()
 
 find_package(Boost 1.87.0 REQUIRED COMPONENTS
     system
