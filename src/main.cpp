@@ -126,7 +126,23 @@ CustomQuickchat::onLoad() {
     });
 
     // other init
-    InitStuffOnLoad();
+    LobbyInfo.Initialize(gameWrapper);
+
+    // make sure JSON files are good to go, then read them to update data
+    GetFilePaths();
+    CheckJsonFiles();
+    ReadDataFromJson();
+    gui_footer_init();
+
+#ifdef USE_SPEECH_TO_TEXT
+    ClearSttErrorLog();
+    start_websocket_stuff(true);
+#endif
+
+    InitKeyStates();
+    PreventGameFreeze();
+
+    inGameEvent = gameWrapper->IsInFreeplay() || gameWrapper->IsInGame() || gameWrapper->IsInOnlineGame();
 
     LOG("CustomQuickchat loaded! :)");
 }

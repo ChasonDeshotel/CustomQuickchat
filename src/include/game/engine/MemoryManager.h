@@ -1,3 +1,5 @@
+#pragma once
+
 class MemoryManager {
   public:
     // Set an object's flags to prevent it from being destroyed

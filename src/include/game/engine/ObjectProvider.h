@@ -1,9 +1,13 @@
 #pragma once
 
-class GameInstances {
+class ObjectProvider {
   public:
-    GameInstances();
-    ~GameInstances();
+    ObjectProvider();
+    ~ObjectProvider();
+
+    static void Initialize();
+    static class UClass* FindStaticClass(const std::string& className);
+    static class UFunction* FindStaticFunction(const std::string& functionName);
 
     // Core game instance getters
     class UEngine* GetEngine();
@@ -41,7 +45,12 @@ class GameInstances {
     T* CreateInstance();
 
   private:
+    std::map<std::string, class UClass*> m_staticClasses;
+    std::map<std::string, class UFunction*> m_staticFunctions;
+    std::vector<class UObject*> m_createdObjects;
+
     bool CheckNotInName(UObject* obj, const std::string& str);
+
     template<typename T>
     std::string GetTypeName();
 
@@ -56,4 +65,8 @@ class GameInstances {
     UGFxDataStore_X* dataStore;
     USaveData_TA* saveData;
     UOnlinePlayer_X* onlinePlayer;
+
+  private:
+    static std::map<std::string, class UClass*> m_staticClasses;
+    static std::map<std::string, class UFunction*> m_staticFunctions;
 };

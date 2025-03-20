@@ -1,3 +1,5 @@
+#pragma once
+
 class EngineValidator {
   public:
     static uintptr_t FindPattern(HMODULE module, const unsigned char* pattern, const char* mask);

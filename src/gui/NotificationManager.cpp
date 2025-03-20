@@ -1,3 +1,5 @@
+#include "NotificationManager.h"
+
 void
 NotificationManager::SpawnNotification(const std::string& title, const std::string& content, int duration, bool log) {
     UNotificationManager_TA* notificationManager = Instances.GetInstanceOf<UNotificationManager_TA>();

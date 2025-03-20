@@ -1,0 +1,292 @@
+#include "ChatManager.h"
+
+void
+ChatManager::SendChat(const std::string& chat, EChatChannel chatMode) {
+    auto enabledCvar = GetCvar(Cvars::enabled);
+    if (chat.empty() || !enabledCvar || !enabledCvar.getBoolValue()) {
+        return;
+    }
+    Instances.SendChat(chat, chatMode, true);
+}
+
+void
+ChatManager::Event_GFxHUD_TA_ChatPreset(ActorWrapper caller, void* params, std::string eventName) {
+    AGFxHUD_TA_execChatPreset_Params* Params = reinterpret_cast<AGFxHUD_TA_execChatPreset_Params*>(params);
+    if (!Params)
+        return;
+
+    // get cvars
+    auto enabled_cvar = GetCvar(Cvars::enabled);
+    auto overrideDefaultQuickchats_cvar = GetCvar(Cvars::overrideDefaultQuickchats);
+    auto blockDefaultQuickchats_cvar = GetCvar(Cvars::blockDefaultQuickchats);
+
+    if (!enabled_cvar || !enabled_cvar.getBoolValue())
+        return;
+
+    // block default quickchat if necessary
+    if (overrideDefaultQuickchats_cvar.getBoolValue()) {
+        auto currentTime = std::chrono::steady_clock::now();
+
+        auto blockQuickchatWindow = std::chrono::duration<double>(BLOCK_DEFAULT_QUICKCHAT_WINDOW);
+
+        if (currentTime <= (lastBindingActivated + blockQuickchatWindow)) {
+            Params->Index = 420; // effectively blocks default quickchat from propagating
+        }
+    } else if (blockDefaultQuickchats_cvar.getBoolValue()) {
+        Params->Index = 420; // effectively blocks default quickchat from propagating
+    }
+}
+
+void
+ChatManager::Event_OnPressChatPreset(ActorWrapper Caller, void* Params, std::string eventName) {
+    if (gameWrapper->IsInFreeplay())
+        return;
+
+    auto enabled_cvar = GetCvar(Cvars::enabled);
+    auto overrideDefaultQuickchats_cvar = GetCvar(Cvars::overrideDefaultQuickchats);
+
+    if (!enabled_cvar || !overrideDefaultQuickchats_cvar)
+        return;
+    if (!enabled_cvar.getBoolValue() || !overrideDefaultQuickchats_cvar.getBoolValue())
+        return;
+
+    auto caller = reinterpret_cast<UGFxData_Chat_TA*>(Caller.memory_address);
+    if (!caller)
+        return;
+
+    auto params = reinterpret_cast<UGFxData_Chat_TA_execOnPressChatPreset_Params*>(Params);
+    if (!params)
+        return;
+
+    apply_custom_qc_labels_to_ui(caller, params);
+}
+
+void
+ChatManager::Event_ApplyChatSpamFilter(ActorWrapper caller, void* params, std::string eventName) {
+    APlayerController_TA* pc = reinterpret_cast<APlayerController_TA*>(caller.memory_address);
+    if (!pc)
+        return;
+
+    auto disableChatTimeout_cvar = GetCvar(Cvars::disableChatTimeout);
+    if (!disableChatTimeout_cvar)
+        return;
+    bool disableChatTimeout = disableChatTimeout_cvar.getBoolValue();
+
+    // effectively disables chat timeout (in freeplay)
+    pc->ChatSpam.MaxValue = disableChatTimeout ? 420 : 4;   // default 4
+    pc->ChatSpam.DecayRate = disableChatTimeout ? 69 : 1;   // default 1
+    pc->ChatSpam.RiseAmount = disableChatTimeout ? 1 : 1.2; // default 1.2
+}
+
+void
+ChatManager::Event_NotifyChatDisabled(ActorWrapper caller, void* params, std::string eventName) {
+    gamePaused = false;
+
+    AGFxHUD_TA* hud = reinterpret_cast<AGFxHUD_TA*>(caller.memory_address);
+    if (!hud)
+        return;
+
+    Instances.SetChatTimeoutMsg(chatTimeoutMsg, hud);
+}
+
+// remove chat timestamps
+// void
+// ChatManager::RemoveTimestamps(ActorWrapper caller, void* params, std::string eventName) {
+//    if (Params == nullptr) { return; }
+//    FGFxChatMessage* Params = reinterpret_cast<FGFxChatMessage*>(params);
+//    Params->TimeStamp = "";
+//}
+
+void
+ChatManager::Event_OnChatMessage(ActorWrapper caller, void* params, std::string eventName) {
+    // TODO: replace cvar with variables
+    // this happens in the event loop = optimize for speed
+    // probably applies to other functions as well
+    auto removeTimestamps_cvar = GetCvar(Cvars::removeTimestamps);
+    if (!removeTimestamps_cvar || !removeTimestamps_cvar.getBoolValue())
+        return;
+
+    FGFxChatMessage* Params = reinterpret_cast<FGFxChatMessage*>(params);
+    if (!Params)
+        return;
+
+    Params->TimeStamp = "";
+    // Params->TimeStamp = Instances.NewFString("");           // <--- works as well
+    // Params->TimeStamp = L"";                                                        // <--- but... this causes crash upon entering a
+    // match for some reason... i think
+}
+
+void
+ChatManager::determine_quickchat_labels(UGFxData_Controls_TA* controls, bool log) {
+    if (!controls) {
+        controls = Instances.GetInstanceOf<UGFxData_Controls_TA>();
+        if (!controls) {
+            LOG("UGFxData_Controls_TA* is null!");
+            return;
+        }
+    }
+
+    std::array<BindingKey, 4> preset_group_bindings;
+
+    // find/save key bindings for each preset group
+    for (int i = 0; i < 4; i++) {
+        for (const auto& binding : controls->PCBindings) {
+            std::string action_name = binding.Action.ToString();
+
+            if (action_name != preset_group_names[i])
+                continue;
+
+            preset_group_bindings[i].action = action_name;
+            preset_group_bindings[i].pc_key = binding.Key.ToString();
+            break;
+        }
+
+        for (const auto& binding : controls->GamepadBindings) {
+            std::string action_name = binding.Action.ToString();
+
+            if (action_name != preset_group_names[i])
+                continue;
+
+            preset_group_bindings[i].action = action_name;
+            preset_group_bindings[i].gamepad_key = binding.Key.ToString();
+            break;
+        }
+    }
+
+    if (log) {
+        for (int i = 0; i < 4; i++) {
+            LOG("========== preset_group_bindings[{}] ==========", i);
+            LOG("action: {}", preset_group_bindings[i].action);
+            LOG("pc_key: {}", preset_group_bindings[i].pc_key);
+            LOG("gamepad_key: {}", preset_group_bindings[i].gamepad_key);
+        }
+
+        LOG("Bindings.size(): {}", Bindings.size());
+    }
+
+    for (const auto& binding : Bindings) {
+        if (binding.bindingType != EBindingType::Sequence || binding.buttons.size() < 2)
+            continue;
+
+        const std::string& first_button = binding.buttons[0];
+        const std::string& second_button = binding.buttons[1];
+
+        // for (const BindingKey& preset_binding : preset_group_bindings)
+        for (int group_index = 0; group_index < 4; group_index++) {
+            const BindingKey& group_key = preset_group_bindings[group_index];
+
+            // check if matches a pc binding
+            if (first_button == group_key.pc_key) {
+                for (int chat_index = 0; chat_index < 4; chat_index++) {
+                    const BindingKey& chat_key = preset_group_bindings[chat_index];
+
+                    if (second_button != chat_key.pc_key)
+                        continue;
+
+                    pc_qc_labels[group_index][chat_index] = Instances.NewFString(binding.chat);
+                    break;
+                }
+            }
+            // check if matches a gamepad binding
+            else if (first_button == group_key.gamepad_key) {
+                for (int chat_index = 0; chat_index < 4; chat_index++) {
+                    const BindingKey& chat_key = preset_group_bindings[chat_index];
+
+                    if (second_button != chat_key.gamepad_key)
+                        continue;
+
+                    gp_qc_labels[group_index][chat_index] = Instances.NewFString(binding.chat);
+                    break;
+                }
+            }
+        }
+    }
+
+    LOG("Quickchat labels updated...");
+}
+
+void
+ChatManager::apply_all_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller) {
+    if (!caller)
+        return;
+
+    auto shell = caller->Shell;
+    if (!shell)
+        return;
+
+    auto ds = shell->DataStore;
+    if (!ds)
+        return;
+
+    const auto& groups_of_chat_labels = using_gamepad ? gp_qc_labels : pc_qc_labels;
+
+    for (int group_index = 0; group_index < 4; group_index++) {
+        const auto& group_of_labels = groups_of_chat_labels.at(group_index);
+
+        for (int label_index = 0; label_index < 4; label_index++) {
+            const auto& chat_label = group_of_labels[label_index];
+            if (chat_label.empty())
+                continue;
+
+            int ds_row_index = (group_index * 4) + label_index;
+
+            // idk how this would ever happen, but to be safe...
+            if (ds_row_index < 0 || ds_row_index > 15) {
+                LOG("[ERROR] UGFxDataRow_X index out of range: {}", ds_row_index);
+                continue;
+            }
+
+            ds->SetStringValue(L"ChatPresetMessages", ds_row_index, L"Label", chat_label);
+        }
+    }
+
+    LOG("Updated quickchat labels in UI");
+}
+
+void
+ChatManager::apply_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller, UGFxData_Chat_TA_execOnPressChatPreset_Params* params) {
+    if (!caller || !params)
+        return;
+
+    const int32_t& index = params->Index;
+    if (index == 420)
+        return;
+
+    auto shell = caller->Shell;
+    if (!shell)
+        return;
+
+    auto ds = shell->DataStore;
+    if (!ds)
+        return;
+
+    const auto& chat_labels = using_gamepad ? gp_qc_labels[index] : pc_qc_labels[index];
+
+    for (int i = 0; i < 4; i++) {
+        const auto& chat_label = chat_labels[i];
+        if (chat_label.empty())
+            continue;
+
+        int ds_row_index = (index * 4) + i;
+
+        // this prevents the chats with index of 420 (aka default RL quickchats that have been overridden) from being included
+        if (ds_row_index < 0 || ds_row_index > 15) {
+            // the ds_row_index of chats that have been suppressed/overridden would be 1680-1683, so not exactly an error but still
+            // skip
+            if (ds_row_index >= 1680 && ds_row_index < 1684)
+                continue;
+
+            LOG("[ERROR] UGFxDataRow_X index out of range: {}", ds_row_index); // anything else would be an error
+            continue;
+        }
+
+        ds->SetStringValue(L"ChatPresetMessages", ds_row_index, L"Label", chat_label);
+    }
+
+    LOG("Applied quickchat labels to UI for {} group", preset_group_names[index]);
+}
+
+void
+CustomQuickchat::ResetChatTimeoutMsg() {
+    chatTimeoutMsg = "Chat disabled for [Time] second(s).";
+}
