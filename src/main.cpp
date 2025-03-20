@@ -6,6 +6,16 @@ BAKKESMOD_PLUGIN(CustomQuickchat, "Custom Quickchat", plugin_version, PLUGINTYPE
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
 void
+CustomQuickchat::toggleEnabled(std::vector<std::string> args) {
+    CVarWrapper enabledCvar = GetCvar(Cvars::enabled);
+    if (!enabledCvar)
+        return;
+
+    bool enabled = enabledCvar.getBoolValue();
+    enabledCvar.setValue(!enabled);
+}
+
+void
 CustomQuickchat::onLoad() {
     _globalCvarManager = cvarManager;
 

@@ -59,6 +59,8 @@ class CustomQuickchat
     void onLoad() override;
     void onUnload() override;
 
+    void toggleEnabled(std::vector<std::string> args);
+
     // constants
     static constexpr const char* keywordRegexPattern = R"(\[\[(.*?)\]\])";
     static constexpr double BLOCK_DEFAULT_QUICKCHAT_WINDOW = 0.1; // maybe turn into a cvar w slider in settings

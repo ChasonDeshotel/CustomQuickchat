@@ -300,3 +300,22 @@ ObjectProvider::GetOnlinePlayer() -> UOnlinePlayer_X* {
 
     return GetInstanceOf<UOnlinePlayer_X>();
 }
+
+void
+ObjectProvider::cmd_list_playlist_info(std::vector<std::string> args) {
+    UOnlineGamePlaylists_X* playlists = Instances.GetInstanceOf<UOnlineGamePlaylists_X>();
+    if (!playlists)
+        return;
+
+    LOG("DownloadedPlaylists size: {}", playlists->DownloadedPlaylists.size());
+
+    LOG("--------------------------------------");
+    LOG("ID --> Internal name --> Display name");
+    LOG("--------------------------------------");
+    for (const auto& p : playlists->DownloadedPlaylists) {
+        if (!p)
+            continue;
+
+        LOG("{} --> {} --> {}", p->PlaylistId, playlists->IdToName(p->PlaylistId).ToString(), p->GetLocalizedName().ToString());
+    }
+}

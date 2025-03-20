@@ -2,6 +2,16 @@
 #include "pch.h"
 
 auto
+CustomQuickchat::ApplyTextEffect(const std::string& originalText, ETextEffect effect) -> std::string {
+    switch (effect) {
+        case ETextEffect::None: return originalText;
+        case ETextEffect::Uwu: return to_uwu(originalText);
+        case ETextEffect::Sarcasm: return to_sarcasm(originalText);
+        default: return originalText;
+    }
+}
+
+auto
 isVowel(char ch) -> bool {
     ch = std::tolower(ch);
     return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u');

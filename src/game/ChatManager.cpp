@@ -1,7 +1,7 @@
 #include "ChatManager.h"
 
 void
-Chat::initHooks() {
+ChatManager::initHooks() {
     gameWrapper->HookEventWithCaller<ActorWrapper>("Function TAGame.GFxData_Chat_TA.OnChatMessage",
         [this](ActorWrapper caller, void* params, std::string eventName) { this->onChatMessage(caller, params, eventName); });
 
@@ -12,12 +12,40 @@ Chat::initHooks() {
 }
 
 void
-ChatManager::SendChat(const std::string& chat, EChatChannel chatMode) {
+ChatManager::SendMessage(const std::string& chat, EChatChannel chatMode) {
     auto enabledCvar = GetCvar(Cvars::enabled);
     if (chat.empty() || !enabledCvar || !enabledCvar.getBoolValue()) {
         return;
     }
-    Instances.SendChat(chat, chatMode, true);
+
+    UGFxData_Chat_TA* chatBox = GetInstanceOf<UGFxData_Chat_TA>();
+    if (!chatBox) {
+        LOG("UGFxData_Chat_TA* is null!");
+        return;
+    }
+
+    FString chatFStr = Instances.NewFString(chat);
+
+    if (chatMode == EChatChannel::EChatChannel_Match) {
+        chatBox->SendChatMessage(chatFStr, 0); // match (lobby) chat
+
+        // fixme, log removed from signature
+        if (true) {
+            LOG("Sent chat: '{}'", chat);
+        }
+    } else if (chatMode == EChatChannel::EChatChannel_Team) {
+        chatBox->SendTeamChatMessage(chatFStr, 0); // team chat
+
+        if (log) {
+            LOG("Sent chat: [Team] '{}'", chat);
+        }
+    } else if (chatMode == EChatChannel::EChatChannel_Party) {
+        chatBox->SendPartyChatMessage(chatFStr, 0); // party chat
+
+        if (log) {
+            LOG("Sent chat: [Party] '{}'", chat);
+        }
+    }
 }
 
 void
@@ -298,12 +326,12 @@ ChatManager::apply_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller, UGFxData_Cha
 }
 
 void
-CustomQuickchat::ResetChatTimeoutMsg() {
+ChatManager::ResetChatTimeoutMsg() {
     chatTimeoutMsg = "Chat disabled for [Time] second(s).";
 }
 
 void
-Chat::SetTimeoutMsg(const std::string& newMsg, AGFxHUD_TA* hud) {
+ChatManager::SetTimeoutMsg(const std::string& newMsg, AGFxHUD_TA* hud) {
     if (!hud) {
         hud = GetInstanceOf<AGFxHUD_TA>();
         if (!hud)
@@ -317,32 +345,64 @@ Chat::SetTimeoutMsg(const std::string& newMsg, AGFxHUD_TA* hud) {
 }
 
 void
-Chat::SendChat(const std::string& chat, EChatChannel chatMode, bool log) {
-    UGFxData_Chat_TA* chatBox = GetInstanceOf<UGFxData_Chat_TA>();
-    if (!chatBox) {
-        LOG("UGFxData_Chat_TA* is null!");
-        return;
-    }
+ChatManager::cmd_list_custom_chat_labels(std::vector<std::string> args) {
+    determine_quickchat_labels(nullptr, true);
 
-    FString chatFStr = Instances.NewFString(chat);
+    for (int i = 0; i < 4; i++) {
+        const auto& chat_label_arr = pc_qc_labels[i];
 
-    if (chatMode == EChatChannel::EChatChannel_Match) {
-        chatBox->SendChatMessage(chatFStr, 0); // match (lobby) chat
-
-        if (log) {
-            LOG("Sent chat: '{}'", chat);
-        }
-    } else if (chatMode == EChatChannel::EChatChannel_Team) {
-        chatBox->SendTeamChatMessage(chatFStr, 0); // team chat
-
-        if (log) {
-            LOG("Sent chat: [Team] '{}'", chat);
-        }
-    } else if (chatMode == EChatChannel::EChatChannel_Party) {
-        chatBox->SendPartyChatMessage(chatFStr, 0); // party chat
-
-        if (log) {
-            LOG("Sent chat: [Party] '{}'", chat);
+        LOG("{}:", preset_group_names[i]);
+        for (int j = 0; j < 4; j++) {
+            LOG("[{}]\t{}", j, chat_label_arr.at(j).ToString());
         }
     }
+
+    for (int i = 0; i < 4; i++) {
+        const auto& chat_label_arr = gp_qc_labels[i];
+
+        LOG("{}:", preset_group_names[i]);
+        for (int j = 0; j < 4; j++) {
+            LOG("[{}]\t{}", j, chat_label_arr.at(j).ToString());
+        }
+    }
+}
+
+auto
+ChatManager::get_last_chat() -> std::string {
+    ChatData chat = LobbyInfo.get_last_chat_data();
+
+    if (chat.Message.empty()) {
+        LOG("[ERROR] Message is empty string from last chat data");
+        return std::string();
+    }
+
+    return chat.Message;
+}
+
+auto
+CustomQuickchat::get_last_chatter_rank_str(EKeyword keyword) -> std::string {
+    ChatterRanks chatter_ranks = LobbyInfo.get_last_chatter_ranks();
+    if (chatter_ranks.playerName.empty()) {
+        LOG("[ERROR] ChatterRanks::playerName is empty string");
+        return std::string();
+    }
+
+    switch (keyword) {
+        case EKeyword::BlastAll: return chatter_ranks.get_all_ranks_str();
+        case EKeyword::BlastCasual: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Casual);
+        case EKeyword::Blast1v1: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Ones);
+        case EKeyword::Blast2v2: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Twos);
+        case EKeyword::Blast3v3: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Threes);
+        default: return std::string();
+    }
+}
+
+// fixme wtf
+// to be called in separate thread (in onLoad)
+void
+CustomQuickchat::PreventGameFreeze() {
+    // for sending chats
+    Instances.SendChat(" ", EChatChannel::EChatChannel_Match);
+
+    LOG("Sent dummy chat to prevent game freeze...");
 }
