@@ -1,8 +1,10 @@
+#pragma once
+
 class Input {
   public:
     void initHooks();
     void registerBinding(const Binding& binding);
-    void performBindingAction(const Binding& binding);
+    void performAction(const Binding& binding);
 
   private:
     std::map<std::string, bool> keyStates;
