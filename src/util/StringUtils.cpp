@@ -1,5 +1,5 @@
 auto
-CustomQuickchat::process_keywords_in_chat_str(const Binding& binding) -> std::string {
+StringUtils::process_keywords_in_chat_str(const Binding& binding) -> std::string {
     std::string result = binding.chat;
 
     for (int i = 0; i < MAX_KEYWORD_DEPTH; i++) {

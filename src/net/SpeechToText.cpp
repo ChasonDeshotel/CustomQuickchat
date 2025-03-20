@@ -3,7 +3,7 @@
 #if !defined(USE_SPEECH_TO_TEXT)
 
 void
-CustomQuickchat::no_speech_to_text_warning() {
+SpeechToText::no_speech_to_text_warning() {
     std::string message = "This version doesnt support speech-to-text. You can find that version on the github Releases page";
     NotifyAndLog("Speech-To-Text", message, 5);
 }
@@ -11,7 +11,7 @@ CustomQuickchat::no_speech_to_text_warning() {
 #else
 
 void
-CustomQuickchat::StartSpeechToText(const Binding& binding) {
+SpeechToText::StartSpeechToText(const Binding& binding) {
     if (attemptingSTT) {
         STTLog("Speech-to-text is already active!");
         return;
@@ -33,7 +33,7 @@ CustomQuickchat::StartSpeechToText(const Binding& binding) {
 }
 
 void
-CustomQuickchat::start_websocket_stuff(bool onLoad) {
+SpeechToText::start_websocket_stuff(bool onLoad) {
     if (!onLoad && Websocket && Websocket->IsConnectedToServer()) {
         LOG("[ERROR] Failed to start websocket stuff... we're already connected on port {}!", Websocket->get_port_str());
         return;
@@ -51,7 +51,7 @@ CustomQuickchat::start_websocket_stuff(bool onLoad) {
         if (onLoad) {
             // create websocket object
             std::function<void(json serverResponse)> ws_response_callback =
-                std::bind(&CustomQuickchat::process_ws_response, this, std::placeholders::_1);
+                std::bind(&SpeechToText::process_ws_response, this, std::placeholders::_1);
             Websocket = std::make_shared<WebsocketClientManager>(ws_response_callback, connecting_to_ws_server);
         }
 
@@ -89,7 +89,7 @@ CustomQuickchat::start_websocket_stuff(bool onLoad) {
 }
 
 bool
-CustomQuickchat::start_websocket_server() {
+SpeechToText::start_websocket_server() {
     auto websocket_port_cvar = GetCvar(Cvars::websocket_port);
     if (!websocket_port_cvar)
         return false;
@@ -121,13 +121,13 @@ CustomQuickchat::start_websocket_server() {
 }
 
 void
-CustomQuickchat::stop_websocket_server() {
+SpeechToText::stop_websocket_server() {
     Process::terminate_created_process(stt_python_server_process);
     LOG("Stopped websocket server using TerminateProcess...");
 }
 
 json
-CustomQuickchat::generate_data_for_STT_attempt() {
+SpeechToText::generate_data_for_STT_attempt() {
     json data;
 
     auto beginSpeechTimeout_cvar = GetCvar(Cvars::beginSpeechTimeout);
@@ -154,7 +154,7 @@ CustomQuickchat::generate_data_for_STT_attempt() {
 }
 
 json
-CustomQuickchat::generate_data_for_mic_calibration_attempt() {
+SpeechToText::generate_data_for_mic_calibration_attempt() {
     json data;
 
     data["attemptId"] = Active_STT_Attempt.attemptID;
@@ -163,14 +163,14 @@ CustomQuickchat::generate_data_for_mic_calibration_attempt() {
 }
 
 std::string
-CustomQuickchat::generate_STT_attempt_id() {
+SpeechToText::generate_STT_attempt_id() {
     std::string id = Format::GenRandomString(10);
     LOG("Generated ID for current speech-to-text attempt: {}", id);
     return id;
 }
 
 void
-CustomQuickchat::process_ws_response(const json& response) {
+SpeechToText::process_ws_response(const json& response) {
     if (!response.contains("event")) {
         STTLog("[ERROR] Missing 'event' field in response JSON from websocket server");
         return;
@@ -249,7 +249,7 @@ CustomQuickchat::process_ws_response(const json& response) {
 }
 
 void
-CustomQuickchat::process_STT_result(const json& response_data) {
+SpeechToText::process_STT_result(const json& response_data) {
     if (!response_data.contains("attemptId")) {
         STTLog("[ERROR] Missing 'attemptId' field in speech-to-text response JSON");
         return;
@@ -289,7 +289,7 @@ CustomQuickchat::process_STT_result(const json& response_data) {
 }
 
 void
-CustomQuickchat::process_mic_calibration_result(const json& response_data) {
+SpeechToText::process_mic_calibration_result(const json& response_data) {
     if (!response_data.contains("attemptId")) {
         STTLog("[ERROR] Missing 'attemptId' field in speech-to-text response JSON");
         return;
@@ -332,7 +332,7 @@ CustomQuickchat::process_mic_calibration_result(const json& response_data) {
 // ======================================== MIC CALIBRATION ========================================
 
 void
-CustomQuickchat::CalibrateMicrophone() {
+SpeechToText::CalibrateMicrophone() {
     if (calibratingMicLevel) {
         STTLog("Mic calibration is already active!");
         return;
@@ -362,7 +362,7 @@ CustomQuickchat::CalibrateMicrophone() {
 // ========================================= SPEECH-TO-TEXT ========================================
 
 std::string
-CustomQuickchat::CreateCommandString(const fs::path& executablePath, const std::vector<std::string>& args) {
+SpeechToText::CreateCommandString(const fs::path& executablePath, const std::vector<std::string>& args) {
     std::string commandStr = "\"" + executablePath.string() + "\"";
 
     for (const std::string& arg : args) {
@@ -373,7 +373,7 @@ CustomQuickchat::CreateCommandString(const fs::path& executablePath, const std::
 }
 
 void
-CustomQuickchat::ClearSttErrorLog() {
+SpeechToText::ClearSttErrorLog() {
     // Open file in write mode to clear its contents
     std::ofstream ofs(speechToTextErrorLogPath, std::ofstream::out | std::ofstream::trunc);
     ofs.close();
@@ -382,7 +382,7 @@ CustomQuickchat::ClearSttErrorLog() {
 }
 
 void
-CustomQuickchat::STTLog(const std::string& message) {
+SpeechToText::STTLog(const std::string& message) {
     auto enableSTTNotifications_cvar = GetCvar(Cvars::enableSTTNotifications);
     auto notificationDuration_cvar = GetCvar(Cvars::notificationDuration);
     if (!enableSTTNotifications_cvar || !notificationDuration_cvar)

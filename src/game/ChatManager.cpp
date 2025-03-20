@@ -380,7 +380,7 @@ ChatManager::get_last_chat() -> std::string {
 }
 
 auto
-CustomQuickchat::get_last_chatter_rank_str(EKeyword keyword) -> std::string {
+ChatManager::get_last_chatter_rank_str(EKeyword keyword) -> std::string {
     ChatterRanks chatter_ranks = LobbyInfo.get_last_chatter_ranks();
     if (chatter_ranks.playerName.empty()) {
         LOG("[ERROR] ChatterRanks::playerName is empty string");
@@ -400,7 +400,7 @@ CustomQuickchat::get_last_chatter_rank_str(EKeyword keyword) -> std::string {
 // fixme wtf
 // to be called in separate thread (in onLoad)
 void
-CustomQuickchat::PreventGameFreeze() {
+ChatManager::PreventGameFreeze() {
     // for sending chats
     Instances.SendChat(" ", EChatChannel::EChatChannel_Match);
 

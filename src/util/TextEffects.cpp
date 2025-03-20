@@ -2,7 +2,7 @@
 #include "pch.h"
 
 auto
-CustomQuickchat::ApplyTextEffect(const std::string& originalText, ETextEffect effect) -> std::string {
+TextEffects::ApplyTextEffect(const std::string& originalText, ETextEffect effect) -> std::string {
     switch (effect) {
         case ETextEffect::None: return originalText;
         case ETextEffect::Uwu: return to_uwu(originalText);

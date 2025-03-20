@@ -157,7 +157,6 @@ CustomQuickchat::onLoad() {
     LOG("CustomQuickchat loaded! :)");
 }
 
-// BUG: crashes on unload
 void
 CustomQuickchat::onUnload() {
     WriteBindingsToJson(); // just to make sure any unsaved changes are saved before exiting
