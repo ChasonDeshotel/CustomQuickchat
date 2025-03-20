@@ -1,6 +1,18 @@
 #include "EngineValidator.h"
 
+void
+EngineValidator::Init() {
+    InitGlobals();
+    return CheckGlobals();
+}
+
+void
+EngineValidator::InitGlobals() {
+    GObjects = reinterpret_cast<TArray<UObject*>*>(GetGObjectsAddress());
+    GNames = reinterpret_cast<TArray<FNameEntry*>*>(GetGNamesAddress());
+}
 auto
+
 EngineValidator::FindPattern(HMODULE module, const unsigned char* pattern, const char* mask) -> uintptr_t {
     MODULEINFO info = {};
     GetModuleInformation(GetCurrentProcess(), module, &info, sizeof(MODULEINFO));
@@ -38,12 +50,6 @@ EngineValidator::GetGNamesAddress() -> uintptr_t {
 auto
 EngineValidator::GetGObjectsAddress() -> uintptr_t {
     return GetGNamesAddress() + 0x48;
-}
-
-void
-EngineValidator::InitGlobals() {
-    GObjects = reinterpret_cast<TArray<UObject*>*>(GetGObjectsAddress());
-    GNames = reinterpret_cast<TArray<FNameEntry*>*>(GetGNamesAddress());
 }
 
 auto

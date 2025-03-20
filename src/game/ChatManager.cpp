@@ -18,6 +18,18 @@ ChatManager::initHooks() {
         Events::GFxHUD_TA_ChatPreset, [this]<typename T0, typename T1, typename T2>(T0&& PH1, T1&& PH2, T2&& PH3) {
             Event_GFxHUD_TA_ChatPreset(std::forward<T0>(PH1), std::forward<T1>(PH2), std::forward<T2>(PH3));
         });
+
+    // the thing that tells you chat is disabled
+    gameWrapper->HookEventWithCallerPost<ActorWrapper>(Events::ApplyChatSpamFilter,
+        std::bind(
+            &CustomQuickchat::Event_ApplyChatSpamFilter, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
+    gameWrapper->HookEventWithCaller<ActorWrapper>(Events::GFxHUD_TA_NotifyChatDisabled,
+        std::bind(
+            &CustomQuickchat::Event_NotifyChatDisabled, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
+    gameWrapper->HookEventWithCaller<ActorWrapper>(Events::OnChatMessage,
+        std::bind(&CustomQuickchat::Event_OnChatMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 void

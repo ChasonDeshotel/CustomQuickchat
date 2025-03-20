@@ -19,13 +19,9 @@ void
 CustomQuickchat::onLoad() {
     _globalCvarManager = cvarManager;
 
-    // init globals
-    Instances.InitGlobals();
-    if (!Instances.CheckGlobals()) {
+    if (!EngineValidator.Init()) {
         return;
     }
-
-    // ====================================== cvars ===========================================
 
     // bools
     auto enabled_cvar = RegisterCvar_Bool(Cvars::enabled, true);
@@ -74,8 +70,6 @@ CustomQuickchat::onLoad() {
     customChatTimeoutMsg_cvar.addOnValueChanged(
         std::bind(&CustomQuickchat::changed_customChatTimeoutMsg, this, std::placeholders::_1, std::placeholders::_2));
 
-    // ===================================== commands =========================================
-
     RegisterCommand(Commands::toggleEnabled, std::bind(&CustomQuickchat::cmd_toggleEnabled, this, std::placeholders::_1));
     RegisterCommand(Commands::listBindings, std::bind(&CustomQuickchat::cmd_listBindings, this, std::placeholders::_1));
     RegisterCommand(
@@ -83,31 +77,6 @@ CustomQuickchat::onLoad() {
     RegisterCommand(Commands::list_playlist_info, std::bind(&CustomQuickchat::cmd_list_playlist_info, this, std::placeholders::_1));
     RegisterCommand(Commands::exitToMainMenu, std::bind(&CustomQuickchat::cmd_exitToMainMenu, this, std::placeholders::_1));
     RegisterCommand(Commands::forfeit, std::bind(&CustomQuickchat::cmd_forfeit, this, std::placeholders::_1));
-
-    // fixme: wrap with var
-    // init hook when turned on in settings
-    // destroy hook when turned off in settings
-    if (false) {
-        gameWrapper->HookEventWithCallerPost<ActorWrapper>(Events::ApplyChatSpamFilter,
-            std::bind(&CustomQuickchat::Event_ApplyChatSpamFilter,
-                this,
-                std::placeholders::_1,
-                std::placeholders::_2,
-                std::placeholders::_3));
-    }
-
-    // fixme: wrap with var
-    if (false) {
-        gameWrapper->HookEventWithCaller<ActorWrapper>(Events::GFxHUD_TA_NotifyChatDisabled,
-            std::bind(&CustomQuickchat::Event_NotifyChatDisabled,
-                this,
-                std::placeholders::_1,
-                std::placeholders::_2,
-                std::placeholders::_3));
-    }
-
-    gameWrapper->HookEventWithCaller<ActorWrapper>(Events::OnChatMessage,
-        std::bind(&CustomQuickchat::Event_OnChatMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
     gameWrapper->HookEventPost(
         Events::LoadingScreenStart, std::bind(&CustomQuickchat::Event_LoadingScreenStart, this, std::placeholders::_1));
