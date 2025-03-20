@@ -1,4 +1,13 @@
 #include "ActionHandler.h"
+#include "LogGlobal.h"
+
+ActionHandler::ActionHandler(std::function<std::shared_ptr<ChatManager>()> chatManager)
+    : chatManager_(std::move(chatManager)
+{
+    // init();
+}
+
+ActionHandler::~ActionHandler() {}
 
 void
 ActionHandler::PerformBindingAction(const Binding& binding) {

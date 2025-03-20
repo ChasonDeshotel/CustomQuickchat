@@ -1,0 +1,4 @@
+void
+RenderAllVariationListNames();
+void
+RenderVariationListDetails();

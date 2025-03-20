@@ -41,6 +41,10 @@ class LobbyInfoComponent {
     void event_GFxData_Chat_TA_OnShellSet(ActorWrapper caller, void* params, std::string event);
     void event_we_need_to_yeet_stored_data(std::string event);
     void event_GFxData_Chat_TA_AddChatMessage(ActorWrapper caller, void* params, std::string event);
+
+    fs::path lobbyInfoFolder;
+    fs::path lobbyInfoChatsFilePath;
+    fs::path lobbyInfoRanksFilePath;
 };
 
 extern class LobbyInfoComponent LobbyInfo;

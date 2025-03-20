@@ -1,3 +1,5 @@
+#include <string_view>
+
 // credit to https://github.com/JulienML/BetterChat/ thx fam
 namespace QuickchatData {
 const std::map<std::string, std::string> IdsToText = {
@@ -105,10 +107,6 @@ struct UidWrapper {
 
 enum class ERankPlaylists : uint8_t { Ones = 0, Twos = 1, Threes = 2, Casual = 3 };
 
-#pragma once
-
-#include <string_view>
-
 struct Events {
     static constexpr const char* SendChatPresetMessage = "Function TAGame.GFxData_Chat_TA.SendChatPresetMessage";
     static constexpr const char* OnChatMessage = "Function TAGame.GFxData_Chat_TA.OnChatMessage";
@@ -143,8 +141,7 @@ struct Events {
 
     static constexpr const char* OnActiveBindingsChanged = "Function TAGame.PlayerInput_Game_TA.OnActiveBindingsChanged";
 
-    // possibly useful, but not used atm
-    // static constexpr const char* SetGamePaused = "Function ProjectX.GFxShell_X.SetGamePaused";
-    // static constexpr const char* PodiumBegin = "Function GameEvent_Soccar_TA.PrePodiumSpotlight.BeginState";
-    // static constexpr const char* PodiumEnd = "Function GameEvent_Soccar_TA.PodiumSpotlight.EndState";
+    static constexpr const char* SetGamePaused = "Function ProjectX.GFxShell_X.SetGamePaused";
+    static constexpr const char* PodiumBegin = "Function GameEvent_Soccar_TA.PrePodiumSpotlight.BeginState";
+    static constexpr const char* PodiumEnd = "Function GameEvent_Soccar_TA.PodiumSpotlight.EndState";
 };

@@ -1,6 +1,11 @@
 #include "InputHandler.h"
 
 void
+InputHandler::init() {
+    InitKeyStates();
+}
+
+void
 InputHandler::KeyPress(ActorWrapper caller, void* params, std::string eventName) {
     // fixme: check if any binding for that key and exit early
 

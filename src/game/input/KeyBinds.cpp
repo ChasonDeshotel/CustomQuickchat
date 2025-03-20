@@ -1,4 +1,11 @@
 #include "KeyBinds.h"
+#include "FiltUtil.h"
+
+KeyBinds::KeyBinds(std::function<std::shared_ptr<FileUtil>()> fileUtil)
+    : fileUtil_(std::move(fileUtil)
+{
+    // init();
+}
 
 void
 KeyBinds::list(std::vector<std::string> args) {

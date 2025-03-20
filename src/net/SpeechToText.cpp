@@ -1,14 +1,24 @@
 #include "../include/main.h"
 
-#if !defined(USE_SPEECH_TO_TEXT)
+SpeechToText::SpeechToText() {
+    init();
+}
+
+SpeechToText::~SpeechToText() {
+    Websocket->StopClient();
+    stop_websocket_server();
+}
+
+SpeechToText::init() {
+    ClearSttErrorLog();
+    start_websocket_stuff(true);
+}
 
 void
 SpeechToText::no_speech_to_text_warning() {
     std::string message = "This version doesnt support speech-to-text. You can find that version on the github Releases page";
     NotifyAndLog("Speech-To-Text", message, 5);
 }
-
-#else
 
 void
 SpeechToText::StartSpeechToText(const Binding& binding) {
@@ -392,5 +402,3 @@ SpeechToText::STTLog(const std::string& message) {
         NotifyAndLog("Speech-To-Text", message, notificationDuration_cvar.getFloatValue());
     }
 }
-
-#endif // USE_SPEECH_TO_TEXT

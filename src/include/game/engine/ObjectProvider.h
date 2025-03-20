@@ -4,8 +4,13 @@ static constexpr int32_t INSTANCES_INTERATE_OFFSET = 100;
 
 class ObjectProvider {
   public:
-    ObjectProvider();
-    ~ObjectProvider();
+    ObjectProvider() = default;
+    ~ObjectProvider() = default;
+
+    ObjectProvider(const ObjectProvider&) = delete;
+    auto operator=(const ObjectProvider&) -> ObjectProvider& = delete;
+    ObjectProvider(ObjectProvider&&) = delete;
+    auto operator=(ObjectProvider&&) -> ObjectProvider& = delete;
 
     static void Initialize();
     static void Cleanup();

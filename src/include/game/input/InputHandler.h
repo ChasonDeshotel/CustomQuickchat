@@ -15,11 +15,15 @@ class InputHandler {
     void OnKeyPress(int key);
     void SetChatActive(bool isActive);
 
+    void performAction(const Binding& binding);
+
   private:
     ChatManager& chatManager_;
     GameState& gameState_;
     bool chatActive_ = false;
     bool hooksActive_ = false;
+
+    bool using_gamepad = false;
 
     std::shared_ptr<KeyBindSettings> settings_;
     std::shared_ptr<ChatModule> chatModule_;

@@ -12,6 +12,8 @@ class GameState {
     bool inGameEvent = false;
     bool matchEnded = false;
 
+    bool onLoadComplete = false;
+
     void onPushMenu(ActorWrapper caller, void* params, std::string eventName);
     void onPopMenu(ActorWrapper caller, void* params, std::string eventName);
     void onLoadingScreenStart(std::string eventName);

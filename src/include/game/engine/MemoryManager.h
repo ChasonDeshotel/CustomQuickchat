@@ -2,6 +2,14 @@
 
 class MemoryManager {
   public:
+    MemoryManager();
+    ~MemoryManager() = default;
+
+    MemoryManager(const MemoryManager&) = delete;
+    auto operator=(const MemoryManager&) -> MemoryManager& = delete;
+    MemoryManager(MemoryManager&&) = delete;
+    auto operator=(MemoryManager&&) -> MemoryManager& = delete;
+
     // Set an object's flags to prevent it from being destroyed
     static void MarkInvincible(class UObject* object);
 

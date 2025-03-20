@@ -80,19 +80,7 @@ CustomQuickchat::onLoad() {
 
     LobbyInfo.Initialize(gameWrapper);
 
-    // make sure JSON files are good to go, then read them to update data
-    GetFilePaths();
-    CheckJsonFiles();
-    ReadDataFromJson();
     gui_footer_init();
-
-#ifdef USE_SPEECH_TO_TEXT
-    ClearSttErrorLog();
-    start_websocket_stuff(true);
-#endif
-
-    InitKeyStates();
-    PreventGameFreeze();
 
     inGameEvent = gameWrapper->IsInFreeplay() || gameWrapper->IsInGame() || gameWrapper->IsInOnlineGame();
 
@@ -104,8 +92,6 @@ CustomQuickchat::onUnload() {
     WriteBindingsToJson(); // just to make sure any unsaved changes are saved before exiting
 
 #ifdef USE_SPEECH_TO_TEXT
-    Websocket->StopClient();
-    stop_websocket_server();
 
 #endif // USE_SPEECH_TO_TEXT
 }

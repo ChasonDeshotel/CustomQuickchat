@@ -1,5 +1,7 @@
+
+
 void
-CustomQuickchat::WriteBindingsToJson() {
+FileUtils::WriteBindingsToJson() {
     json bindingsJsonObj;
 
     for (const auto& binding : Bindings) {
@@ -23,7 +25,7 @@ CustomQuickchat::WriteBindingsToJson() {
 }
 
 void
-CustomQuickchat::WriteVariationsToJson() {
+FileUtils::WriteVariationsToJson() {
     json variationsJsonObj;
 
     for (const auto& list : Variations) {
@@ -44,10 +46,10 @@ CustomQuickchat::WriteVariationsToJson() {
 }
 
 void
-CustomQuickchat::GetFilePaths() {
+FileUtils::GetFilePaths() {
     fs::path bmDataFolderFilePath = gameWrapper->GetDataFolder();
 
-    customQuickchatFolder = bmDataFolderFilePath / "CustomQuickchat";
+    customQuickchatFolder = bmDataFolderFilePath / "FileUtils";
     bindingsFilePath = customQuickchatFolder / "Bindings.json";
     variationsFilePath = customQuickchatFolder / "Variations.json";
 
