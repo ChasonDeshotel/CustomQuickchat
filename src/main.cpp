@@ -78,19 +78,6 @@ CustomQuickchat::onLoad() {
     RegisterCommand(Commands::exitToMainMenu, std::bind(&CustomQuickchat::cmd_exitToMainMenu, this, std::placeholders::_1));
     RegisterCommand(Commands::forfeit, std::bind(&CustomQuickchat::cmd_forfeit, this, std::placeholders::_1));
 
-    gameWrapper->HookEventPost(
-        Events::LoadingScreenStart, std::bind(&CustomQuickchat::Event_LoadingScreenStart, this, std::placeholders::_1));
-
-    gameWrapper->HookEventPost(Events::MatchEnded, [this](std::string eventName) { matchEnded = true; });
-    gameWrapper->HookEventPost(Events::EnterStartState, [this](std::string eventName) { inGameEvent = true; });
-
-    gameWrapper->HookEvent(Events::SendChatPresetMessage, [this](std::string eventName) {
-        // reset/update data for all bindings
-        lastBindingActivated = std::chrono::steady_clock::now();
-        ResetAllFirstButtonStates();
-    });
-
-    // other init
     LobbyInfo.Initialize(gameWrapper);
 
     // make sure JSON files are good to go, then read them to update data

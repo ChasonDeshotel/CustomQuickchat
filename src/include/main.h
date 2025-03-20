@@ -87,14 +87,10 @@ class CustomQuickchat
     void CheckJsonFiles();
     void GetFilePaths();
     void ReadDataFromJson();
-    void PreventGameFreeze(); // hacky solution to prevent game freezing for few seconds on 1st chat sent
 
     // bindings & variations stuff
-    std::vector<Binding> Bindings;
-    std::vector<VariationList> Variations;
 
     int selectedBindingIndex = 0;
-    int selectedVariationIndex = 0;
 
     std::unordered_map<std::string, bool> keyStates;
 
@@ -110,15 +106,8 @@ class CustomQuickchat
     void WriteVariationsToJson();
 
     void AddEmptyBinding();
-    void AddEmptyVariationList();
 
     void DeleteBinding(int idx);
-    void DeleteVariationList(int idx);
-    void UpdateDataFromVariationStr();
-
-    std::string Variation(const std::string& listName);
-    std::vector<std::string> ShuffleWordList(const std::vector<std::string>& ogList);
-    void ReshuffleWordList(int idx);
 
     void PerformBindingAction(const Binding& binding);
     std::string process_keywords_in_chat_str(const Binding& binding);
@@ -127,23 +116,11 @@ class CustomQuickchat
     std::string get_last_chat();
     std::string get_last_chatter_rank_str(EKeyword keyword);
 
-    // sending chat stuff
-    void SendChat(const std::string& chat, EChatChannel chatMode);
-    std::string ApplyTextEffect(const std::string& originalText, ETextEffect effect);
-
-    // chat timeout stuff
-    std::string chatTimeoutMsg = "Chat disabled for [Time] second(s).";
-    void ResetChatTimeoutMsg();
-
     // modify quickchat UI stuff
     static constexpr std::array<const char*, 4> preset_group_names = { "ChatPreset1", "ChatPreset2", "ChatPreset3", "ChatPreset4" };
     std::array<std::array<FString, 4>, 4> pc_qc_labels;
     std::array<std::array<FString, 4>, 4> gp_qc_labels;
     bool using_gamepad = false;
-
-    void determine_quickchat_labels(UGFxData_Controls_TA* controls = nullptr, bool log = false);
-    void apply_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller, UGFxData_Chat_TA_execOnPressChatPreset_Params* params = nullptr);
-    void apply_all_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller);
 
     // misc functions
     void NotifyAndLog(const std::string& title, const std::string& message, int duration = 3);
@@ -205,10 +182,6 @@ class CustomQuickchat
     void cmd_listBindings(std::vector<std::string> args);
     void cmd_list_custom_chat_labels(std::vector<std::string> args);
     void cmd_list_playlist_info(std::vector<std::string> args);
-    void cmd_exitToMainMenu(std::vector<std::string> args);
-    void cmd_forfeit(std::vector<std::string> args);
-    void cmd_test(std::vector<std::string> args);
-    void cmd_test2(std::vector<std::string> args);
 
     // cvar change callbacks
     void changed_enabled(std::string cvarName, CVarWrapper updatedCvar);

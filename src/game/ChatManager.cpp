@@ -30,6 +30,12 @@ ChatManager::initHooks() {
 
     gameWrapper->HookEventWithCaller<ActorWrapper>(Events::OnChatMessage,
         std::bind(&CustomQuickchat::Event_OnChatMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
+    gameWrapper->HookEvent(Events::SendChatPresetMessage, [this](std::string eventName) {
+        // reset/update data for all bindings
+        lastBindingActivated = std::chrono::steady_clock::now();
+        ResetAllFirstButtonStates();
+    });
 }
 
 void
@@ -416,14 +422,4 @@ ChatManager::get_last_chatter_rank_str(EKeyword keyword) -> std::string {
         case EKeyword::Blast3v3: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Threes);
         default: return std::string();
     }
-}
-
-// fixme wtf
-// to be called in separate thread (in onLoad)
-void
-ChatManager::PreventGameFreeze() {
-    // for sending chats
-    Instances.SendChat(" ", EChatChannel::EChatChannel_Match);
-
-    LOG("Sent dummy chat to prevent game freeze...");
 }

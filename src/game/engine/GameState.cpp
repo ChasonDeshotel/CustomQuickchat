@@ -1,7 +1,13 @@
 #include "GameState.h"
 
+gameWrapper->HookEventPost(Events::LoadingScreenStart,
+    std::bind(&CustomQuickchat::Event_LoadingScreenStart, this, std::placeholders::_1));
+
+gameWrapper->HookEventPost(Events::MatchEnded, [this](std::string eventName) { matchEnded = true; });
+gameWrapper->HookEventPost(Events::EnterStartState, [this](std::string eventName) { inGameEvent = true; });
+
 void
-GameState::Event_PushMenu(ActorWrapper caller, void* params, std::string eventName) {
+GameState::setPaused(ActorWrapper caller, void* params, std::string eventName) {
     UGFxData_MenuStack_TA_execPushMenu_Params* Params = reinterpret_cast<UGFxData_MenuStack_TA_execPushMenu_Params*>(params);
     if (!Params) {
         return;
@@ -13,7 +19,7 @@ GameState::Event_PushMenu(ActorWrapper caller, void* params, std::string eventNa
 }
 
 void
-GameState::Event_PopMenu(ActorWrapper caller, void* params, std::string eventName) {
+GameState::setUnpaused(ActorWrapper caller, void* params, std::string eventName) {
     UGFxData_MenuStack_TA_execPopMenu_Params* Params = reinterpret_cast<UGFxData_MenuStack_TA_execPopMenu_Params*>(params);
     if (!Params) {
         return;
@@ -25,7 +31,7 @@ GameState::Event_PopMenu(ActorWrapper caller, void* params, std::string eventNam
 }
 
 void
-GameState::Event_LoadingScreenStart(std::string eventName) {
+GameState::loadingScreenStart(std::string eventName) {
     gamePaused = false;
     matchEnded = false;
     inGameEvent = false;
