@@ -99,14 +99,10 @@ CustomQuickchat::process_keywords_in_chat_str(const Binding& binding) -> std::st
 
 void
 CustomQuickchat::SendChat(const std::string& chat, EChatChannel chatMode) {
-    if (chat.empty())
-        return;
-
-    // only send chat if custom quickchats are turned on
     auto enabledCvar = GetCvar(Cvars::enabled);
-    if (!enabledCvar || !enabledCvar.getBoolValue())
+    if (chat.empty() || !enabledCvar || !enabledCvar.getBoolValue()) {
         return;
-
+    }
     Instances.SendChat(chat, chatMode, true);
 }
 

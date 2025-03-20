@@ -4,8 +4,9 @@ void
 CustomQuickchat::Event_KeyPressed(ActorWrapper caller, void* params, std::string eventName) {
     // TODO: check if any binding for that key and exit early
 
-    if (gamePaused || !inGameEvent)
+    if (gamePaused || !inGameEvent) {
         return;
+    }
 
     if (matchEnded) {
         auto disablePostMatchQuickchats_cvar = GetCvar(Cvars::disablePostMatchQuickchats);
@@ -13,13 +14,13 @@ CustomQuickchat::Event_KeyPressed(ActorWrapper caller, void* params, std::string
             return;
     }
 
-    UGameViewportClient_TA_execHandleKeyPress_Params* keyPressData =
-        reinterpret_cast<UGameViewportClient_TA_execHandleKeyPress_Params*>(params);
-    if (!keyPressData)
+    auto* keyPressData = reinterpret_cast<UGameViewportClient_TA_execHandleKeyPress_Params*>(params);
+    if (keyPressData == nullptr) {
         return;
+    }
 
     std::string keyName = keyPressData->Key.ToString();
-    EInputEvent keyEventType = static_cast<EInputEvent>(keyPressData->EventType);
+    auto keyEventType = static_cast<EInputEvent>(keyPressData->EventType);
 
     if (keyEventType == EInputEvent::IE_Pressed) {
         keyStates[keyName] = true; // update key state (for CheckCombination() to analyze a "snapshot" of all pressed buttons)
@@ -91,20 +92,6 @@ CustomQuickchat::Event_GFxHUD_TA_ChatPreset(ActorWrapper caller, void* params, s
     }
 }
 
-// happens after joining a match and after a binding has been changed in RL settings
-void
-CustomQuickchat::Event_InitUIBindings(ActorWrapper Caller, void* Params, std::string eventName) {
-    auto caller = reinterpret_cast<UGFxData_Controls_TA*>(Caller.memory_address);
-    if (!caller)
-        return;
-
-    // wait 0.5s to allow all the UGFxData_Controls_TA::MapUIBinding(...) calls to finish
-    DELAY_CAPTURE(0.5f, if (!caller) return; determine_quickchat_labels(caller);, caller);
-}
-
-// NOTE: Running this on every chat preset pressed (aka every time the quickchat ui shows up) ensures the correct group of custom
-// quickchat labels (pc vs gamepad) will be displayed. It may seem more efficient to apply chat labels to ui less often, but that
-// wouldn't account for user switching between pc & gamepad inputs
 void
 CustomQuickchat::Event_OnPressChatPreset(ActorWrapper Caller, void* Params, std::string eventName) {
     if (gameWrapper->IsInFreeplay())
@@ -158,6 +145,13 @@ CustomQuickchat::Event_NotifyChatDisabled(ActorWrapper caller, void* params, std
 }
 
 // remove chat timestamps
+// void
+// CustomQuickchat::RemoveTimestamps(ActorWrapper caller, void* params, std::string eventName) {
+//    if (Params == nullptr) { return; }
+//    FGFxChatMessage* Params = reinterpret_cast<FGFxChatMessage*>(params);
+//    Params->TimeStamp = "";
+//}
+
 void
 CustomQuickchat::Event_OnChatMessage(ActorWrapper caller, void* params, std::string eventName) {
     // TODO: replace cvar with variables
@@ -172,29 +166,33 @@ CustomQuickchat::Event_OnChatMessage(ActorWrapper caller, void* params, std::str
         return;
 
     Params->TimeStamp = "";
-    // Params->TimeStamp = Instances.NewFString("");		// <--- works as well
-    // Params->TimeStamp = L"";							// <--- but... this causes crash upon entering a match
-    // for some reason... i think
+    // Params->TimeStamp = Instances.NewFString("");           // <--- works as well
+    // Params->TimeStamp = L"";                                                        // <--- but... this causes crash upon entering a
+    // match for some reason... i think
 }
 
 void
 CustomQuickchat::Event_PushMenu(ActorWrapper caller, void* params, std::string eventName) {
     UGFxData_MenuStack_TA_execPushMenu_Params* Params = reinterpret_cast<UGFxData_MenuStack_TA_execPushMenu_Params*>(params);
-    if (!Params)
+    if (!Params) {
         return;
+    }
 
-    if (Params->MenuName.ToString() == "MidGameMenuMovie")
+    if (Params->MenuName.ToString() == "MidGameMenuMovie") {
         gamePaused = true;
+    }
 }
 
 void
 CustomQuickchat::Event_PopMenu(ActorWrapper caller, void* params, std::string eventName) {
     UGFxData_MenuStack_TA_execPopMenu_Params* Params = reinterpret_cast<UGFxData_MenuStack_TA_execPopMenu_Params*>(params);
-    if (!Params)
+    if (!Params) {
         return;
+    }
 
-    if (Params->MenuName.ToString() == "MidGameMenuMovie")
+    if (Params->MenuName.ToString() == "MidGameMenuMovie") {
         gamePaused = false;
+    }
 }
 
 void
