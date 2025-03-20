@@ -1,11 +1,15 @@
 #pragma once
 
+static constexpr int32_t INSTANCES_INTERATE_OFFSET = 100;
+
 class ObjectProvider {
   public:
     ObjectProvider();
     ~ObjectProvider();
 
     static void Initialize();
+    static void Cleanup();
+
     static class UClass* FindStaticClass(const std::string& className);
     static class UFunction* FindStaticFunction(const std::string& functionName);
 
@@ -65,8 +69,4 @@ class ObjectProvider {
     UGFxDataStore_X* dataStore;
     USaveData_TA* saveData;
     UOnlinePlayer_X* onlinePlayer;
-
-  private:
-    static std::map<std::string, class UClass*> m_staticClasses;
-    static std::map<std::string, class UFunction*> m_staticFunctions;
 };
