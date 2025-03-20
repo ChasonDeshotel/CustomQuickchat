@@ -1,0 +1,1 @@
+// if a key is bound to a command, this executes it
