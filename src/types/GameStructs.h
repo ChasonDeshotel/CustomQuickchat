@@ -1,5 +1,6 @@
 // credit to https://github.com/JulienML/BetterChat/ thx fam
-const std::map<std::string, std::string> quickchat_ids_to_text = {
+namespace QuickchatData {
+const std::map<std::string, std::string> IdsToText = {
     { "Group1Message1", "I got it!" },       // Je l'ai !
     { "Group1Message2", "Need boost!" },     // Besoin de turbo !
     { "Group1Message3", "Take the shot!" },  // Prends-le !
@@ -62,6 +63,7 @@ const std::map<std::string, std::string> quickchat_ids_to_text = {
     { "Group5Message9", "Party Up?" },        // On groupe ?
 
     { "Group6Message4", "This is Rocket League!" } // �a c'est Rocket League !
+};
 };
 
 struct NetId {

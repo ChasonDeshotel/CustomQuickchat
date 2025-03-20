@@ -8,7 +8,16 @@ ChatManager::initHooks() {
     gameWrapper->HookEventWithCaller<ActorWrapper>("Function TAGame.GFxData_Chat_TA.OnPressChatPreset",
         [this](ActorWrapper caller, void* params, std::string eventName) { this->onPressChatPreset(caller, params, eventName); });
 
-    // Other chat-related hooks...
+    gameWrapper->HookEventWithCallerPost<ActorWrapper>(Events::KeyPresse),
+        [this]<typename T0, typename T1, typename T2>(T0&& PH1, T1&& PH2, T2&& PH3) {
+        Event_KeyPressed(std::forward<T0>(PH1), std::forward<T1>(PH2), std::forward<T2>(PH3));
+        }
+    );
+
+    gameWrapper->HookEventWithCaller<ActorWrapper>(
+        Events::GFxHUD_TA_ChatPreset, [this]<typename T0, typename T1, typename T2>(T0&& PH1, T1&& PH2, T2&& PH3) {
+            Event_GFxHUD_TA_ChatPreset(std::forward<T0>(PH1), std::forward<T1>(PH2), std::forward<T2>(PH3));
+        });
 }
 
 void

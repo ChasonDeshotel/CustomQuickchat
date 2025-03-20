@@ -83,20 +83,6 @@ CustomQuickchat::onLoad() {
     RegisterCommand(Commands::list_playlist_info, std::bind(&CustomQuickchat::cmd_list_playlist_info, this, std::placeholders::_1));
     RegisterCommand(Commands::exitToMainMenu, std::bind(&CustomQuickchat::cmd_exitToMainMenu, this, std::placeholders::_1));
     RegisterCommand(Commands::forfeit, std::bind(&CustomQuickchat::cmd_forfeit, this, std::placeholders::_1));
-    RegisterCommand(Commands::test, std::bind(&CustomQuickchat::cmd_test, this, std::placeholders::_1));
-    RegisterCommand(Commands::test2, std::bind(&CustomQuickchat::cmd_test2, this, std::placeholders::_1));
-
-    // ======================================= hooks ==========================================
-
-    gameWrapper->HookEventWithCallerPost<ActorWrapper>(
-        Events::KeyPressed, [this]<typename T0, typename T1, typename T2>(T0&& PH1, T1&& PH2, T2&& PH3) {
-            Event_KeyPressed(std::forward<T0>(PH1), std::forward<T1>(PH2), std::forward<T2>(PH3));
-        });
-
-    gameWrapper->HookEventWithCaller<ActorWrapper>(
-        Events::GFxHUD_TA_ChatPreset, [this]<typename T0, typename T1, typename T2>(T0&& PH1, T1&& PH2, T2&& PH3) {
-            Event_GFxHUD_TA_ChatPreset(std::forward<T0>(PH1), std::forward<T1>(PH2), std::forward<T2>(PH3));
-        });
 
     // fixme: wrap with var
     // init hook when turned on in settings
