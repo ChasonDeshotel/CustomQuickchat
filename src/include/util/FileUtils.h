@@ -13,3 +13,7 @@ void
 WriteBindingsToJson();
 void
 WriteVariationsToJson();
+
+fs::path customQuickchatFolder;
+fs::path bindingsFilePath;
+fs::path variationsFilePath;
