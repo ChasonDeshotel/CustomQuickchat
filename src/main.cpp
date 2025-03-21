@@ -1,5 +1,6 @@
 #include "DependencyContainer.h"
 #include "EngineValidator.h"
+#include "InputHandler.h"
 
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
@@ -15,8 +16,14 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
     CustomQuickchat()
       : container_(DependencyContainer::getInstance()) {}
     void onLoad() override {
+
+        // register dependencies
         container_.registerFactory<EngineValidator>(
             [](DependencyContainer& c) -> std::shared_ptr<EngineValidator> { return std::make_shared<EngineValidator>(); },
+            DependencyContainer::Lifetime::Singleton);
+
+        container_.registerFactory<InputHandler>(
+            [](DependencyContainer& c) -> std::shared_ptr<InputHandler> { return std::make_shared<InputHandler>(); },
             DependencyContainer::Lifetime::Singleton);
 
         if (!container_.resolve<EngineValidator>()->init()) {

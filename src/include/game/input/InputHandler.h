@@ -1,4 +1,7 @@
 #pragma once
+#include "ChatManager.h"
+
+#include <Engine/ActorWrapper.h>
 
 class InputHandler {
   public:

@@ -1,8 +1,17 @@
 #pragma once
+#include "InputHandler.h"
+
+#include "SdkHeaders.hpp"
+#include <array>
+#include <chrono>
+#include <string>
+
+#include <TAGame_classes.hpp>
+#include <TAGame_parameters.hpp>
 
 class ChatManager {
   public:
-    ChatManager(InputManager& inputManager);
+    ChatManager(InputHandler& inputHandler);
 
     void initHooks();
 
@@ -17,7 +26,7 @@ class ChatManager {
     void ResetChatTimeoutMsg();
 
   private:
-    InputManager& inputManager_;
+    InputHandler& inputHandler_;
     std::chrono::time_point<std::chrono::steady_clock> lastMessageTime_;
 
     void determine_quickchat_labels(UGFxData_Controls_TA* controls = nullptr, bool log = false);

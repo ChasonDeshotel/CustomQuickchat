@@ -1,4 +1,7 @@
 #include "ChatManager.h"
+#include "bakkesmod/plugin/bakkesmodplugin.h"
+
+std::shared_ptr<GameWrapper> gameWrapper;
 
 void
 ChatManager::initHooks() {
