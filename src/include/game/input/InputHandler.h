@@ -8,11 +8,13 @@ class GameState;
 class ChatManager;
 class KeyBinds;
 class ActorWrapper;
+class ActionHandler;
 
 class InputHandler {
   public:
     explicit InputHandler(std::function<std::shared_ptr<GameState>()> gameState,
-        std::function<std::shared_ptr<ChatManager>()> chatManager);
+        std::function<std::shared_ptr<ChatManager>()> chatManager,
+        std::function<std::shared_ptr<ActionHandler>()> actionHandler);
     void initHooks();
 
     void init();
@@ -25,12 +27,15 @@ class InputHandler {
     void OnKeyPress(int key);
     void SetChatActive(bool isActive);
 
-    void performAction(const Binding& binding);
+    // void performAction(const Binding& binding);
+    void performAction();
 
   private:
     std::function<std::shared_ptr<GameState>()> gameState_;
     std::function<std::shared_ptr<ChatManager>()> chatManager_;
+    std::function<std::shared_ptr<ActionHandler>()> actionHandler_;
     std::function<std::shared_ptr<KeyBinds>()> keyBinds_;
+
     bool chatActive_ = false;
     bool hooksActive_ = false;
 

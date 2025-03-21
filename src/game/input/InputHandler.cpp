@@ -1,14 +1,18 @@
 #include "InputHandler.h"
+#include "ActionHandler.h"
 #include "GameState.h"
 #include "LogGlobal.h"
 
 #include <ChatManager.h>
+#include <Engine/ActorWrapper.h>
 #include <TAGame_parameters.hpp>
 
 InputHandler::InputHandler(std::function<std::shared_ptr<GameState>()> gameState,
-    std::function<std::shared_ptr<ChatManager>()> chatManager)
+    std::function<std::shared_ptr<ChatManager>()> chatManager,
+    std::function<std::shared_ptr<ActionHandler>()> actionHandler)
   : gameState_(std::move(gameState))
-  , chatManager_(std::move(chatManager)) {}
+  , chatManager_(std::move(chatManager))
+  , actionHandler_(std::move(actionHandler)) {}
 
 void
 InputHandler::initHooks() {}
@@ -20,6 +24,7 @@ InputHandler::init() {
 
 void
 InputHandler::KeyPress(ActorWrapper caller, void* params, std::string eventName) {
+    auto actionHandler = actionHandler_();
     auto gameState = gameState_();
     auto chatManager = chatManager_();
 

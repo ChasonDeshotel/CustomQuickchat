@@ -1,4 +1,6 @@
 #include "StringUtil.h"
+
+#include <UniqueIDWrapper.h>
 #include <string_view>
 
 // credit to https://github.com/JulienML/BetterChat/ thx fam
@@ -76,7 +78,12 @@ struct NetId {
     uint8_t Platform;
     uint8_t SplitscreenID;
 
-    NetId() {}
+    NetId()
+      : Uid(0)
+      , NpId()
+      , Platform(0)
+      , SplitscreenID(0) {}
+
     NetId(const FUniqueNetId& unreal_id)
       : Uid(unreal_id.Uid)
       , NpId(unreal_id.NpId)
