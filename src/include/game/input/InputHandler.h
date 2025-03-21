@@ -1,15 +1,19 @@
 #pragma once
-#include "ChatManager.h"
+
+class InputHandler;
+class GameState;
 
 #include <Engine/ActorWrapper.h>
 
 class InputHandler {
   public:
-    InputHandler(
-        ChatManager& chatManager, GameState& gameState),
-      std::shared_ptr<KeyBindSettings> settings,
-               std::shared_ptr<ChatModule> chatModule);
+    InputHandler(std::function<std::shared_ptr<GameState>()> gameState
+        //      std::shared_ptr<KeyBindSettings> settings,
+        //      std::shared_ptr<ChatManager> chatManager);
+    );
 
+    void init();
+    void KeyPress(ActorWrapper caller, void* params, std::string eventName);
     void InitHooks();
     void DestroyHooks();
     void onKeyPress(ActorWrapper caller, void* params, std::string eventName);
@@ -21,8 +25,8 @@ class InputHandler {
     void performAction(const Binding& binding);
 
   private:
-    ChatManager& chatManager_;
-    GameState& gameState_;
+    //    ChatManager& chatManager_;
+    std::function<std::shared_ptr<GameState>()> gameState_;
     bool chatActive_ = false;
     bool hooksActive_ = false;
 

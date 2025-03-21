@@ -1,19 +1,26 @@
 #include "InputHandler.h"
+#include "GameState.h"
+
+#include <TAGame_parameters.hpp>
+
+InputHandler::InputHandler(std::function<std::shared_ptr<GameState>()> gameState)
+  : gameState_(std::move(gameState)) {}
 
 void
 InputHandler::init() {
-    InitKeyStates();
+    // InitKeyStates();
 }
 
 void
 InputHandler::KeyPress(ActorWrapper caller, void* params, std::string eventName) {
+    auto gameState = gameState_();
     // fixme: check if any binding for that key and exit early
 
-    if (gamePaused || !inGameEvent) {
+    if (gameState->isGamePaused() || !gameState->isInGame()) {
         return;
     }
 
-    if (matchEnded) {
+    if (gameState->isMatchEnded()) {
         auto disablePostMatchQuickchats_cvar = GetCvar(Cvars::disablePostMatchQuickchats);
         if (!disablePostMatchQuickchats_cvar || disablePostMatchQuickchats_cvar.getBoolValue())
             return;
