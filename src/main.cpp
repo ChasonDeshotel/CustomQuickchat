@@ -25,7 +25,8 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
 
         container_.registerFactory<InputHandler>(
             [](DependencyContainer& c) -> std::shared_ptr<InputHandler> {
-                return std::make_shared<InputHandler>([&c]() { return c.resolve<GameState>(); });
+                return std::make_shared<InputHandler>(
+                    [&c]() { return c.resolve<GameState>(); }, [&c]() { return c.resolve<ChatManager>(); });
             },
             DependencyContainer::Lifetime::Singleton);
 
