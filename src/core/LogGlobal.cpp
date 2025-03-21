@@ -6,11 +6,17 @@
 #include "sink/Console.h"
 #include "sink/File.h"
 
+// Define BUILDING_DLL when compiling this file
+#define BUILDING_DLL
+#include "LogGlobal.h"
+
 // NOLINTBEGIN
+// Define the global logger variable
 std::shared_ptr<LogHandler> logger = nullptr;
 // NOLINTEND
 
-extern std::shared_ptr<LogHandler>
+// Implementation of the initialization function
+std::shared_ptr<LogHandler>
 initializeLogger() {
     if (!logger) {
         auto& container = DependencyContainer::getInstance();
