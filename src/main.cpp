@@ -1,8 +1,8 @@
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
+#include "LogGlobal.h"
 
-// #include "LogGlobal.h"
 #include "DependencyContainer.h"
 
 #include "ChatManager.h"
@@ -12,6 +12,8 @@
 
 // std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
+::initializelogger();
+
 class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
   private:
     DependencyContainer& container_;
@@ -19,12 +21,16 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
   public:
     CustomQuickchat()
       : container_(DependencyContainer::getInstance()) {}
-    void onLoad() override {
 
+    void onLoad() override {
         // register dependencies
+        logger = ::initializelogger();
+        logger->info("foo test bar", LogCategory::CORE);
+
         container_.registerType<EngineValidator, EngineValidator>(DependencyContainer::Lifetime::Singleton);
         if (!container_.resolve<EngineValidator>()->init()) {
             // SDK is bad or whatever
+            logger->error("validate failed", LogCategory::CORE);
             return;
         }
 

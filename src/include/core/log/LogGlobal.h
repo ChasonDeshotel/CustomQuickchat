@@ -1,9 +1,9 @@
 #pragma once
 #include "LogHandler.h"
+#include "LogTypes.h"
 #include <memory>
 
 // NOLINTBEGIN
-extern void
-initializeLogger();
+extern void initializeLogger();
 extern std::shared_ptr<LogHandler> logger;
 // NOLINTEND
