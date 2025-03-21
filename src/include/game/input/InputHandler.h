@@ -1,16 +1,16 @@
 #pragma once
+#include <chrono>
 
 class InputHandler;
 class GameState;
+class ChatManager;
 
 #include <Engine/ActorWrapper.h>
 
 class InputHandler {
   public:
-    explicit InputHandler(std::function<std::shared_ptr<GameState>()> gameState
-        //      std::shared_ptr<KeyBindSettings> settings,
-        //      std::shared_ptr<ChatManager> chatManager);
-    );
+    explicit InputHandler(std::function<std::shared_ptr<GameState>()> gameState,
+        std::function<std::shared_ptr<ChatManager>()> chatManager);
 
     void init();
     void KeyPress(ActorWrapper caller, void* params, std::string eventName);
@@ -25,15 +25,14 @@ class InputHandler {
     void performAction(const Binding& binding);
 
   private:
-    //    ChatManager& chatManager_;
     std::function<std::shared_ptr<GameState>()> gameState_;
+    std::function<std::shared_ptr<ChatManager>()> chatManager_;
+    std::function<std::shared_ptr<KeyBinds>()> keyBinds_;
     bool chatActive_ = false;
     bool hooksActive_ = false;
 
     bool using_gamepad = false;
 
-    std::shared_ptr<KeyBindSettings> settings_;
-    std::shared_ptr<ChatModule> chatModule_;
     std::map<std::string, bool> keyStates_;
     std::chrono::steady_clock::time_point lastBindingActivated_;
 
