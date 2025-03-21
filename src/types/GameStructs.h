@@ -1,3 +1,4 @@
+#include "StringUtil.h"
 #include <string_view>
 
 // credit to https://github.com/JulienML/BetterChat/ thx fam
@@ -87,7 +88,7 @@ struct NetId {
         FUniqueNetId id;
         id.Uid = Uid;
         id.NpId = NpId;
-        id.EpicAccountId = Instances.NewFString(EpicAccountId);
+        id.EpicAccountId = StringUtil::ToFString(EpicAccountId);
         id.Platform = Platform;
         id.SplitscreenID = SplitscreenID;
 
@@ -107,7 +108,7 @@ struct UidWrapper {
 
 enum class ERankPlaylists : uint8_t { Ones = 0, Twos = 1, Threes = 2, Casual = 3 };
 
-struct Events {
+struct GameFuncs {
     static constexpr const char* SendChatPresetMessage = "Function TAGame.GFxData_Chat_TA.SendChatPresetMessage";
     static constexpr const char* OnChatMessage = "Function TAGame.GFxData_Chat_TA.OnChatMessage";
     static constexpr const char* OnPressChatPreset = "Function TAGame.GFxData_Chat_TA.OnPressChatPreset";

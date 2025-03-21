@@ -11,23 +11,41 @@
 
 class ChatManager {
   public:
-    ChatManager(InputHandler& inputHandler);
+    ChatManager();
+    //  GetCvar(Cvars::enabled);
 
     void initHooks();
+    void sendMessage(const std::string& chat, EChatChannel chatMode);
 
     void ProcessChatMessage(const std::string& message);
-    bool CanSendMessage() const; // Checks cooldown and game state
 
-    void SendMessage(const std::string& chat, EChatChannel chatMode, bool log = false);
+    auto CanSendMessage() const -> bool; // Checks cooldown and game state
+
+    void sendMessage(const std::string& chat, EChatChannel chatMode, bool log = false);
     void SetChatTimeoutMsg(const std::string& newMsg, AGFxHUD_TA* hud = nullptr);
 
-    // chat timeout stuff
-    std::string chatTimeoutMsg = "Chat disabled for [Time] second(s).";
     void ResetChatTimeoutMsg();
+    void cmd_list_custom_chat_labels(std::vector<std::string> args);
+    auto get_last_chat() -> std::string;
+
+    void updateTimeoutMessage(std::string message) { chatTimeoutMsg = message; }
 
   private:
+    auto enabled{ true };
+
     InputHandler& inputHandler_;
+
+    std::string chatTimeoutMsg = "Chat disabled for [Time] second(s).";
+
+    void SetTimeoutMsg(const std::string& newMsg, AGFxHUD_TA* hud);
+
     std::chrono::time_point<std::chrono::steady_clock> lastMessageTime_;
+
+    void gfxHudChatPresetCallback(ActorWrapper caller, void* params, std::string eventName);
+    void onPressChatPresetCallback(ActorWrapper Caller, void* Params, std::string eventName);
+    void notifyChatDisabledCallback(ActorWrapper caller, void* params, std::string eventName);
+    void onChatMessageCallback(ActorWrapper caller, void* params, std::string eventName);
+    void applyChatSpamFilterCallback(ActorWrapper caller, void* params, std::string eventName);
 
     void determine_quickchat_labels(UGFxData_Controls_TA* controls = nullptr, bool log = false);
     void apply_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller, UGFxData_Chat_TA_execOnPressChatPreset_Params* params = nullptr);

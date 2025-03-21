@@ -11,6 +11,7 @@ class InputHandler {
   public:
     explicit InputHandler(std::function<std::shared_ptr<GameState>()> gameState,
         std::function<std::shared_ptr<ChatManager>()> chatManager);
+    void initHooks();
 
     void init();
     void KeyPress(ActorWrapper caller, void* params, std::string eventName);

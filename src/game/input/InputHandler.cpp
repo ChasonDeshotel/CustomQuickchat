@@ -1,5 +1,6 @@
 #include "InputHandler.h"
 #include "GameState.h"
+#include "LogGlobal.h"
 
 #include <ChatManager.h>
 #include <TAGame_parameters.hpp>
@@ -8,6 +9,9 @@ InputHandler::InputHandler(std::function<std::shared_ptr<GameState>()> gameState
     std::function<std::shared_ptr<ChatManager>()> chatManager)
   : gameState_(std::move(gameState))
   , chatManager_(std::move(chatManager)) {}
+
+void
+InputHandler::initHooks() {}
 
 void
 InputHandler::init() {

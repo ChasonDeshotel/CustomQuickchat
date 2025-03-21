@@ -1,7 +1,9 @@
+#include "ChatManager.h"
 #include "DependencyContainer.h"
 #include "EngineValidator.h"
 #include "GameState.h"
 #include "InputHandler.h"
+#include "LogGlobal.h"
 
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
@@ -15,7 +17,9 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
 
   public:
     CustomQuickchat()
-      : container_(DependencyContainer::getInstance()) {}
+      : container_(DependencyContainer::getInstance()) {
+        ::initializeLogger();
+    }
     void onLoad() override {
 
         // register dependencies
@@ -23,12 +27,17 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
             [](DependencyContainer& c) -> std::shared_ptr<EngineValidator> { return std::make_shared<EngineValidator>(); },
             DependencyContainer::Lifetime::Singleton);
 
-        container_.registerFactory<InputHandler>(
-            [](DependencyContainer& c) -> std::shared_ptr<InputHandler> {
-                return std::make_shared<InputHandler>(
-                    [&c]() { return c.resolve<GameState>(); }, [&c]() { return c.resolve<ChatManager>(); });
-            },
+        container_.registerFactory<ChatManager>(
+            [](DependencyContainer& c) -> std::shared_ptr<ChatManager> { return std::make_shared<ChatManager>(); },
             DependencyContainer::Lifetime::Singleton);
+        // container_.resolve<ChatManager>()->initHooks();
+
+        // container_.registerFactory<InputHandler>(
+        //     [](DependencyContainer& c) -> std::shared_ptr<InputHandler> {
+        //         return std::make_shared<InputHandler>(
+        //             [&c]() { return c.resolve<GameState>(); }, [&c]() { return c.resolve<ChatManager>(); });
+        //     },
+        //     DependencyContainer::Lifetime::Singleton);
 
         if (!container_.resolve<EngineValidator>()->init()) {
             return;

@@ -1,4 +1,5 @@
 #include "ActionHandler.h"
+#include "GameStructs.h"
 #include "LogGlobal.h"
 
 ActionHandler::ActionHandler(std::function<std::shared_ptr<ChatManager>()> chatManager)
@@ -8,6 +9,17 @@ ActionHandler::ActionHandler(std::function<std::shared_ptr<ChatManager>()> chatM
 }
 
 ActionHandler::~ActionHandler() {}
+
+void
+ActionHandler::initHooks() {
+    gameWrapper->HookEventWithCaller<ActorWrapper>(GameFuncs::KeyPressed,
+        [this](ActorWrapper caller, void* params, std::string eventName) { this->keyPressedCallback(caller, params, eventName); });
+}
+
+void
+ActionHandler::keyPressedCallback(ActorWrapper caller, void* params, std::string eventName) {
+
+}
 
 void
 ActionHandler::PerformBindingAction(const Binding& binding) {
