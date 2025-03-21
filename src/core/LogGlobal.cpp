@@ -3,6 +3,8 @@
 #include "DependencyContainer.h"
 #include "LogGlobal.h"
 #include "LogHandler.h"
+#include "sink/Console.h"
+#include "sink/File.h"
 
 // NOLINTBEGIN
 std::shared_ptr<LogHandler> logger = nullptr;

@@ -1,4 +1,6 @@
 #include "LogHandler.h"
+#include "sink/Console.h"
+#include "sink/File.h"
 #include <chrono>
 #include <iomanip>
 #include <sstream>
@@ -18,24 +20,41 @@ LogHandler::~LogHandler() {
  }
 }
 
- auto LogHandler::addSink(std::shared_ptr<LogSink> sink) -> void {
-     if (sink && sink->isAvailable()) {
-         std::lock_guard<std::mutex> lock(logMutex);
-         sinks.push_back(sink);
-     }
- }
+auto LogHandler::getInstance() -> LogHandler& {
+    static LogHandler instance;
+    return instance;
+}
 
- auto LogHandler::setLogPath(const std::string& path) -> void {
-     std::lock_guard<std::mutex> lock(logMutex);
-     logPath = path;
+auto LogHandler::addSink(std::shared_ptr<LogSink> sink) -> void {
+    if (sink && sink->isAvailable()) {
+        std::lock_guard<std::mutex> lock(logMutex);
+        sinks.push_back(sink);
+    }
+}
 
-     // If we already have a file sink, update it or add a new one
-     auto fileSink = std::make_shared<FileLogSink>(path);
-     if (fileSink->isAvailable()) {
-         addSink(fileSink);
-     }
- }
+auto LogHandler::setLogPath(const std::string& path) -> void {
+    std::lock_guard<std::mutex> lock(logMutex);
+    logPath = path;
 
+    // If we already have a file sink, update it or add a new one
+    auto fileSink = std::make_shared<FileLogSink>(path);
+    if (fileSink->isAvailable()) {
+        addSink(fileSink);
+    }
+}
+
+
+auto LogHandler::logLevelToString(LogLevel level) -> std::string {
+    switch (level) {
+        case LogLevel::LOG_TRACE: return "TRACE";
+        case LogLevel::LOG_DEBUG: return "DEBUG";
+        case LogLevel::LOG_INFO: return "INFO";
+        case LogLevel::LOG_WARN: return "WARN";
+        case LogLevel::LOG_ERROR: return "ERROR";
+        case LogLevel::LOG_FATAL: return "FATAL";
+        default: return "UNKNOWN";
+    }
+}
 
 // Update the log method to use sinks
 auto LogHandler::log(const std::string& message, LogCategory category, LogLevel level) -> void {
@@ -51,7 +70,7 @@ auto LogHandler::log(const std::string& message, LogCategory category, LogLevel 
 
     std::stringstream logEntry;
     logEntry << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] "
-             << "[" << logLevelToString(level) << "][" << logCategoryToString(category) << "] " << message << std::end
+             << "[" << logLevelToString(level) << "][" << logCategoryToString(category) << "] " << message << std::endl;
 
     std::string formattedMessage = logEntry.str();
 
