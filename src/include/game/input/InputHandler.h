@@ -1,11 +1,13 @@
 #pragma once
 #include <chrono>
+#include <functional>
+#include <map>
 
 class InputHandler;
 class GameState;
 class ChatManager;
-
-#include <Engine/ActorWrapper.h>
+class KeyBinds;
+class ActorWrapper;
 
 class InputHandler {
   public:

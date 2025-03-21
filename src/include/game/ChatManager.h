@@ -30,8 +30,14 @@ class ChatManager {
 
     void updateTimeoutMessage(std::string message) { chatTimeoutMsg = message; }
 
+    bool getDisablePostMatch() { return disablePostMatch; };
+
+    // call this when cvars get updated
+    void setDisablePostMatch(bool disable) { disablePostMatch = disable; };
+
   private:
-    auto enabled{ true };
+    bool enabled{ true };
+    bool disablePostMatch{ true };
 
     InputHandler& inputHandler_;
 
@@ -51,7 +57,7 @@ class ChatManager {
     void apply_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller, UGFxData_Chat_TA_execOnPressChatPreset_Params* params = nullptr);
     void apply_all_custom_qc_labels_to_ui(UGFxData_Chat_TA* caller);
 
-    std::chrono::steady_clock::time_point epochTime = std::chrono::steady_clock::time_point();
+    std::chrono::steady_clock::time_point epochTime;
     std::chrono::steady_clock::time_point lastBindingActivated;
 
     // modify quickchat UI stuff
