@@ -10,7 +10,7 @@
 std::shared_ptr<LogHandler> logger = nullptr;
 // NOLINTEND
 
-extern void
+extern std::shared_ptr<LogHandler>
 initializeLogger() {
     if (!logger) {
         auto& container = DependencyContainer::getInstance();
@@ -28,4 +28,5 @@ initializeLogger() {
 
         logger->info("Logger initialized", LogCategory::CORE);
     }
+    return logger;
 }

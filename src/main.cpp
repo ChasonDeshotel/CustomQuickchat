@@ -12,8 +12,6 @@
 
 // std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
-::initializelogger();
-
 class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
   private:
     DependencyContainer& container_;
@@ -23,9 +21,9 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
       : container_(DependencyContainer::getInstance()) {}
 
     void onLoad() override {
-        // register dependencies
-        logger = ::initializelogger();
-        logger->info("foo test bar", LogCategory::CORE);
+        // Initialize the logger
+        ::initializeLogger();
+        logger->info("Plugin loading started", LogCategory::CORE);
 
         container_.registerType<EngineValidator, EngineValidator>(DependencyContainer::Lifetime::Singleton);
         if (!container_.resolve<EngineValidator>()->init()) {
