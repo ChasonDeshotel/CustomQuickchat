@@ -11,34 +11,56 @@ LogHandler::LogHandler()
     }
 }
 
-auto
-LogHandler::log(const std::string& message, LogCategory category, LogLevel level) -> void {
+LogHandler::~LogHandler() {
+ // Clean up resources if needed
+ for (auto& sink : sinks) {
+     sink->flush();
+ }
+}
+
+ auto LogHandler::addSink(std::shared_ptr<LogSink> sink) -> void {
+     if (sink && sink->isAvailable()) {
+         std::lock_guard<std::mutex> lock(logMutex);
+         sinks.push_back(sink);
+     }
+ }
+
+ auto LogHandler::setLogPath(const std::string& path) -> void {
+     std::lock_guard<std::mutex> lock(logMutex);
+     logPath = path;
+
+     // If we already have a file sink, update it or add a new one
+     auto fileSink = std::make_shared<FileLogSink>(path);
+     if (fileSink->isAvailable()) {
+         addSink(fileSink);
+     }
+ }
+
+
+// Update the log method to use sinks
+auto LogHandler::log(const std::string& message, LogCategory category, LogLevel level) -> void {
     if (level < currentLogLevel || !enabledCategories[category]) {
         return;
     }
 
     std::lock_guard<std::mutex> lock(logMutex);
 
-    if (!logfile.is_open() && logPath.has_value()) {
-        logfile.open(logPath.value(), std::ios::app);
-    }
-
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
-    // fixme
     std::tm tm = *std::localtime(&time);
 
     std::stringstream logEntry;
     logEntry << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] "
-             << "[" << logLevelToString(level) << "][" << logCategoryToString(category) << "] " << message;
+             << "[" << logLevelToString(level) << "][" << logCategoryToString(category) << "] " << message << std::end
 
-    if (logfile.is_open()) {
-        logfile << logEntry.str() << std::endl;
-        logfile.flush();
+    std::string formattedMessage = logEntry.str();
+
+    // Write to all sinks
+    for (auto& sink : sinks) {
+        if (sink->isAvailable()) {
+            sink->write(formattedMessage);
+        }
     }
-
-    // Optional console output
-    //    std::cout << logEntry.str() << std::endl;
 }
 
 auto
@@ -59,6 +81,11 @@ LogHandler::warn(const std::string& message, LogCategory category) -> void {
 auto
 LogHandler::error(const std::string& message, LogCategory category) -> void {
     log(message, category, LogLevel::LOG_ERROR);
+}
+
+auto LogHandler::setLogLevel(LogLevel level) -> void {
+    std::lock_guard<std::mutex> lock(logMutex);
+    currentLogLevel = level;
 }
 
 auto
