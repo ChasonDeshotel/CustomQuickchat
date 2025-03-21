@@ -1,13 +1,14 @@
-#include "ChatManager.h"
-#include "DependencyContainer.h"
-#include "EngineValidator.h"
-#include "GameState.h"
-#include "InputHandler.h"
-#include "LogGlobal.h"
-
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
+
+// #include "LogGlobal.h"
+#include "DependencyContainer.h"
+
+#include "ChatManager.h"
+#include "EngineValidator.h"
+// #include "GameState.h"
+// #include "InputHandler.h"
 
 // std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
@@ -17,15 +18,15 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
 
   public:
     CustomQuickchat()
-      : container_(DependencyContainer::getInstance()) {
-        ::initializeLogger();
-    }
+      : container_(DependencyContainer::getInstance()) {}
     void onLoad() override {
 
         // register dependencies
-        container_.registerFactory<EngineValidator>(
-            [](DependencyContainer& c) -> std::shared_ptr<EngineValidator> { return std::make_shared<EngineValidator>(); },
-            DependencyContainer::Lifetime::Singleton);
+        container_.registerType<EngineValidator, EngineValidator>(DependencyContainer::Lifetime::Singleton);
+        if (!container_.resolve<EngineValidator>()->init()) {
+            // SDK is bad or whatever
+            return;
+        }
 
         container_.registerFactory<ChatManager>(
             [](DependencyContainer& c) -> std::shared_ptr<ChatManager> { return std::make_shared<ChatManager>(); },
@@ -39,9 +40,8 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
         //     },
         //     DependencyContainer::Lifetime::Singleton);
 
-        if (!container_.resolve<EngineValidator>()->init()) {
-            return;
-        }
+        //    return;
+        //}
     }
     void onUnload() override {
         // WriteBindingsToJson(); // just to make sure any unsaved changes are saved before exiting

@@ -1,5 +1,5 @@
 #pragma once
-#include "InputHandler.h"
+// #include "InputHandler.h"
 
 #include "SdkHeaders.hpp"
 #include <array>
@@ -9,9 +9,11 @@
 #include <TAGame_classes.hpp>
 #include <TAGame_parameters.hpp>
 
+class ActorWrapper;
+
 class ChatManager {
   public:
-    ChatManager();
+    ChatManager() = default;
     //  GetCvar(Cvars::enabled);
 
     void initHooks();
@@ -39,7 +41,7 @@ class ChatManager {
     bool enabled{ true };
     bool disablePostMatch{ true };
 
-    InputHandler& inputHandler_;
+    // InputHandler& inputHandler_;
 
     std::string chatTimeoutMsg = "Chat disabled for [Time] second(s).";
 

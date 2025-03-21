@@ -19,16 +19,11 @@ set(CMAKE_GENERATOR_TOOLSET "v143" CACHE STRING "Toolset version")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")  # `/MD`
-#add_definitions(-DBOOST_EXCEPTION_DISABLE)
-#add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
-# Boost Config (Forces Dynamic Linking)
-#set(Boost_USE_STATIC_LIBS OFF)  # Use shared libraries (.dll)
-#set(Boost_USE_STATIC_RUNTIME OFF)  # Use dynamic runtime (/MD)
-set(Boost_ARCHITECTURE "-x64")  # Force 64-bit architecture
-set(Boost_USE_MULTITHREADED ON) # Ensure multi-threaded libs
-add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/DBOOST_ALL_DYN_LINK>)
-add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/DCMAKE_BUILD_TYPE:Release>)
-#add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/bigobj>)
+
+####set(Boost_ARCHITECTURE "-x64")  # Force 64-bit architecture
+####set(Boost_USE_MULTITHREADED ON) # Ensure multi-threaded libs
+####add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/DBOOST_ALL_DYN_LINK>)
+####add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/DCMAKE_BUILD_TYPE:Release>)
 
 set(compile_options
         /bigobj
@@ -50,97 +45,106 @@ file(GLOB_RECURSE SDK_SOURCES "${CMAKE_SOURCE_DIR}/lib/SDK/**/*.cpp")
 
 set(SRC_SOURCES
     ${CMAKE_SOURCE_DIR}/src/main.cpp
-    ${CMAKE_SOURCE_DIR}/src/Commands.cpp
-    ${CMAKE_SOURCE_DIR}/src/Events.cpp
-    ${CMAKE_SOURCE_DIR}/src/Functions.cpp
-    ${CMAKE_SOURCE_DIR}/src/SpeechToText.cpp
-    ${CMAKE_SOURCE_DIR}/src/TextEffects.cpp
-    ${CMAKE_SOURCE_DIR}/src/LobbyInfo.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/Instances.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/Utils.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/WebsocketManager.cpp
-    ${CMAKE_SOURCE_DIR}/src/gui/Base.cpp
-    ${CMAKE_SOURCE_DIR}/src/gui/Tools.cpp
-    ${CMAKE_SOURCE_DIR}/src/settings/CvarChangeCallbacks.cpp
-    ${CMAKE_SOURCE_DIR}/src/settings/RegisterCvars.cpp
-    ${CMAKE_SOURCE_DIR}/src/settings/Settings.cpp
+    #${CMAKE_SOURCE_DIR}/src/core/LogHandler.cpp
+    ${CMAKE_SOURCE_DIR}/src/game/engine/EngineValidator.cpp
+#    ${CMAKE_SOURCE_DIR}/src/game/input/InputHandler.cpp
+    ${CMAKE_SOURCE_DIR}/src/game/ChatManager.cpp
+#    ${CMAKE_SOURCE_DIR}/src/Commands.cpp
+#    ${CMAKE_SOURCE_DIR}/src/Events.cpp
+#    ${CMAKE_SOURCE_DIR}/src/Functions.cpp
+#    ${CMAKE_SOURCE_DIR}/src/SpeechToText.cpp
+#    ${CMAKE_SOURCE_DIR}/src/TextEffects.cpp
+#    ${CMAKE_SOURCE_DIR}/src/LobbyInfo.cpp
+#    ${CMAKE_SOURCE_DIR}/src/core/Instances.cpp
+#    ${CMAKE_SOURCE_DIR}/src/core/Utils.cpp
+#    ${CMAKE_SOURCE_DIR}/src/core/WebsocketManager.cpp
+#    ${CMAKE_SOURCE_DIR}/src/gui/Base.cpp
+#    ${CMAKE_SOURCE_DIR}/src/gui/Tools.cpp
+#    ${CMAKE_SOURCE_DIR}/src/settings/CvarChangeCallbacks.cpp
+#    ${CMAKE_SOURCE_DIR}/src/settings/RegisterCvars.cpp
+#    ${CMAKE_SOURCE_DIR}/src/settings/Settings.cpp
 )
 
 set(LIB_SOURCES
     ${CMAKE_SOURCE_DIR}/lib/SDK/GameDefines.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_demo.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_draw.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_widgets.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_rangeslider.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_searchablecombo.cpp
+#    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui.cpp
+#    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_demo.cpp
+#    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_draw.cpp
+#    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_widgets.cpp
+#    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_rangeslider.cpp
+#    ${CMAKE_SOURCE_DIR}/lib/imgui_bm/imgui_searchablecombo.cpp
 )
 
 # Explicitly listing source files for better build performance and caching consistency.
 add_library(CustomQuickchat SHARED
     ${SRC_SOURCES}
-    ${LIB_SOURCES}
     ${SDK_SOURCES}
 )
 
 set_property(GLOBAL PROPERTY JOB_POOLS main_pool=2)  # Limit to 2 parallel jobs
 set_property(TARGET CustomQuickchat PROPERTY JOB_POOL main_pool)
 
-set(BOOST_ROOT "C:/local/boost-1.87.0")
-set(Boost_INCLUDE_DIR "${BOOST_ROOT}/include")
-
-# Force CMake to look in the correct paths
-set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
-#list(APPEND CMAKE_MODULE_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
-set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
-
-find_package(Boost 1.87.0 REQUIRED COMPONENTS system thread exception random)
-
-if(Boost_FOUND)
-    message(STATUS "Boost found: ${Boost_INCLUDE_DIRS}")
-    include_directories(${Boost_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR "Boost NOT found!")
-endif()
-
-if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost not found. Please check your Boost installation.")
-    message(STATUS "Boost paths configured as:")
-    message(STATUS "  BOOST_ROOT: ${BOOST_ROOT}")
-    message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-    message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-else()
-    message(STATUS "Boost Found:")
-    message(STATUS "  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
-    message(STATUS "  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
-endif()
+#set(BOOST_ROOT "C:/local/boost-1.87.0")
+#set(Boost_INCLUDE_DIR "${BOOST_ROOT}/include")
+#
+## Force CMake to look in the correct paths
+#set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
+##list(APPEND CMAKE_MODULE_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
+#set(CMAKE_PREFIX_PATH "${BOOST_ROOT}/lib/cmake/Boost-1.87.0")
+#
+#find_package(Boost 1.87.0 REQUIRED COMPONENTS system thread exception random)
+#
+#if(Boost_FOUND)
+#    message(STATUS "Boost found: ${Boost_INCLUDE_DIRS}")
+#    include_directories(${Boost_INCLUDE_DIRS})
+#else()
+#    message(FATAL_ERROR "Boost NOT found!")
+#endif()
+#
+#if(NOT Boost_FOUND)
+#    message(FATAL_ERROR "Boost not found. Please check your Boost installation.")
+#    message(STATUS "Boost paths configured as:")
+#    message(STATUS "  BOOST_ROOT: ${BOOST_ROOT}")
+#    message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+#    message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+#else()
+#    message(STATUS "Boost Found:")
+#    message(STATUS "  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+#    message(STATUS "  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
+#endif()
 
 set(SRC_INCLUDES
     ${CMAKE_SOURCE_DIR}/src/include
+    ${CMAKE_SOURCE_DIR}/src/include/core/log
     ${CMAKE_SOURCE_DIR}/src/include/core
+    ${CMAKE_SOURCE_DIR}/src/include/util/string/
     ${CMAKE_SOURCE_DIR}/src/include/gui
+    ${CMAKE_SOURCE_DIR}/src/include/game/engine
+    #${CMAKE_SOURCE_DIR}/src/include/game/input
+    ${CMAKE_SOURCE_DIR}/src/include/game
+    ${CMAKE_SOURCE_DIR}/src/types
 )
 
 set(EXTERNAL_INCLUDES
-    ${Boost_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/lib
-    ${CMAKE_SOURCE_DIR}/resources
-
+#    ${Boost_INCLUDE_DIRS}
+#    ${CMAKE_SOURCE_DIR}/lib
+#    ${CMAKE_SOURCE_DIR}/resources
+#
     ${CMAKE_SOURCE_DIR}/lib/SDK
     ${CMAKE_SOURCE_DIR}/lib/SDK/SDK_HEADERS
-
-    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann
-    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann/detail
-    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann/thirdparty/hedley
-    ${WEBSOCKETPP_INCLUDE_DIRS}
-    ${BAKKESMOD_SDK_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/lib/imgui_bm
-
-    ${CMAKE_SOURCE_DIR}/lib/json/include
+#
+#    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann
+#    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann/detail
+#    ${CMAKE_SOURCE_DIR}/lib/json/include/nlohmann/thirdparty/hedley
+#    ${WEBSOCKETPP_INCLUDE_DIRS}
+#    ${BAKKESMOD_SDK_INCLUDE_DIRS}
+#    ${CMAKE_SOURCE_DIR}/lib/imgui_bm
+#
+#    ${CMAKE_SOURCE_DIR}/lib/json/include
     ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/include
     ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/include/bakkesmod/wrappers
-
-    ${CMAKE_SOURCE_DIR}/lib/websocketpp
+#
+#    ${CMAKE_SOURCE_DIR}/lib/websocketpp
 )
     
 
@@ -150,7 +154,7 @@ target_include_directories(CustomQuickchat PRIVATE
 )
 
 target_link_libraries(CustomQuickchat PRIVATE
-    Boost::system Boost::thread Boost::exception Boost::random
+#    Boost::system Boost::thread Boost::exception Boost::random
     ${CMAKE_SOURCE_DIR}/lib/BakkesModSDK/lib/pluginsdk.lib
 )
 

@@ -38,7 +38,7 @@ LogHandler::log(const std::string& message, LogCategory category, LogLevel level
     }
 
     // Optional console output
-    std::cout << logEntry.str() << std::endl;
+    //    std::cout << logEntry.str() << std::endl;
 }
 
 auto

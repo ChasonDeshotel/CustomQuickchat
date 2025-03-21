@@ -17,7 +17,6 @@ class LogHandler {
     ~LogHandler();
     static auto getInstance() -> LogHandler&;
 
-    // Updated logging methods with category
     auto log(const std::string& message, LogCategory category, LogLevel level = LogLevel::LOG_INFO) -> void;
     auto debug(const std::string& message, LogCategory category) -> void;
     auto info(const std::string& message, LogCategory category) -> void;

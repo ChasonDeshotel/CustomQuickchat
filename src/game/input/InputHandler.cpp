@@ -87,3 +87,4 @@ InputHandler::KeyPress(ActorWrapper caller, void* params, std::string eventName)
         } else if (keyEventType == EInputEvent::IE_Released)
             keyStates[keyName] = false; // update key state (for CheckCombination() to analyze a "snapshot" of all pressed buttons)
     }
+}

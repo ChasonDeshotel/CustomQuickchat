@@ -9,7 +9,9 @@ ChatManager::initHooks() {
     gameWrapper->HookEventWithCaller<ActorWrapper>(
         GameFuncs::OnChatMessage, [this](ActorWrapper caller, void* params, std::string eventName) {
             this->onChatMessageCallback(caller, params, eventName);
+            // if (removeTimestamps) {
             // this->removeTimestamps(caller, params, eventName);
+            // }
         });
 
     gameWrapper->HookEventWithCaller<ActorWrapper>(
@@ -36,7 +38,7 @@ ChatManager::initHooks() {
     gameWrapper->HookEvent(GameFuncs::SendChatPresetMessage, [this](std::string eventName) {
         // reset/update data for all bindings
         lastBindingActivated = std::chrono::steady_clock::now();
-        // ResetAllFirstButtonStates();
+        // keyManager->ResetAllFirstButtonStates();
     });
 }
 
@@ -46,11 +48,11 @@ ChatManager::sendMessage(const std::string& chat, EChatChannel chatMode) {
         return;
     }
 
-    UGFxData_Chat_TA* chatBox = GetInstanceOf<UGFxData_Chat_TA>();
-    if (!chatBox) {
-        // LOG("UGFxData_Chat_TA* is null!");
-        return;
-    }
+    //    UGFxData_Chat_TA* chatBox = GetInstanceOf<UGFxData_Chat_TA>();
+    //    if (!chatBox) {
+    //        // LOG("UGFxData_Chat_TA* is null!");
+    //        return;
+    //    }
 
     //    FString chatFStr = Instances.NewFString(chat);
     //
@@ -130,7 +132,9 @@ ChatManager::onPressChatPresetCallback(ActorWrapper Caller, void* Params, std::s
 }
 
 bool
-ChatManager::CanSendMessage() const {}
+ChatManager::CanSendMessage() const {
+    return true;
+}
 
 void
 ChatManager::applyChatSpamFilterCallback(ActorWrapper caller, void* params, std::string eventName) {
@@ -367,69 +371,69 @@ ChatManager::ResetChatTimeoutMsg() {
     chatTimeoutMsg = "Chat disabled for [Time] second(s).";
 }
 
-void
-ChatManager::SetTimeoutMsg(const std::string& newMsg, AGFxHUD_TA* hud) {
-    //    if (!hud) {
-    //        hud = GetInstanceOf<AGFxHUD_TA>();
-    //        if (!hud)
-    //            return;
-    //    }
-    //
-    //    if (hud->ChatDisabledMessage.ToString() != newMsg) {
-    //        hud->ChatDisabledMessage = Instances.NewFString(newMsg); // overwrite ChatDisabledMessage
-    //        LOG("Set chat timeout message: {}", newMsg);
-    //    }
-}
+// void
+// ChatManager::SetTimeoutMsg(const std::string& newMsg, AGFxHUD_TA* hud) {
+//     //    if (!hud) {
+//     //        hud = GetInstanceOf<AGFxHUD_TA>();
+//     //        if (!hud)
+//     //            return;
+//     //    }
+//     //
+//     //    if (hud->ChatDisabledMessage.ToString() != newMsg) {
+//     //        hud->ChatDisabledMessage = Instances.NewFString(newMsg); // overwrite ChatDisabledMessage
+//     //        LOG("Set chat timeout message: {}", newMsg);
+//     //    }
+// }
 
-void
-ChatManager::cmd_list_custom_chat_labels(std::vector<std::string> args) {
-    //    determine_quickchat_labels(nullptr, true);
-    //
-    //    for (int i = 0; i < 4; i++) {
-    //        const auto& chat_label_arr = pc_qc_labels[i];
-    //
-    //        LOG("{}:", preset_group_names[i]);
-    //        for (int j = 0; j < 4; j++) {
-    //            LOG("[{}]\t{}", j, chat_label_arr.at(j).ToString());
-    //        }
-    //    }
-    //
-    //    for (int i = 0; i < 4; i++) {
-    //        const auto& chat_label_arr = gp_qc_labels[i];
-    //
-    //        LOG("{}:", preset_group_names[i]);
-    //        for (int j = 0; j < 4; j++) {
-    //            LOG("[{}]\t{}", j, chat_label_arr.at(j).ToString());
-    //        }
-    //    }
-}
+// void
+// ChatManager::cmd_list_custom_chat_labels(std::vector<std::string> args) {
+//     //    determine_quickchat_labels(nullptr, true);
+//     //
+//     //    for (int i = 0; i < 4; i++) {
+//     //        const auto& chat_label_arr = pc_qc_labels[i];
+//     //
+//     //        LOG("{}:", preset_group_names[i]);
+//     //        for (int j = 0; j < 4; j++) {
+//     //            LOG("[{}]\t{}", j, chat_label_arr.at(j).ToString());
+//     //        }
+//     //    }
+//     //
+//     //    for (int i = 0; i < 4; i++) {
+//     //        const auto& chat_label_arr = gp_qc_labels[i];
+//     //
+//     //        LOG("{}:", preset_group_names[i]);
+//     //        for (int j = 0; j < 4; j++) {
+//     //            LOG("[{}]\t{}", j, chat_label_arr.at(j).ToString());
+//     //        }
+//     //    }
+// }
 
-auto
-ChatManager::get_last_chat() -> std::string {
-    //    ChatData chat = LobbyInfo.get_last_chat_data();
-    //
-    //    if (chat.Message.empty()) {
-    //        LOG("[ERROR] Message is empty string from last chat data");
-    //        return std::string();
-    //    }
-    //
-    //    return chat.Message;
-}
+// auto
+// ChatManager::get_last_chat() -> std::string {
+//     //    ChatData chat = LobbyInfo.get_last_chat_data();
+//     //
+//     //    if (chat.Message.empty()) {
+//     //        LOG("[ERROR] Message is empty string from last chat data");
+//     //        return std::string();
+//     //    }
+//     //
+//     //    return chat.Message;
+// }
 
-auto
-ChatManager::get_last_chatter_rank_str(EKeyword keyword) -> std::string {
-    //    ChatterRanks chatter_ranks = LobbyInfo.get_last_chatter_ranks();
-    //    if (chatter_ranks.playerName.empty()) {
-    //        LOG("[ERROR] ChatterRanks::playerName is empty string");
-    //        return std::string();
-    //    }
-    //
-    //    switch (keyword) {
-    //        case EKeyword::BlastAll: return chatter_ranks.get_all_ranks_str();
-    //        case EKeyword::BlastCasual: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Casual);
-    //        case EKeyword::Blast1v1: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Ones);
-    //        case EKeyword::Blast2v2: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Twos);
-    //        case EKeyword::Blast3v3: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Threes);
-    //        default: return std::string();
-    //    }
-}
+// auto
+// ChatManager::get_last_chatter_rank_str(EKeyword keyword) -> std::string {
+//     //    ChatterRanks chatter_ranks = LobbyInfo.get_last_chatter_ranks();
+//     //    if (chatter_ranks.playerName.empty()) {
+//     //        LOG("[ERROR] ChatterRanks::playerName is empty string");
+//     //        return std::string();
+//     //    }
+//     //
+//     //    switch (keyword) {
+//     //        case EKeyword::BlastAll: return chatter_ranks.get_all_ranks_str();
+//     //        case EKeyword::BlastCasual: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Casual);
+//     //        case EKeyword::Blast1v1: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Ones);
+//     //        case EKeyword::Blast2v2: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Twos);
+//     //        case EKeyword::Blast3v3: return chatter_ranks.get_playlist_rank_str(ERankPlaylists::Threes);
+//     //        default: return std::string();
+//     //    }
+// }

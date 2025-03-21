@@ -1,5 +1,5 @@
 #pragma once
-
+#include "LogHandler.h"
 #include <memory>
 
 // NOLINTBEGIN
