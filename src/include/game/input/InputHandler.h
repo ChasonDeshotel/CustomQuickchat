@@ -7,7 +7,7 @@ class GameState;
 
 class InputHandler {
   public:
-    InputHandler(std::function<std::shared_ptr<GameState>()> gameState
+    explicit InputHandler(std::function<std::shared_ptr<GameState>()> gameState
         //      std::shared_ptr<KeyBindSettings> settings,
         //      std::shared_ptr<ChatManager> chatManager);
     );

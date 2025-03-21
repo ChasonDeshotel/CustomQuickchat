@@ -3,9 +3,9 @@
 class GameState {
   public:
     void initHooks();
-    bool isGamePaused() const;
-    bool isInGame() const;
-    bool isMatchEnded() const;
+    [[nodiscard]] auto isGamePaused() const -> bool { return gamePaused; }
+    [[nodiscard]] auto isInGame() const -> bool { return inGameEvent; };
+    [[nodiscard]] auto isMatchEnded() const -> bool { return matchEnded; };
 
   private:
     bool gamePaused = false;
