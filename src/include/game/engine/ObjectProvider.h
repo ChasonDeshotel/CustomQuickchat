@@ -1,11 +1,12 @@
 #pragma once
+#include <string>
 
 static constexpr int32_t INSTANCES_INTERATE_OFFSET = 100;
 
 class ObjectProvider {
   public:
-    ObjectProvider() = default;
-    ~ObjectProvider() = default;
+    ObjectProvider();
+    ~ObjectProvider();
 
     ObjectProvider(const ObjectProvider&) = delete;
     auto operator=(const ObjectProvider&) -> ObjectProvider& = delete;
@@ -15,8 +16,9 @@ class ObjectProvider {
     static void Initialize();
     static void Cleanup();
 
-    static class UClass* FindStaticClass(const std::string& className);
-    static class UFunction* FindStaticFunction(const std::string& functionName);
+    std::string GetFullName(UObject* obj);
+    auto FindStaticClass(const std::string& className) -> class UClass*;
+    auto FindStaticFunction(const std::string& functionName) -> class UFunction*;
 
     // Core game instance getters
     class UEngine* GetEngine();

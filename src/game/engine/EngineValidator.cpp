@@ -1,18 +1,20 @@
 #include "EngineValidator.h"
+#include "GameDefines.hpp"
+#include "SdkHeaders.hpp"
+#include <Psapi.h>
 
-void
-EngineValidator::Init() {
-    InitGlobals();
-    return CheckGlobals();
-}
+#include <string>
+TArray<UObject*>* GObjects;
+TArray<FNameEntry*>* GNames;
 
-void
-EngineValidator::InitGlobals() {
+bool
+EngineValidator::init() {
     GObjects = reinterpret_cast<TArray<UObject*>*>(GetGObjectsAddress());
     GNames = reinterpret_cast<TArray<FNameEntry*>*>(GetGNamesAddress());
+    return (!this->AreGObjectsValid() || !this->AreGNamesValid());
 }
-auto
 
+auto
 EngineValidator::FindPattern(HMODULE module, const unsigned char* pattern, const char* mask) -> uintptr_t {
     MODULEINFO info = {};
     GetModuleInformation(GetCurrentProcess(), module, &info, sizeof(MODULEINFO));
@@ -54,8 +56,8 @@ EngineValidator::GetGObjectsAddress() -> uintptr_t {
 
 auto
 EngineValidator::AreGObjectsValid() -> bool {
-    if (UObject::GObjObjects()->size() > 0 && UObject::GObjObjects()->capacity() > UObject::GObjObjects()->size()) {
-        if (UObject::GObjObjects()->at(0)->GetFullName() == "Class Core.Config_ORS") {
+    if (GObjects && !GObjects->empty() && GObjects->capacity() > GObjects->size()) {
+        if (GObjects->at(0)->GetFullName() == "Class Core.Config_ORS") {
             return true;
         }
     }
@@ -64,22 +66,10 @@ EngineValidator::AreGObjectsValid() -> bool {
 
 auto
 EngineValidator::AreGNamesValid() -> bool {
-    if (FName::Names()->size() > 0 && FName::Names()->capacity() > FName::Names()->size()) {
+    if (GNames && !GNames->empty() && GNames->capacity() > GNames->size()) {
         if (FName(0).ToString() == "None") {
             return true;
         }
     }
     return false;
-}
-
-auto
-EngineValidator::CheckGlobals() -> bool {
-    if (!GObjects || !GNames || !AreGObjectsValid() || !AreGNamesValid()) {
-        LOG("(onLoad) Error: RLSDK classes are wrong... plugin needs an update :(");
-        LOG(std::to_string(!GObjects) + ", " + std::to_string(!GNames));
-        return false;
-    }
-
-    LOG("Globals Initialized :)");
-    return true;
 }

@@ -122,8 +122,6 @@ class DependencyContainer {
 
         // get the resolved instance
         return std::static_pointer_cast<T>(it->second(typeid(T)));
-
-        resolutionStack.pop_back();
     }
 
     template<typename T>

@@ -1,20 +1,19 @@
-#include "main.h"
 #include "DependencyContainer.h"
+#include "EngineValidator.h"
+
+#include "bakkesmod/plugin/PluginSettingsWindow.h"
+#include "bakkesmod/plugin/bakkesmodplugin.h"
+#include "bakkesmod/plugin/pluginwindow.h"
 
 // std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
-class CustomQuickchat
-  : public BakkesMod::Plugin::BakkesModPlugin
-  , public SettingsWindowBase
-  , public PluginWindowBase {
+class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
   private:
     DependencyContainer& container_;
 
   public:
     CustomQuickchat()
-      : container_(DependencyContainer::getInstance()) {
-        init();
-    }
+      : container_(DependencyContainer::getInstance()) {}
     void onLoad() override {
         container_.registerFactory<EngineValidator>(
             [](DependencyContainer& c) -> std::shared_ptr<EngineValidator> { return std::make_shared<EngineValidator>(); },
@@ -27,19 +26,19 @@ class CustomQuickchat
     void onUnload() override {
         // WriteBindingsToJson(); // just to make sure any unsaved changes are saved before exiting
     }
-
-    static void toggleEnabled(std::vector<std::string> args) {
-        CVarWrapper enabledCvar = GetCvar(Cvars::enabled);
-        if (!enabledCvar) {
-            return;
-        };
-
-        // bool enabled = enabledCvar.getBoolValue();
-        // enabledCvar.setValue(!enabled);
-    }
 };
 
-BAKKESMOD_PLUGIN(CustomQuickchat, "Custom Quickchat", plugin_version, PLUGINTYPE_FREEPLAY)
+BAKKESMOD_PLUGIN(CustomQuickchat, "Custom Quickchat", "foo", PLUGINTYPE_FREEPLAY);
+
+//    static void toggleEnabled(std::vector<std::string> args) {
+//        CVarWrapper enabledCvar = GetCvar(Cvars::enabled);
+//        if (!enabledCvar) {
+//            return;
+//        };
+//
+//        // bool enabled = enabledCvar.getBoolValue();
+//        // enabledCvar.setValue(!enabled);
+//    }
 
 //    // bools
 //    auto enabled_cvar = RegisterCvar_Bool(Cvars::enabled, true);

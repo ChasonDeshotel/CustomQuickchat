@@ -1,13 +1,17 @@
 #include "ObjectProvider.h"
+#include <string>
 
-ObjectProvider::GameInstances() {
+#include "GameDefines.hpp"
+#include "SdkHeaders.hpp"
+
+ObjectProvider::ObjectProvider() {
     I_UCanvas = nullptr;
     I_AHUD = nullptr;
     I_UGameViewportClient = nullptr;
     I_APlayerController = nullptr;
 }
 
-ObjectProvider::~GameInstances() {
+ObjectProvider::~ObjectProvider() {
     m_staticClasses.clear();
     m_staticFunctions.clear();
 
@@ -18,6 +22,14 @@ ObjectProvider::~GameInstances() {
     }
 
     m_createdObjects.clear();
+}
+
+std::string
+ObjectProvider::GetFullName(UObject* obj) {
+    if (obj) {
+        return obj->GetFullName();
+    }
+    return "None";
 }
 
 auto

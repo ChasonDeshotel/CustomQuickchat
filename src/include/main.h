@@ -1,19 +1,16 @@
 #pragma once
-#include "bakkesmod/plugin/PluginSettingsWindow.h"
-#include "bakkesmod/plugin/bakkesmodplugin.h"
-#include "bakkesmod/plugin/pluginwindow.h"
 
-#include "version.h"
+// #include "version.h"
 
-constexpr auto plugin_version =
-    stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
-
-#if !defined(USE_SPEECH_TO_TEXT)
-constexpr auto pretty_plugin_version = "v" stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH);
-#else
-constexpr auto pretty_plugin_version =
-    "v" stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "\t(with speech-to-text)";
-#endif
+// constexpr auto plugin_version =
+//     stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
+//
+// #if !defined(USE_SPEECH_TO_TEXT)
+// constexpr auto pretty_plugin_version = "v" stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH);
+// #else
+// constexpr auto pretty_plugin_version =
+//     "v" stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "\t(with speech-to-text)";
+// #endif
 
 // class CustomQuickchat
 //   : public BakkesMod::Plugin::BakkesModPlugin
