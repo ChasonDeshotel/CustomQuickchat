@@ -8,12 +8,14 @@
 
 #include <TAGame_classes.hpp>
 #include <TAGame_parameters.hpp>
+#include <functional>
 
+class ObjectProvider;
 class ActorWrapper;
 
 class ChatManager {
   public:
-    ChatManager() = default;
+    ChatManager(std::function<std::shared_ptr<ObjectProvider>()> objectProvider);
     //  GetCvar(Cvars::enabled);
 
     void initHooks();
@@ -38,6 +40,8 @@ class ChatManager {
     void setDisablePostMatch(bool disable) { disablePostMatch = disable; };
 
   private:
+    std::function<std::shared_ptr<ObjectProvider>()> objectProvider_;
+
     bool enabled{ true };
     bool disablePostMatch{ true };
 

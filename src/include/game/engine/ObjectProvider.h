@@ -3,13 +3,16 @@
 #include <functional>
 #include <string>
 
-#include "GameDefines.hpp"
+#include <SdkHeaders.hpp>
 
 #include <typeindex>
 
+class UOnlinePlayer_X;
+class UGFxDataStore_X;
 static constexpr int32_t INSTANCES_ITERATE_OFFSET = 100;
 
 class EngineValidator;
+
 class ObjectProvider {
   public:
     explicit ObjectProvider(std::function<std::shared_ptr<EngineValidator>()> engineValidator);
@@ -46,19 +49,15 @@ class ObjectProvider {
     }
 
     template<typename T>
-    auto ObjectProvider::getInstanceOf() -> T* {
+    auto getInstanceOf() -> T* {
         if (std::is_base_of_v<UObject, T>) {
-            // fixme
-            // int32_t objSize = static_cast<int32_t>(UObject::GObjObjects->size());
-            // int32_t startIndex = (objSize > INSTANCES_ITERATE_OFFSET) ? (objSize - INSTANCES_ITERATE_OFFSET) : 0;
-            // int32_t startIndex = std::max(0, static_cast<int32_t>(UObject::GObjObjects()->size()) - INSTANCES_ITERATE_OFFSET);
             for (int32_t i = (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i > 0; i--) {
                 UObject* uObject = UObject::GObjObjects()->at(i);
 
                 if (uObject && uObject->IsA<T>()) {
                     // if (uObject->getFullName().find("Default__") == std::string::npos)
-                    if (CheckNotInName(uObject, "Default") && CheckNotInName(uObject, "Archetype") &&
-                        CheckNotInName(uObject, "PostGameLobby") && CheckNotInName(uObject, "Test")) {
+                    if (this->checkNotInName(uObject, "Default") && this->checkNotInName(uObject, "Archetype") &&
+                        this->checkNotInName(uObject, "PostGameLobby") && this->checkNotInName(uObject, "Test")) {
                         return static_cast<T*>(uObject);
                     }
                 }
@@ -70,7 +69,7 @@ class ObjectProvider {
 
     // get all active instances of a class type. Example: std::vector<APawn*> pawns = GetAllInstancesOf<APawn>();
     template<typename T>
-    auto ObjectProvider::getAllInstancesOf() -> std::vector<T*> {
+    auto getAllInstancesOf() -> std::vector<T*> {
         std::vector<T*> objectInstances;
 
         if (std::is_base_of_v<UObject, T>) {
@@ -79,8 +78,8 @@ class ObjectProvider {
 
                 if (uObject && uObject->IsA<T>()) {
                     // if (uObject->getFullName().find("Default__") == std::string::npos)
-                    if (CheckNotInName(uObject, "Default") && CheckNotInName(uObject, "Archetype") &&
-                        CheckNotInName(uObject, "PostGameLobby") && CheckNotInName(uObject, "Test")) {
+                    if (this->checkNotInName(uObject, "Default") && this->checkNotInName(uObject, "Archetype") &&
+                        this->checkNotInName(uObject, "PostGameLobby") && this->checkNotInName(uObject, "Test")) {
                         objectInstances.push_back(static_cast<T*>(uObject));
                     }
                 }
@@ -92,7 +91,7 @@ class ObjectProvider {
 
     // get all default instances of a class type.
     template<typename T>
-    std::vector<T*> ObjectProvider::getAllDefaultInstancesOf() {
+    auto getAllDefaultInstancesOf() -> std::vector<T*> {
         std::vector<T*> objectInstances;
 
         if (std::is_base_of_v<UObject, T>) {
@@ -110,10 +109,10 @@ class ObjectProvider {
         return objectInstances;
     }
 
-    // get all object instances by it' name and class type. Example: std::vector<UTexture2D*> textures =
+    // get all object instances by its name and class type. Example: std::vector<UTexture2D*> textures =
     // FindAllObjects<UTexture2D>("Noise");
     template<typename T>
-    std::vector<T*> ObjectProvider::findAllObjects(const std::string& objectName) {
+    auto findAllObjects(const std::string& objectName) -> std::vector<T*> {
         std::vector<T*> objectInstances;
 
         if (std::is_base_of_v<UObject, T>) {
@@ -132,7 +131,7 @@ class ObjectProvider {
     }
 
     template<typename T>
-    std::string ObjectProvider::getTypeName() {
+    auto getTypeName() -> std::string {
         std::string objTypeName = typeid(T).name();
 
         // Remove "class " or "struct " if present
@@ -150,7 +149,7 @@ class ObjectProvider {
 
     // get the default constructor of a class type. Example: UGameData_TA* gameData = GetDefaultInstanceOf<UGameData_TA>();
     template<typename T>
-    auto ObjectProvider::getDefaultInstanceOf() -> T* {
+    auto getDefaultInstanceOf() -> T* {
         if (std::is_base_of_v<UObject, T>) {
             for (int32_t i = 0; i < (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i++) {
                 UObject* uObject = UObject::GObjObjects()->at(i);
@@ -168,7 +167,7 @@ class ObjectProvider {
 
     // get an object instance by its name and class type. Example: UTexture2D* texture = FindObject<UTexture2D>("WhiteSquare");
     template<typename T>
-    T* ObjectProvider::findObject(const std::string& objectName, bool bStrictFind) {
+    auto findObject(const std::string& objectName, bool bStrictFind) -> T* {
         if (std::is_base_of_v<UObject, T>) {
             for (int32_t i = (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i > 0; i--) {
                 UObject* uObject = UObject::GObjObjects()->at(i);
@@ -193,7 +192,7 @@ class ObjectProvider {
     // YOU are required to make sure these objects eventually get eaten up by the garbage collector in some shape or form.
     // Example: UObject* newObject = CreateInstance<UObject>();
     template<typename T>
-    T* createInstance() {
+    auto createInstance() -> T* {
         T* returnObject = nullptr;
 
         if (std::is_base_of_v<UObject, T>) {
@@ -207,7 +206,7 @@ class ObjectProvider {
             // Making sure newly created object doesn't get randomly destroyed by the garbage collector when we don't want it do.
             if (returnObject) {
                 MarkInvincible(returnObject);
-                m_createdObjects.push_back(returnObject);
+                createdObjects_.push_back(returnObject);
             }
         }
 
@@ -217,15 +216,15 @@ class ObjectProvider {
     // Get the most current/active instance of a class, if one isn't found it creates a new instance. Example: UEngine* engine =
     // GetInstanceOf<UEngine>();
     template<typename T>
-    T* getOrCreateInstance() {
+    auto getOrCreateInstance() -> T* {
         if (std::is_base_of_v<UObject, T>) {
             for (int32_t i = (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i > 0; i--) {
                 UObject* uObject = UObject::GObjObjects()->at(i);
 
                 if (uObject && uObject->IsA<T>()) {
                     // if (uObject->GetFullName().find("Default__") == std::string::npos)
-                    if (CheckNotInName(uObject, "Default") && CheckNotInName(uObject, "Archetype") &&
-                        CheckNotInName(uObject, "PostGameLobby") && CheckNotInName(uObject, "Test")) {
+                    if (this->checkNotInName(uObject, "Default") && this->checkNotInName(uObject, "Archetype") &&
+                        this->checkNotInName(uObject, "PostGameLobby") && this->checkNotInName(uObject, "Test")) {
                         return static_cast<T*>(uObject);
                     }
                 }
@@ -249,10 +248,12 @@ class ObjectProvider {
     auto getLocalPlayer() -> class ULocalPlayer*;
     auto getPlayerController() -> class APlayerController*;
     auto getFileSystem() -> class UFileSystem*;
-    auto getUniqueID() -> struct FUniqueNetId;
+    struct FUniqueNetId getUniqueID();
 
     auto getDataStore() -> UGFxDataStore_X*;
     auto getOnlinePlayer() -> UOnlinePlayer_X*;
+
+    auto checkNotInName(UObject* obj, const std::string& str) -> bool;
 
   private:
     std::function<std::shared_ptr<EngineValidator>()> engineValidator_;
@@ -261,12 +262,10 @@ class ObjectProvider {
 
     std::map<std::string, class UClass*> m_staticClasses;
     std::map<std::string, class UFunction*> m_staticFunctions;
-    std::vector<class UObject*> m_createdObjects;
-
-    bool CheckNotInName(UObject* obj, const std::string& str);
+    std::vector<class UObject*> createdObjects_;
 
     template<typename T>
-    std::string GetTypeName();
+    auto GetTypeName() -> std::string;
 
     // Game-specific cached instances
     //    AGFxHUD_TA* hud;

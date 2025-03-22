@@ -1,9 +1,14 @@
 #include "ChatManager.h"
 #include "GameStructs.h"
+#include "LogGlobal.h"
 #include "ObjectProvider.h"
+#include "StringUtil.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 
 std::shared_ptr<GameWrapper> gameWrapper;
+
+ChatManager::ChatManager(std::function<std::shared_ptr<ObjectProvider>()> objectProvider)
+  : objectProvider_(std::move(objectProvider)) {}
 
 void
 ChatManager::initHooks() {
@@ -49,33 +54,27 @@ ChatManager::sendMessage(const std::string& chat, EChatChannel chatMode) {
         return;
     }
 
-    UGFxData_Chat_TA* chatBox = GetInstanceOf<UGFxData_Chat_TA>();
+    auto objectProvider = objectProvider_();
+    UGFxData_Chat_TA* chatBox = objectProvider->get<UGFxData_Chat_TA>();
     if (!chatBox) {
         // LOG("UGFxData_Chat_TA* is null!");
         return;
     }
 
-    FString chatFStr = Instances.NewFString(chat);
+    FString chatFStr = StringUtil::ToFString(chat);
 
     if (chatMode == EChatChannel::EChatChannel_Match) {
         chatBox->SendChatMessage(chatFStr, 0); // match (lobby) chat
 
-        // fixme, log removed from signature
-        if (true) {
-            LOG("Sent chat: '{}'", chat);
-        }
+        logger->debug("Sent chat: " + chat, LogCategory::CHAT);
     } else if (chatMode == EChatChannel::EChatChannel_Team) {
         chatBox->SendTeamChatMessage(chatFStr, 0); // team chat
 
-        if (log) {
-            LOG("Sent chat: [Team] '{}'", chat);
-        }
+        logger->debug("Sent chat: [Team]: " + chat, LogCategory::CHAT);
     } else if (chatMode == EChatChannel::EChatChannel_Party) {
         chatBox->SendPartyChatMessage(chatFStr, 0); // party chat
 
-        if (log) {
-            LOG("Sent chat: [Party] '{}'", chat);
-        }
+        logger->debug("Sent chat: [Parth]: " + chat, LogCategory::CHAT);
     }
 }
 

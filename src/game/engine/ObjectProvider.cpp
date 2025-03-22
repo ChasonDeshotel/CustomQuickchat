@@ -1,8 +1,8 @@
 #include "ObjectProvider.h"
 #include <string>
 
-#include "GameDefines.hpp"
 #include "SdkHeaders.hpp"
+// #include "GameDefines.hpp"
 
 #include "EngineValidator.h"
 
@@ -34,9 +34,7 @@ auto
 ObjectProvider::findStaticClass(const std::string& className) -> class UClass* {
     if (m_staticClasses.empty()) {
         for (int32_t i = 0; i < (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i++) {
-            UObject* uObject = UObject::GObjObjects()->at(i);
-
-            if (uObject) {
+            if (UObject* uObject = UObject::GObjObjects()->at(i)) {
                 if ((uObject->GetFullName().find("Class") == 0)) {
                     m_staticClasses[uObject->GetFullName()] = static_cast<UClass*>(uObject);
                 }
@@ -55,10 +53,8 @@ auto
 ObjectProvider::findStaticFunction(const std::string& className) -> class UFunction* {
     if (m_staticFunctions.empty()) {
         for (int32_t i = 0; i < (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i++) {
-            UObject* uObject = UObject::GObjObjects()->at(i);
-
-            if (uObject) {
-                if (uObject && uObject->IsA<UFunction>()) {
+            if (UObject* uObject = UObject::GObjObjects()->at(i)) {
+                if (uObject->IsA<UFunction>()) {
                     m_staticFunctions[uObject->GetFullName()] = static_cast<UFunction*>(uObject);
                 }
             }
@@ -94,23 +90,17 @@ ObjectProvider::getFileSystem() -> class UFileSystem* {
 
 auto
 ObjectProvider::getLocalPlayer() -> class ULocalPlayer* {
-    UEngine* engine = this->getEngine();
-
-    if (engine && engine->GamePlayers[0]) {
+    if (UEngine* engine = this->getEngine(); engine && engine->GamePlayers[0]) {
         return engine->GamePlayers[0];
     }
-
     return nullptr;
 }
 
 auto
 ObjectProvider::getUniqueID() -> struct FUniqueNetId {
-    ULocalPlayer* localPlayer = this->getLocalPlayer();
-
-    if (localPlayer) {
+    if (ULocalPlayer* localPlayer = this->getLocalPlayer()) {
         return localPlayer->eventGetUniqueNetId();
     }
-
     return FUniqueNetId{};
 }
 
@@ -127,6 +117,12 @@ ObjectProvider::getDataStore() -> UGFxDataStore_X* {
 auto
 ObjectProvider::getOnlinePlayer() -> UOnlinePlayer_X* {
     return this->get<UOnlinePlayer_X>();
+}
+
+// fixme
+auto
+ObjectProvider::checkNotInName(UObject* obj, const std::string& str) -> bool {
+    return false;
 }
 
 // void

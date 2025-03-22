@@ -9,6 +9,8 @@
 
 #include "ChatManager.h"
 #include "EngineValidator.h"
+
+#include <ObjectProvider.h>
 // #include "GameState.h"
 // #include "InputHandler.h"
 
@@ -36,8 +38,16 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
             return;
         }
 
+        container_.registerFactory<ObjectProvider>(
+            [](DependencyContainer& c) -> std::shared_ptr<ObjectProvider> {
+                return std::make_shared<ObjectProvider>([&c]() { return c.resolve<EngineValidator>(); });
+            },
+            DependencyContainer::Lifetime::Singleton);
+
         container_.registerFactory<ChatManager>(
-            [](DependencyContainer& c) -> std::shared_ptr<ChatManager> { return std::make_shared<ChatManager>(); },
+            [](DependencyContainer& c) -> std::shared_ptr<ChatManager> {
+                return std::make_shared<ChatManager>([&c]() { return c.resolve<ObjectProvider>(); });
+            },
             DependencyContainer::Lifetime::Singleton);
         // container_.resolve<ChatManager>()->initHooks();
 
