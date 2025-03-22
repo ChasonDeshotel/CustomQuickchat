@@ -114,40 +114,19 @@ ObjectProvider::getUniqueID() -> struct FUniqueNetId {
     return FUniqueNetId{};
 }
 
-template<>
-AGFxHUD_TA*
-ObjectProvider::get<AGFxHUD_TA>() {
-    if (!hud) {
-        hud = this->getInstanceOf<AGFxHUD_TA>();
-    }
-    return hud;
-}
-
 auto
 ObjectProvider::getHUD() -> AGFxHUD_TA* {
-    if (hud) {
-        return hud;
-    }
-
-    return this->getInstanceOf<AGFxHUD_TA>();
+    return this->get<AGFxHUD_TA>();
 }
 
 auto
 ObjectProvider::getDataStore() -> UGFxDataStore_X* {
-    if (dataStore) {
-        return dataStore;
-    }
-
-    return this->getInstanceOf<UGFxDataStore_X>();
+    return this->get<UGFxDataStore_X>();
 }
 
 auto
 ObjectProvider::getOnlinePlayer() -> UOnlinePlayer_X* {
-    if (onlinePlayer) {
-        return onlinePlayer;
-    }
-
-    return this->getInstanceOf<UOnlinePlayer_X>();
+    return this->get<UOnlinePlayer_X>();
 }
 
 // void

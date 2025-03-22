@@ -1,8 +1,11 @@
 #pragma once
+#include <algorithm>
 #include <functional>
 #include <string>
 
 #include "GameDefines.hpp"
+
+#include <typeindex>
 
 static constexpr int32_t INSTANCES_ITERATE_OFFSET = 100;
 
@@ -45,6 +48,10 @@ class ObjectProvider {
     template<typename T>
     auto ObjectProvider::getInstanceOf() -> T* {
         if (std::is_base_of_v<UObject, T>) {
+            // fixme
+            // int32_t objSize = static_cast<int32_t>(UObject::GObjObjects->size());
+            // int32_t startIndex = (objSize > INSTANCES_ITERATE_OFFSET) ? (objSize - INSTANCES_ITERATE_OFFSET) : 0;
+            // int32_t startIndex = std::max(0, static_cast<int32_t>(UObject::GObjObjects()->size()) - INSTANCES_ITERATE_OFFSET);
             for (int32_t i = (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i > 0; i--) {
                 UObject* uObject = UObject::GObjObjects()->at(i);
 
@@ -103,7 +110,7 @@ class ObjectProvider {
         return objectInstances;
     }
 
-    // get all object instances by it's name and class type. Example: std::vector<UTexture2D*> textures =
+    // get all object instances by it' name and class type. Example: std::vector<UTexture2D*> textures =
     // FindAllObjects<UTexture2D>("Noise");
     template<typename T>
     std::vector<T*> ObjectProvider::findAllObjects(const std::string& objectName) {
@@ -143,7 +150,7 @@ class ObjectProvider {
 
     // get the default constructor of a class type. Example: UGameData_TA* gameData = GetDefaultInstanceOf<UGameData_TA>();
     template<typename T>
-    T* ObjectProvider::getDefaultInstanceOf() {
+    auto ObjectProvider::getDefaultInstanceOf() -> T* {
         if (std::is_base_of_v<UObject, T>) {
             for (int32_t i = 0; i < (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i++) {
                 UObject* uObject = UObject::GObjObjects()->at(i);
@@ -159,7 +166,7 @@ class ObjectProvider {
         return nullptr;
     }
 
-    // get an object instance by it's name and class type. Example: UTexture2D* texture = FindObject<UTexture2D>("WhiteSquare");
+    // get an object instance by its name and class type. Example: UTexture2D* texture = FindObject<UTexture2D>("WhiteSquare");
     template<typename T>
     T* ObjectProvider::findObject(const std::string& objectName, bool bStrictFind) {
         if (std::is_base_of_v<UObject, T>) {
@@ -186,18 +193,18 @@ class ObjectProvider {
     // YOU are required to make sure these objects eventually get eaten up by the garbage collector in some shape or form.
     // Example: UObject* newObject = CreateInstance<UObject>();
     template<typename T>
-    T* CreateInstance() {
+    T* createInstance() {
         T* returnObject = nullptr;
 
-        if (std::is_base_of<UObject, T>::value) {
-            T* defaultObject = GetDefaultInstanceOf<T>();
+        if (std::is_base_of_v<UObject, T>) {
+            T* defaultObject = this->getDefaultInstanceOf<T>();
             UClass* staticClass = T::StaticClass();
 
             if (defaultObject && staticClass) {
                 returnObject = static_cast<T*>(defaultObject->DuplicateObject(defaultObject, defaultObject->Outer, staticClass));
             }
 
-            // Making sure newly created object doesn't get randomly destoyed by the garbage collector when we don't want it do.
+            // Making sure newly created object doesn't get randomly destroyed by the garbage collector when we don't want it do.
             if (returnObject) {
                 MarkInvincible(returnObject);
                 m_createdObjects.push_back(returnObject);
@@ -210,9 +217,9 @@ class ObjectProvider {
     // Get the most current/active instance of a class, if one isn't found it creates a new instance. Example: UEngine* engine =
     // GetInstanceOf<UEngine>();
     template<typename T>
-    T* GetOrCreateInstance() {
-        if (std::is_base_of<UObject, T>::value) {
-            for (int32_t i = (UObject::GObjObjects()->size() - INSTANCES_INTERATE_OFFSET); i > 0; i--) {
+    T* getOrCreateInstance() {
+        if (std::is_base_of_v<UObject, T>) {
+            for (int32_t i = (UObject::GObjObjects()->size() - INSTANCES_ITERATE_OFFSET); i > 0; i--) {
                 UObject* uObject = UObject::GObjObjects()->at(i);
 
                 if (uObject && uObject->IsA<T>()) {
@@ -224,7 +231,7 @@ class ObjectProvider {
                 }
             }
 
-            return CreateInstance<T>();
+            return this->createInstance<T>();
         }
 
         return nullptr;
@@ -246,10 +253,6 @@ class ObjectProvider {
 
     auto getDataStore() -> UGFxDataStore_X*;
     auto getOnlinePlayer() -> UOnlinePlayer_X*;
-
-    // Template methods for finding/creating instances
-    template<typename T>
-    T* createInstance();
 
   private:
     std::function<std::shared_ptr<EngineValidator>()> engineValidator_;
