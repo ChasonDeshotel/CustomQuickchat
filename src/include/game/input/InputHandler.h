@@ -15,6 +15,12 @@ class InputHandler {
     explicit InputHandler(std::function<std::shared_ptr<GameState>()> gameState,
         std::function<std::shared_ptr<ChatManager>()> chatManager,
         std::function<std::shared_ptr<ActionHandler>()> actionHandler);
+
+    InputHandler(const InputHandler&) = delete;
+    auto operator=(const InputHandler&) -> InputHandler& = delete;
+    InputHandler(InputHandler&&) = delete;
+    auto operator=(InputHandler&&) -> InputHandler& = delete;
+
     void initHooks();
 
     void init();
@@ -46,6 +52,7 @@ class InputHandler {
 
     void updateKeyState(const std::string& keyName, bool pressed);
     void checkBindings(const std::string& keyName);
-    bool checkBinding(const Binding& binding, const std::string& keyName);
-    void performBindingAction(const Binding& binding);
+    // fixme
+    //    bool checkBinding(const Binding& binding, const std::string& keyName);
+    //    void performBindingAction(const Binding& binding);
 };

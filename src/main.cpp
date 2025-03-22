@@ -3,7 +3,7 @@
 #include "bakkesmod/plugin/pluginwindow.h"
 
 // Make sure we're including the correct path to LogGlobal.h
-#include "core/log/LogGlobal.h"
+#include "LogGlobal.h"
 
 #include "DependencyContainer.h"
 
@@ -24,7 +24,7 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
 
     void onLoad() override {
         // Initialize the logger
-        logger = ::initializeLogger();
+        ::initializeLogger();
         if (logger) {
             logger->info("Plugin loading started", LogCategory::CORE);
         }

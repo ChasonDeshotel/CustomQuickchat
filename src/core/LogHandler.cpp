@@ -14,25 +14,27 @@ LogHandler::LogHandler()
 }
 
 LogHandler::~LogHandler() {
- // Clean up resources if needed
- for (auto& sink : sinks) {
-     sink->flush();
- }
+    for (auto& sink : sinks) {
+        sink->flush();
+    }
 }
 
-auto LogHandler::getInstance() -> LogHandler& {
+auto
+LogHandler::getInstance() -> LogHandler& {
     static LogHandler instance;
     return instance;
 }
 
-auto LogHandler::addSink(std::shared_ptr<LogSink> sink) -> void {
+auto
+LogHandler::addSink(std::shared_ptr<LogSink> sink) -> void {
     if (sink && sink->isAvailable()) {
         std::lock_guard<std::mutex> lock(logMutex);
         sinks.push_back(sink);
     }
 }
 
-auto LogHandler::setLogPath(const std::string& path) -> void {
+auto
+LogHandler::setLogPath(const std::string& path) -> void {
     std::lock_guard<std::mutex> lock(logMutex);
     logPath = path;
 
@@ -43,8 +45,8 @@ auto LogHandler::setLogPath(const std::string& path) -> void {
     }
 }
 
-
-auto LogHandler::logLevelToString(LogLevel level) -> std::string {
+auto
+LogHandler::logLevelToString(LogLevel level) -> std::string {
     switch (level) {
         case LogLevel::LOG_TRACE: return "TRACE";
         case LogLevel::LOG_DEBUG: return "DEBUG";
@@ -57,7 +59,8 @@ auto LogHandler::logLevelToString(LogLevel level) -> std::string {
 }
 
 // Update the log method to use sinks
-auto LogHandler::log(const std::string& message, LogCategory category, LogLevel level) -> void {
+auto
+LogHandler::log(const std::string& message, LogCategory category, LogLevel level) -> void {
     if (level < currentLogLevel || !enabledCategories[category]) {
         return;
     }
@@ -102,7 +105,8 @@ LogHandler::error(const std::string& message, LogCategory category) -> void {
     log(message, category, LogLevel::LOG_ERROR);
 }
 
-auto LogHandler::setLogLevel(LogLevel level) -> void {
+auto
+LogHandler::setLogLevel(LogLevel level) -> void {
     std::lock_guard<std::mutex> lock(logMutex);
     currentLogLevel = level;
 }

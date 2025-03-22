@@ -1,11 +1,13 @@
 #pragma once
-#include "LogTypes.h"
 #include <filesystem>
 #include <fstream>
 #include <mutex>
 #include <optional>
 #include <string>
 #include <unordered_map>
+
+#include "LogSink.h"
+#include "LogTypes.h"
 
 class LogHandler {
   public:
@@ -16,6 +18,8 @@ class LogHandler {
     auto operator=(LogHandler&&) -> LogHandler& = delete;
     ~LogHandler();
     static auto getInstance() -> LogHandler&;
+
+    auto addSink(std::shared_ptr<LogSink> sink) -> void;
 
     auto log(const std::string& message, LogCategory category, LogLevel level = LogLevel::LOG_INFO) -> void;
     auto debug(const std::string& message, LogCategory category) -> void;
@@ -34,4 +38,6 @@ class LogHandler {
     std::unordered_map<LogCategory, bool> enabledCategories;
     std::mutex logMutex;
     auto logLevelToString(LogLevel level) -> std::string;
+
+    std::vector<std::shared_ptr<LogSink>> sinks;
 };
