@@ -1,6 +1,6 @@
-#include "bakkesmod/plugin/PluginSettingsWindow.h"
 #include "bakkesmod/plugin/bakkesmodplugin.h"
-#include "bakkesmod/plugin/pluginwindow.h"
+//#include "bakkesmod/plugin/pluginwindow.h"
+//#include "bakkesmod/plugin/PluginSettingsWindow.h"
 
 // Make sure we're including the correct path to LogGlobal.h
 #include "LogGlobal.h"
@@ -14,7 +14,7 @@
 // #include "GameState.h"
 // #include "InputHandler.h"
 
-// std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
+std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
 class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
   private:
@@ -25,24 +25,37 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
       : container_(DependencyContainer::getInstance()) {}
 
     void onLoad() override {
+         std::ofstream logFile("C:\\temp\\plugin_loaded.txt");
+         logFile << "Plugin loading started at " << time(nullptr) << std::endl;
+         logFile.close();
+
+        _globalCvarManager = cvarManager;
         // Initialize the logger
+        _globalCvarManager->log("test");
+
         ::initializeLogger();
         if (logger) {
             logger->info("Plugin loading started", LogCategory::CORE);
         }
+        //LOG("loaded");
 
+        _globalCvarManager->log("logger initialized");
         container_.registerType<EngineValidator, EngineValidator>(DependencyContainer::Lifetime::Singleton);
         if (!container_.resolve<EngineValidator>()->init()) {
             // SDK is bad or whatever
             logger->error("validate failed", LogCategory::CORE);
             return;
         }
+        logger->error("EngineValidator loaded", LogCategory::CORE);
+        _globalCvarManager->log("engine validate");
 
         container_.registerFactory<ObjectProvider>(
             [](DependencyContainer& c) -> std::shared_ptr<ObjectProvider> {
                 return std::make_shared<ObjectProvider>([&c]() { return c.resolve<EngineValidator>(); });
             },
             DependencyContainer::Lifetime::Singleton);
+        logger->error("ObjectProvider loaded", LogCategory::CORE);
+        _globalCvarManager->log("object loaded");
 
         container_.registerFactory<ChatManager>(
             [](DependencyContainer& c) -> std::shared_ptr<ChatManager> {
@@ -50,6 +63,7 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
             },
             DependencyContainer::Lifetime::Singleton);
         // container_.resolve<ChatManager>()->initHooks();
+        logger->error("ChatManager loaded", LogCategory::CORE);
 
         // container_.registerFactory<InputHandler>(
         //     [](DependencyContainer& c) -> std::shared_ptr<InputHandler> {
@@ -66,7 +80,6 @@ class CustomQuickchat : public BakkesMod::Plugin::BakkesModPlugin {
     }
 };
 
-BAKKESMOD_PLUGIN(CustomQuickchat, "Custom Quickchat", "foo", PLUGINTYPE_FREEPLAY);
 
 //    static void toggleEnabled(std::vector<std::string> args) {
 //        CVarWrapper enabledCvar = GetCvar(Cvars::enabled);
@@ -141,3 +154,4 @@ BAKKESMOD_PLUGIN(CustomQuickchat, "Custom Quickchat", "foo", PLUGINTYPE_FREEPLAY
 
 //    LOG("CustomQuickchat loaded! :)");
 //}
+BAKKESMOD_PLUGIN(CustomQuickchat, "Custom Quickchat", "foo", PLUGINTYPE_FREEPLAY);
